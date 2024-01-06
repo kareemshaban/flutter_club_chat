@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "1050685348514",
+    "project_id": "clubchatapp-5d5ac",
+    "storage_bucket": "clubchatapp-5d5ac.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1050685348514:android:4d7bf5158a7b07f45bd5fb",
+        "android_client_info": {
+          "package_name": "com.clubchat.live.chat.clubchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1050685348514-h747uah6rpa9r8ct7656dhbscqgskku3.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.clubchat.live.chat.clubchat",
+            "certificate_hash": "8ad311a974ced0c4dd96e0ba1adc972569f1eba2"
+          }
+        },
+        {
+          "client_id": "1050685348514-9krjpctkprst9k8l3tpqd56rqumri1k7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCANFniAp9ch8AqV7kdHrLjUB9xG6Mml3g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1050685348514-9krjpctkprst9k8l3tpqd56rqumri1k7.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1050685348514-7ojpfpcuhii2o95omrsmu48tnb7guq3k.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.clubchat.live.chat.clubchat.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

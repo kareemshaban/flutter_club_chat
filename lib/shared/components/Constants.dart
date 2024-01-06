@@ -1,0 +1,1 @@
+const  BASEURL = 'https://chat.gifty-store.com/api/';
