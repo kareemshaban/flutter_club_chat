@@ -12,9 +12,6 @@ class AppUserServices {
     String deviceId = await getId() ?? "";
     var data = await getIpAddress() ;
     var ipAddress = data['ip'] ?? "" ;
-
-    print(deviceId );
-    print(ipAddress);
     return http.post(
       Uri.parse('${BASEURL}Account/Create'),
       headers: <String, String>{

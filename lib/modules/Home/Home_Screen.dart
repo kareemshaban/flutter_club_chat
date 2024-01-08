@@ -1,0 +1,279 @@
+import 'dart:convert';
+
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:clubchat/models/Banner.dart';
+import 'package:clubchat/models/ChatRoom.dart';
+import 'package:clubchat/models/Country.dart';
+import 'package:clubchat/shared/components/Constants.dart';
+import 'package:clubchat/shared/network/remote/BannerServices.dart';
+import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
+import 'package:clubchat/shared/network/remote/CountryService.dart';
+import 'package:clubchat/shared/styles/colors.dart';
+import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
+import 'package:skeletonizer/skeletonizer.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => HomeScreenState();
+}
+
+class HomeScreenState extends State<HomeScreen> {
+
+
+  //vars
+  List<BannerData> banners = [] ;
+  List<Country> countries = [] ;
+  List<ChatRoom> rooms = [] ;
+  int selectedCountry = 0 ;
+  bool loaded = false ;
+  HomeScreenState()  {
+
+  }
+
+  void getBanners() async {
+    List<BannerData> res = await BannerServices().getAllBanners();
+    setState(() {
+      banners = res ;
+    });
+     List<Country> res2 = await CountryService().getAllCountries();
+    setState(() {
+      countries = res2 ;
+    });
+    List<ChatRoom> res3 = await ChatRoomService().getAllChatRooms();
+    setState(() {
+      rooms = res3 ;
+      loaded = true ;
+    });
+  }
+  //var
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getBanners();
+  }
+  @override
+  Widget build(BuildContext context) {
+    return   DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: MyColors.darkColor,
+          title:  TabBar(
+           dividerColor: Colors.transparent,
+            tabAlignment: TabAlignment.start,
+            isScrollable: true ,
+            indicatorColor: MyColors.primaryColor,
+            labelColor: MyColors.primaryColor,
+            unselectedLabelColor: MyColors.unSelectedColor,
+            labelStyle: const TextStyle(fontSize: 17.0 , fontWeight: FontWeight.w900),
+
+            tabs: const [
+              Tab(text: "Party" ),
+              Tab(text: "Discover",),
+            ],
+          ) ,
+          actions:   [
+
+            GestureDetector(
+                child: const Image(
+                  image: AssetImage('assets/images/trophy.png') , width: 30.0, height: 30.0,),
+                  onTap: (){}
+            ),
+            const SizedBox(width: 20.0,),
+            GestureDetector(
+                child: const Image(
+                  image: AssetImage('assets/images/voice-message.png') , width: 30.0, height: 30.0,),
+                onTap: (){}
+            ),
+            const SizedBox(width: 20.0,),
+            GestureDetector(
+                child: const Image(
+                  image: AssetImage('assets/images/search.png') , width: 30.0, height: 30.0,),
+                onTap: (){}
+            ),
+
+            const SizedBox(width: 10.0,),
+          ],
+        ),
+        body: Container(
+          color: MyColors.darkColor,
+          width: double.infinity,
+          child:  TabBarView(
+            children: [
+              // home
+              Skeletonizer(
+                 enabled: !loaded,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 5.0 , vertical: 10.0),
+                  
+                      child: CarouselSlider(items:
+                        banners.map((banner) => Container(
+                  
+                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ),
+                          clipBehavior: Clip.antiAliasWithSaveLayer,
+                          child: Image.network('${ASSETSBASEURL}Banners/${banner.img}' , fit: BoxFit.cover, ),
+                        )).toList()
+                       , options: CarouselOptions( aspectRatio: 3 , autoPlay: true , viewportFraction: 1.0)),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                      height:40.0,
+                      child: ListView.separated(itemBuilder: (ctx , index) => countryListItem(index)  , separatorBuilder: (ctx , index) => countryListSpacer(), itemCount: countries.length , scrollDirection: Axis.horizontal,),
+                  
+                    ),
+                    const SizedBox(height: 10.0,),
+                    Expanded(
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        children: rooms.where((element) => element.country_id == selectedCountry || selectedCountry == 0).map((room ) => chatRoomListItem(room)).toList() ,
+                      ),
+                    )
+                  ],),
+                ),
+              //discover
+              const Column(
+                 children: [
+                   Text("إكتشاف" , style: TextStyle(fontWeight: FontWeight.bold),)
+                 ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+ Widget countryListItem(index) => countries.isNotEmpty ?  GestureDetector(
+   onTap: (){
+     setState(() {
+       selectedCountry = countries[index].id;
+     });
+   },
+   child: Container(
+     padding: const EdgeInsets.all(10.0),
+     decoration: BoxDecoration(border: Border.all(color: MyColors.unSelectedColor , width: 1.0 , style: BorderStyle.solid) , borderRadius: BorderRadius.circular(25.0) ,
+     color: countries[index].id == selectedCountry ? MyColors.primaryColor : MyColors.lightUnSelectedColor),
+     child:  Row(
+       mainAxisSize: MainAxisSize.min,
+       mainAxisAlignment: MainAxisAlignment.end,
+       children: [
+     countries[index].id > 0 ? Image(image:  NetworkImage('${ASSETSBASEURL}Countries/${countries[index].icon}')  , width: 30.0,) :
+     Image(image:  AssetImage(countries[index].icon)  , width: 30.0,)    ,
+         const SizedBox(width: 5.0,),
+         Text(countries[index].name , style: TextStyle(color: MyColors.whiteColor , fontSize: 13.0),)
+       ],),
+   ),
+ ) : Container();
+ Widget countryListSpacer() => const SizedBox(width: 5.0,);
+
+ Widget chatRoomListItem(room) =>  GestureDetector(
+     onTap: (){openChatRoom(room);} ,
+     child: Container(
+       width: MediaQuery.of(context).size.width / 2 ,
+       margin: const EdgeInsets.all(5.0),
+       child: Stack(
+         alignment: Alignment.topCenter,
+         children: [
+           Stack(
+             alignment: Alignment.bottomCenter,
+             children: [
+               Container(
+               width: MediaQuery.of(context).size.width / 2 ,
+               height: MediaQuery.of(context).size.width / 2 ,
+
+               decoration: BoxDecoration( borderRadius: BorderRadius.circular(15.0) ,
+               image: DecorationImage(image: NetworkImage(ASSETSBASEURL + 'Rooms/' + room.img), fit: BoxFit.cover,
+                   colorFilter:  ColorFilter.mode(Colors.grey.withOpacity(.9), BlendMode.dstATop)
+               )),),
+
+               Padding(
+                 padding: const EdgeInsets.symmetric(horizontal: 5.0 , vertical: 10.0),
+                 child: Row(
+                   crossAxisAlignment: CrossAxisAlignment.start,
+                   children: [
+
+                      Expanded(child: Text(room.name  , textAlign: TextAlign.end, overflow: TextOverflow.ellipsis ,style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 , fontWeight: FontWeight.bold , ))),
+                      Expanded(child: Text(room.tag , textAlign: TextAlign.end , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 , fontWeight: FontWeight.bold))),
+                 ],),
+               )
+             ],
+           ),
+           Container(
+             child: Row(
+               mainAxisAlignment: MainAxisAlignment.end,
+               mainAxisSize: MainAxisSize.max,
+               children: [
+
+                 Container(
+                   width: ((MediaQuery.of(context).size.width / 2 ) - 55 ),
+                   child: Row(
+                     children: [
+                       Container(
+                         decoration:  BoxDecoration( color: getMyColor(room.subject)
+
+                             , borderRadius: BorderRadius.only(bottomRight: Radius.circular(15.0) , topLeft: Radius.circular(15.0))),
+                         width: 60.0 ,
+                         height: 30.0,
+                         child: Row(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                           children: [
+                             Text(room.subject.toString().toLowerCase(), style: TextStyle(fontSize: 15.0 , color: MyColors.whiteColor),)
+                           ],
+                         ),
+                       ),
+                     ],
+                   ),
+                 ),
+                 Container(
+
+                     margin: EdgeInsets.all(5.0),
+                     child: Image(image: NetworkImage(ASSETSBASEURL + 'Countries/' + room.flag), width: 30.0, )),
+               ],),
+           )
+         ],
+       ),
+     ),
+ );
+
+
+ void openChatRoom(room){
+
+ }
+ void takeBannerAction(index){
+
+ }
+ Color getMyColor(String subject){
+   if(subject == "CHAT"){
+     return MyColors.primaryColor.withOpacity(.8) ;
+   } else if(subject == "FRIENDS"){
+     return MyColors.successColor.withOpacity(.8) ;
+   }else if(subject == "GAMES"){
+     return MyColors.blueColor.withOpacity(.8) ;
+   }
+   else {
+     return MyColors.primaryColor.withOpacity(.8) ;
+   }
+
+ }
+
+ void openTrendPage() {
+
+ }
+ void openMyRoom(){
+
+ }
+  void openSearch(){
+
+  }
+
+ void openRoom() {
+
+ }
+}

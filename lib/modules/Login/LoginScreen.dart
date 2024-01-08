@@ -33,17 +33,10 @@ class LoginScreenState extends State<LoginScreen> {
   String _contactText = '';
 
   @override
-  void initState() async {
+  void initState()  {
     super.initState();
 
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if(prefs.getInt('userId') != null){
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => const TabsScreen()),
-      );
-    }
+    checkUserLogin();
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
       bool isAuthorized = account != null;
@@ -61,6 +54,16 @@ class LoginScreenState extends State<LoginScreen> {
     });
     _googleSignIn.signInSilently();
 
+  }
+  void checkUserLogin() async{
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    if(prefs.getInt('userId') != null){
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TabsScreen()),
+      );
+    }
   }
   Future<void> _handleSignIn() async {
     try {
