@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get_ip_address/get_ip_address.dart';
@@ -60,6 +61,24 @@ class AppUserServices {
     }
   }
 
+
+  Future<List<AppUser>> searchUser(txt) async {
+    final response = await http.get(Uri.parse('${BASEURL}users/Search/${txt}'));
+    List<AppUser> users  = [];
+    if (response.statusCode == 200) {
+      List<dynamic>  jsonData = json.decode(response.body);
+      for( var i = 0 ; i < jsonData.length ; i ++ ){
+        AppUser user = AppUser.fromJson(jsonData[i]);
+        users.add(user);
+      }
+      return users ;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
 
 
 

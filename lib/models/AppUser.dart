@@ -11,9 +11,9 @@ class AppUser {
    final String password ;
    final int isChargingAgent ;
    final int isHostingAgent ;
-   final DateTime registered_at ;
-   final DateTime last_login ;
-   final DateTime birth_date ;
+   final String registered_at ;
+   final String last_login ;
+   final String birth_date ;
    final int enable ;
    final String ipAddress ;
    final String macAddress ;
@@ -22,10 +22,109 @@ class AppUser {
    final int isInRoom ;
    final int country ;
    final String register_with ;
+   final int gender ;
+   final String gold ;
+   final String diamond ;
+   final String share_level_order ;
+   final String share_level_points ;
+   final String share_level_icon ;
+   final String karizma_level_order ;
+   final String karizma_level_points ;
+   final String karizma_level_icon ;
+   final String charging_level_order ;
+   final String charging_level_points ;
+    final String charging_level_icon ;
 
 
-   AppUser(this.id, this.tag, this.name, this.img, this.share_level_id, this.karizma_level_id, this.charging_level_id, this.phone, this.email, this.password, this.isChargingAgent, this.isHostingAgent, this.registered_at, this.last_login, this.birth_date, this.enable, this.ipAddress, this.macAddress, this.deviceId, this.isOnline, this.isInRoom, this.country, this.register_with){
 
+   AppUser({ required this.id, required this.tag, required this.name, required this.img, required this.share_level_id,required this.karizma_level_id, required this.charging_level_id,required  this.phone,
+     required this.email, required this.password, required this.isChargingAgent, required this.isHostingAgent, required this.registered_at,
+     required this.last_login, required this.birth_date, required this.enable, required this.ipAddress,required  this.macAddress, required this.deviceId, required this.isOnline, required this.isInRoom, required this.country,
+     required this.register_with , required this.gender , required this.gold , required this.diamond , required this.share_level_order , required this.share_level_points ,required this.share_level_icon ,
+     required  this.karizma_level_order , required this.karizma_level_points , required this.karizma_level_icon ,required this.charging_level_order , required this.charging_level_points , required this.charging_level_icon});
+
+   factory AppUser.fromJson(Map<String, dynamic> json) {
+      return switch (json) {
+         {
+         'id': int id,
+         'tag': String tag,
+         'name': String name,
+         'img': String img,
+         'share_level_id': int share_level_id,
+         'karizma_level_id': int karizma_level_id,
+         'charging_level_id': int charging_level_id,
+         'phone': String phone,
+         'email': String email,
+         'password': String password,
+         'isChargingAgent': int isChargingAgent,
+         'isHostingAgent': int isHostingAgent,
+         'registered_at': String registered_at,
+         'last_login': String last_login,
+         'birth_date': String birth_date,
+         'enable': int enable,
+         'ipAddress': String ipAddress,
+         'macAddress': String macAddress,
+         'deviceId': String deviceId,
+         'isOnline': int isOnline,
+         'isInRoom': int isInRoom,
+         'country': int country,
+         'register_with': String register_with,
+         'gender': int gender,
+         'gold': String gold,
+         'diamond': String diamond,
+         'share_level_order': String share_level_order,
+         'share_level_points': String share_level_points,
+         'share_level_icon': String share_level_icon,
+         'karizma_level_order': String karizma_level_order,
+         'karizma_level_points': String karizma_level_points,
+         'karizma_level_icon': String karizma_level_icon,
+         'charging_level_order': String charging_level_order,
+         'charging_level_points': String charging_level_points,
+         'charging_level_icon': String charging_level_icon,
+
+
+         } =>
+             AppUser(
+                 id: id,
+                 tag: tag,
+                 name: name,
+                 img: img,
+                 share_level_id: share_level_id,
+                 karizma_level_id: karizma_level_id,
+                 charging_level_id: charging_level_id,
+                 phone: phone,
+                 email: email,
+                 password: password,
+                 isChargingAgent: isChargingAgent,
+                 isHostingAgent: isHostingAgent,
+                 registered_at: registered_at,
+                 last_login: last_login,
+                 birth_date: birth_date,
+                 enable: enable,
+                 ipAddress: ipAddress,
+                 macAddress: macAddress,
+                 deviceId: deviceId,
+                 isOnline: isOnline,
+                 isInRoom: isInRoom,
+                 country: country,
+                 register_with: register_with,
+                 gender: gender,
+                 gold: gold,
+                 diamond: diamond,
+                 share_level_order: share_level_order,
+                share_level_points: share_level_points,
+                share_level_icon: share_level_icon,
+                karizma_level_order: karizma_level_order,
+                karizma_level_points: karizma_level_points,
+                karizma_level_icon: karizma_level_icon,
+                charging_level_order: charging_level_order,
+                charging_level_points: charging_level_points,
+                charging_level_icon: charging_level_icon,
+
+
+             ),
+         _ => throw const FormatException('Failed to load Room.'),
+      };
    }
 
 }

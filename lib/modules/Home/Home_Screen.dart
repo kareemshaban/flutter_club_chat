@@ -1,13 +1,17 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/Banner.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Country.dart';
+import 'package:clubchat/models/FestivalBanner.dart';
+import 'package:clubchat/modules/Search_Screen/SearchScreen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/BannerServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/network/remote/CountryService.dart';
+import 'package:clubchat/shared/network/remote/FestivalBannerServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
@@ -27,7 +31,10 @@ class HomeScreenState extends State<HomeScreen> {
   List<BannerData> banners = [] ;
   List<Country> countries = [] ;
   List<ChatRoom> rooms = [] ;
+  List<FestivalBanner> festivalBanners = [] ;
+  List<String> chatRoomCats = ['CHAT' , 'FRIENDS' , 'QURAN' , 'GAMES' , 'ENTERTAINMENT'];
   int selectedCountry = 0 ;
+  String selectedChatRoomCategory = 'CHAT' ;
   bool loaded = false ;
   HomeScreenState()  {
 
@@ -46,6 +53,11 @@ class HomeScreenState extends State<HomeScreen> {
     setState(() {
       rooms = res3 ;
       loaded = true ;
+    });
+    List<FestivalBanner> res4 = await FestivalBannerService().getAllBanners();
+    setState(() {
+      festivalBanners = res4 ;
+      print(FestivalBanner);
     });
   }
   //var
@@ -93,7 +105,7 @@ class HomeScreenState extends State<HomeScreen> {
             GestureDetector(
                 child: const Image(
                   image: AssetImage('assets/images/search.png') , width: 30.0, height: 30.0,),
-                onTap: (){}
+                onTap: () =>  Navigator.push(context,  MaterialPageRoute(builder: (ctx) => const SearchScreen()))
             ),
 
             const SizedBox(width: 10.0,),
@@ -138,9 +150,33 @@ class HomeScreenState extends State<HomeScreen> {
                   ],),
                 ),
               //discover
-              const Column(
+               Column(
                  children: [
-                   Text("إكتشاف" , style: TextStyle(fontWeight: FontWeight.bold),)
+                   Container(
+                     padding: const EdgeInsets.symmetric(horizontal: 5.0 , vertical: 10.0),
+
+                     child: CarouselSlider(items:
+                     festivalBanners.map((banner) => Container(
+
+                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ),
+                       clipBehavior: Clip.antiAliasWithSaveLayer,
+                       child: Image.network('${ASSETSBASEURL}FestivalBanner/${banner.img}' , fit: BoxFit.cover, ),
+                     )).toList()
+                         , options: CarouselOptions( aspectRatio: 3 , autoPlay: true , viewportFraction: 1.0)),
+                   ),
+                   Container(
+                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                     height:40.0,
+                     child: ListView.separated(itemBuilder: (ctx , index) => chatRoomCategoryListItem(index)  , separatorBuilder: (ctx , index) => countryListSpacer(), itemCount: chatRoomCats.length , scrollDirection: Axis.horizontal,),
+
+                   ),
+                   const SizedBox(height: 10.0,),
+                   Expanded(
+                     child: GridView.count(
+                       crossAxisCount: 2,
+                       children: rooms.where((element) => element.subject == selectedChatRoomCategory).map((room ) => chatRoomListItem(room)).toList() ,
+                     ),
+                   )
                  ],
               ),
             ],
@@ -243,6 +279,25 @@ class HomeScreenState extends State<HomeScreen> {
  );
 
 
+  Widget chatRoomCategoryListItem(index) => chatRoomCats.isNotEmpty ?  GestureDetector(
+    onTap: (){
+      setState(() {
+        selectedChatRoomCategory = chatRoomCats[index];
+      });
+    },
+    child: Container(
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(border: Border.all(color: MyColors.unSelectedColor , width: 1.0 , style: BorderStyle.solid) , borderRadius: BorderRadius.circular(25.0) ,
+          color: chatRoomCats[index] == selectedChatRoomCategory ? MyColors.primaryColor : MyColors.lightUnSelectedColor),
+      child:  Row(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          Text('#${chatRoomCats[index].toLowerCase()}' , style: TextStyle(color: chatRoomCats[index] == selectedChatRoomCategory ?  MyColors.darkColor : MyColors.whiteColor , fontSize: 15.0),)
+        ],),
+    ),
+  ) : Container();
+
  void openChatRoom(room){
 
  }
@@ -270,7 +325,7 @@ class HomeScreenState extends State<HomeScreen> {
 
  }
   void openSearch(){
-
+    Navigator.push( context,  MaterialPageRoute(builder: (context) => const SearchScreen()));
   }
 
  void openRoom() {
