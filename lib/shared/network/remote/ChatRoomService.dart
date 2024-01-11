@@ -24,8 +24,8 @@ class ChatRoomService {
 
   }
 
-  Future<List<ChatRoom>> searchUser(txt) async {
-    final response = await http.get(Uri.parse('${BASEURL}users/chatRooms/${txt}'));
+  Future<List<ChatRoom>> searchRoom(txt) async {
+    final response = await http.get(Uri.parse('${BASEURL}chatRooms/Search/${txt}'));
     List<ChatRoom> rooms  = [];
     if (response.statusCode == 200) {
       List<dynamic>  jsonData = json.decode(response.body);

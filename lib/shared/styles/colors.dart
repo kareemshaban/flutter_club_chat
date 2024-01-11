@@ -9,5 +9,6 @@ class MyColors {
   static Color lightUnSelectedColor = Colors.grey.withOpacity(.7) ;
   static Color whiteColor = Colors.white ;
   static Color blueColor = Colors.blue ;
+  static Color pinkColor = Colors.pinkAccent ;
   static Color successColor = Colors.green ;
 }

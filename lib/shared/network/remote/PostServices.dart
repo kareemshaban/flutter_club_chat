@@ -1,0 +1,200 @@
+
+import 'package:clubchat/models/Post.dart';
+import 'package:clubchat/models/PostLike.dart';
+import 'package:clubchat/models/PostReport.dart';
+import 'package:clubchat/models/Comment.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:clubchat/shared/components/Constants.dart';
+
+class PostServices {
+
+  Future<List<Post>> getAllPosts() async {
+    final res = await http.get(Uri.parse('${BASEURL}posts/getAll'));
+    List<Post> posts = [];
+    List<PostLike> likes = [];
+    List<PostReport> reports = [];
+    if (res.statusCode == 200) {
+      final Map resonse = json.decode(res.body);
+      for (var i = 0; i < resonse['posts'].length; i ++) {
+        Post post = Post.fromJson(resonse['posts'][i]);
+        likes = [];
+        reports = [] ;
+        for (var j = 0; j < resonse['likes'].length; j ++) {
+          if (resonse['likes'][j]['post_id'] == post.id) {
+            PostLike like = PostLike.fromJson(resonse['likes'][j]);
+            likes.add(like);
+          }
+        }
+        for (var n = 0; n < resonse['reports'].length; n ++) {
+          if (resonse['reports'][n]['post_id'] == post.id) {
+            PostReport report = PostReport.fromJson(resonse['reports'][n]);
+            reports.add(report);
+          }
+        }
+
+        post.likes = likes;
+        post.reports = reports ;
+
+        posts.add(post);
+      }
+      return posts;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  Future<List<Post>> likePost(post_id, user_id) async {
+    final res = await http.get(
+        Uri.parse('${BASEURL}posts/like/$post_id/$user_id'));
+    print(res.body);
+    List<Post> posts = [];
+    List<PostLike> likes = [];
+    List<PostReport> reports = [];
+
+    if (res.statusCode == 200) {
+      final Map resonse = json.decode(res.body);
+      for (var i = 0; i < resonse['posts'].length; i ++) {
+        Post post = Post.fromJson(resonse['posts'][i]);
+        likes = [];
+        reports = [] ;
+        for (var j = 0; j < resonse['likes'].length; j ++) {
+          if (resonse['likes'][j]['post_id'] == post.id) {
+            PostLike like = PostLike.fromJson(resonse['likes'][j]);
+            likes.add(like);
+          }
+        }
+        for (var n = 0; n < resonse['reports'].length; n ++) {
+          if (resonse['reports'][n]['post_id'] == post.id) {
+            PostReport report = PostReport.fromJson(resonse['reports'][n]);
+            reports.add(report);
+          }
+        }
+
+        post.likes = likes;
+        post.reports = reports ;
+
+        posts.add(post);
+      }
+      return posts;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  Future<List<Post>> unlike(post_id, user_id) async {
+    final res = await http.get(
+        Uri.parse('${BASEURL}posts/unlike/$post_id/$user_id'));
+    List<Post> posts = [];
+    List<PostReport> reports = [];
+
+    List<PostLike> likes = [];
+    if (res.statusCode == 200) {
+      final Map resonse = json.decode(res.body);
+      for (var i = 0; i < resonse['posts'].length; i ++) {
+        Post post = Post.fromJson(resonse['posts'][i]);
+        likes = [];
+        reports = [] ;
+        for (var j = 0; j < resonse['likes'].length; j ++) {
+          if (resonse['likes'][j]['post_id'] == post.id) {
+            PostLike like = PostLike.fromJson(resonse['likes'][j]);
+            likes.add(like);
+          }
+        }
+        for (var n = 0; n < resonse['reports'].length; n ++) {
+          if (resonse['reports'][n]['post_id'] == post.id) {
+            PostReport report = PostReport.fromJson(resonse['reports'][n]);
+            reports.add(report);
+          }
+        }
+
+        post.likes = likes;
+        post.reports = reports ;
+
+        posts.add(post);
+      }
+      return posts;
+    }
+    else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  Future<List<Post>> reportPost(post_id, user_id , type) async {
+    final res = await http.get(
+        Uri.parse('${BASEURL}posts/report/$post_id/$user_id/$type'));
+    List<Post> posts = [];
+    List<PostLike> likes = [];
+    if (res.statusCode == 200) {
+
+      Fluttertoast.showToast(
+          msg: "Post Reported Successfully",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+      final Map resonse = json.decode(res.body);
+      if (resonse['state'] == 'success') {
+        for (var i = 0; i < resonse['posts'].length; i ++) {
+          Post post = Post.fromJson(resonse['posts'][i]);
+          likes = [];
+          for (var j = 0; j < resonse['likes'].length; j ++) {
+            if (resonse['likes'][j]['post_id'] == post.id) {
+              PostLike like = PostLike.fromJson(resonse['likes'][j]);
+              likes.add(like);
+            }
+          }
+          print(likes);
+          post.likes = likes;
+
+          posts.add(post);
+        }
+      }
+
+      return posts;
+    }
+    else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load post');
+    }
+  }
+
+  Future<List<Comment>> addComment( post_id , user_id , content) async {
+    List<Comment> comments = [] ;
+    var res = await http.post(
+      Uri.parse('${BASEURL}Comments/addComment'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'post_id': post_id,
+        'user_id': user_id  ,
+        'content': content  ,
+      }),
+    );
+    if (res.statusCode == 200) {
+      final Map resonse = json.decode(res.body);
+      for (var i = 0; i < resonse['comments'].length; i ++) {
+        Comment comment = Comment.fromJson(resonse['comments'][i]);
+        comments.add(comment);
+      }
+
+      return comments ;
+    } else {
+      throw Exception('Failed to load post');
+    }
+  }
+
+}

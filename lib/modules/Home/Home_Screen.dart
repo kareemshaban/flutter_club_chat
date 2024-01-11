@@ -92,7 +92,7 @@ class HomeScreenState extends State<HomeScreen> {
 
             GestureDetector(
                 child: const Image(
-                  image: AssetImage('assets/images/trophy.png') , width: 30.0, height: 30.0,),
+                  image: AssetImage('assets/images/chatroom_rank_ic.png') , width: 30.0, height: 30.0,),
                   onTap: (){}
             ),
             const SizedBox(width: 20.0,),
@@ -248,7 +248,7 @@ class HomeScreenState extends State<HomeScreen> {
                children: [
 
                  Container(
-                   width: ((MediaQuery.of(context).size.width / 2 ) - 55 ),
+                   width: ((MediaQuery.of(context).size.width / 2 ) - 50 ),
                    child: Row(
                      children: [
                        Container(
@@ -287,7 +287,7 @@ class HomeScreenState extends State<HomeScreen> {
     },
     child: Container(
       padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(border: Border.all(color: MyColors.unSelectedColor , width: 1.0 , style: BorderStyle.solid) , borderRadius: BorderRadius.circular(25.0) ,
+      decoration: BoxDecoration(border: Border.all(color: Colors.transparent , width: 1.0 , style: BorderStyle.solid) , borderRadius: BorderRadius.circular(25.0) ,
           color: chatRoomCats[index] == selectedChatRoomCategory ? MyColors.primaryColor : MyColors.lightUnSelectedColor),
       child:  Row(
         mainAxisSize: MainAxisSize.min,
@@ -325,7 +325,7 @@ class HomeScreenState extends State<HomeScreen> {
 
  }
   void openSearch(){
-    Navigator.push( context,  MaterialPageRoute(builder: (context) => const SearchScreen()));
+    Navigator.push( context,  MaterialPageRoute(builder: (context) =>  SearchScreen()));
   }
 
  void openRoom() {

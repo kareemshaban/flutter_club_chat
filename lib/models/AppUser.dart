@@ -26,13 +26,13 @@ class AppUser {
    final String gold ;
    final String diamond ;
    final String share_level_order ;
-   final String share_level_points ;
+   final int share_level_points ;
    final String share_level_icon ;
    final String karizma_level_order ;
-   final String karizma_level_points ;
+   final int karizma_level_points ;
    final String karizma_level_icon ;
    final String charging_level_order ;
-   final String charging_level_points ;
+   final int charging_level_points ;
     final String charging_level_icon ;
 
 
@@ -73,13 +73,13 @@ class AppUser {
          'gold': String gold,
          'diamond': String diamond,
          'share_level_order': String share_level_order,
-         'share_level_points': String share_level_points,
+         'share_level_points': int share_level_points,
          'share_level_icon': String share_level_icon,
          'karizma_level_order': String karizma_level_order,
-         'karizma_level_points': String karizma_level_points,
+         'karizma_level_points': int karizma_level_points,
          'karizma_level_icon': String karizma_level_icon,
          'charging_level_order': String charging_level_order,
-         'charging_level_points': String charging_level_points,
+         'charging_level_points': int charging_level_points,
          'charging_level_icon': String charging_level_icon,
 
 
@@ -123,7 +123,7 @@ class AppUser {
 
 
              ),
-         _ => throw const FormatException('Failed to load Room.'),
+         _ => throw const FormatException('Failed to load User.'),
       };
    }
 
