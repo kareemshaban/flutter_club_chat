@@ -5,6 +5,7 @@ import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/PostServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -179,18 +180,18 @@ class _PostScreenState extends State<PostScreen> {
                                     tabs: [
                                       Row(
                                         children: [
-                                          Icon(FontAwesomeIcons.comment , color:  MyColors.unSelectedColor ,  size:30.0),
+                                          IconButton(icon: Icon(FontAwesomeIcons.comment , color:  MyColors.unSelectedColor ,  size:25.0), onPressed: () {  } ,  ),
                                           SizedBox(width: 5.0,),
                                           Text(widget.post.comments_count.toString() , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 14.0),)
                                         ],
                                       ),
                                       Row(
                                         children: [
-                                          Icon(FontAwesomeIcons.heart , color: ( widget.post.likes!.where((element) => element.user_id == user_id).isEmpty  ? MyColors.unSelectedColor : MyColors.primaryColor),  size:30.0),
+                                          IconButton( icon:Icon(FontAwesomeIcons.heart , color: ( widget.post.likes!.where((element) => element.user_id == user_id).isEmpty  ? MyColors.unSelectedColor : MyColors.primaryColor),  size:25.0) , onPressed: () {  },),
                                           SizedBox(width: 5.0,),
                                           Text(widget.post.likes_count.toString() , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 14.0),)
                                         ],
-                                      )
+                                      ),
                                       //
                                     ],
                                   ),
@@ -204,8 +205,17 @@ class _PostScreenState extends State<PostScreen> {
                             child: Container(
                               child: TabBarView(
                                 children: [
-                                  ListView.separated( itemBuilder: (ctx , index) => likesListItem(index), separatorBuilder: (ctx , index) => separatorBuilder(), itemCount: widget.post.likes!.length),
-                                  ListView.separated( itemBuilder: (ctx , index) => likesListItem(index), separatorBuilder: (ctx , index) => separatorBuilder(), itemCount: widget.post.likes!.length),
+                                  widget.post.comments!.length > 0 ?
+                                  ListView.separated( itemBuilder: (ctx , index) => commentListItem(index), separatorBuilder: (ctx , index) => separatorBuilder(), itemCount: widget.post.comments!.length)
+                                  : const Center(
+                                    child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0, ),
+                                  ),
+
+                                  widget.post.likes!.length > 0 ?
+                                  ListView.separated( itemBuilder: (ctx , index) => likesListItem(index), separatorBuilder: (ctx , index) => separatorBuilder(), itemCount: widget.post.likes!.length)
+                                      : const Center(
+                                    child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0, ),
+                                  ),
                                 ],
                               ),
                             ),
@@ -242,16 +252,16 @@ class _PostScreenState extends State<PostScreen> {
                             Expanded(
                                 child: Container(
                                     height: 50.0,
-                                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                     decoration: BoxDecoration(
                                         color: MyColors.lightUnSelectedColor,
                                         borderRadius: BorderRadius.circular(15.0)),
                                     child: TextField(
                                       controller: contentTxt,
                                       cursorColor: MyColors.whiteColor ,
-                                      style: TextStyle(color: Colors.white),
+                                      style: const TextStyle(color: Colors.white),
                                       decoration: InputDecoration(
-                                        focusedBorder: OutlineInputBorder(
+                                        focusedBorder: const OutlineInputBorder(
                                             borderSide: BorderSide(
                                                 width: 3,
                                                 color: Colors
@@ -260,7 +270,7 @@ class _PostScreenState extends State<PostScreen> {
                                         labelText: "Please be Friendly !",
                                         labelStyle: TextStyle(color: MyColors.whiteColor),
                                         enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
+                                          borderSide: const BorderSide(
                                               width: 3,
                                               color: Colors
                                                   .transparent), //<-- SEE HERE
@@ -427,12 +437,162 @@ class _PostScreenState extends State<PostScreen> {
         ),
       );
 
+  Widget commentListItem(index) => Container(
+    padding: EdgeInsets.all(20.0),
+    child: Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            CircleAvatar(
+              backgroundColor: widget.post.comments?[index].gender == 0
+                  ? MyColors.blueColor
+                  : MyColors.pinkColor,
+              backgroundImage: widget.post.comments?[index].user_img != ""
+                  ? NetworkImage(
+                  '${ASSETSBASEURL}AppUsers/${widget.post.comments?[index].user_img}')
+                  : null,
+              radius: 25,
+              child: widget.post.comments?[index].user_img == ""
+                  ? Text(
+                widget.post.comments![index].user_name
+                    .toUpperCase()
+                    .substring(0, 1) +
+                    (widget.post.comments![index].user_name.contains(" ")
+                        ? widget.post.comments![index].user_name
+                        .substring(widget
+                        .post.comments![index].user_name
+                        .indexOf(" "))
+                        .toUpperCase()
+                        .substring(1, 2)
+                        : ""),
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 24.0,
+                    fontWeight: FontWeight.bold),
+              )
+                  : null,
+            ),
+            SizedBox(
+              width: 10.0,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.post.comments![index].user_name,
+                      style: TextStyle(
+                          color: MyColors.whiteColor, fontSize: 15.0),
+                    ),
+                    const SizedBox(
+                      width: 5.0,
+                    ),
+                    CircleAvatar(
+                      backgroundColor: widget.post.comments?[index].gender == 0
+                          ? MyColors.blueColor
+                          : MyColors.pinkColor,
+                      radius: 10.0,
+                      child: widget.post.comments?[index].gender == 0
+                          ? const Icon(
+                        Icons.male,
+                        color: Colors.white,
+                        size: 15.0,
+                      )
+                          : const Icon(
+                        Icons.female,
+                        color: Colors.white,
+                        size: 15.0,
+                      ),
+                    )
+                  ],
+                ),
+                Text(
+                  'ID:${widget.post.comments![index].user_tag}',
+                  style: TextStyle(
+                      color: MyColors.unSelectedColor, fontSize: 13.0),
+                )
+              ],
+            ),
+            Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {},
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0, vertical: 5.0),
+                        decoration: BoxDecoration(
+                            border: Border.all(
+                                color: MyColors.primaryColor, width: 1.0),
+                            borderRadius: BorderRadius.circular(15.0),
+                            color: Colors.transparent),
+                        child: Text(
+                          "Follow",
+                          style: TextStyle(color: MyColors.primaryColor),
+                        ),
+                      ),
+                    ),
+                  ],
+                ))
+          ],
+        ),
+        const SizedBox(
+          height: 10.0,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 60.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(widget.post.comments![index].content , style: TextStyle(color: MyColors.whiteColor , fontSize: 13.0),),
+            ],
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Icon(FontAwesomeIcons.clock , color: MyColors.unSelectedColor , size: 13.0,),
+              SizedBox(width: 5.0,),
+              Text(widget.post.comments![index].created_at , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 11.0),),
+
+            ],
+          ),
+        ),
+        Container(
+          width: double.infinity,
+          height: 1.0,
+          color: MyColors.lightUnSelectedColor,
+          child: const Text(""),
+          margin: EdgeInsets.symmetric(horizontal: 10.0),
+        )
+      ],
+    ),
+  );
+
   Widget separatorBuilder() => SizedBox(
         height: 10.0,
       );
 
   AddPost() async{
     List <Comment> res = await PostServices().addComment(widget.post.id, user_id, contentTxt.text);
+    print(res);
+    FocusScope.of(context).unfocus();
+    contentTxt.text = "" ;
+    Fluttertoast.showToast(
+        msg: "Your comment Sent Successfully!",
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black26,
+        textColor: Colors.orange,
+        fontSize: 16.0
+    );
     setState(() {
 
     });

@@ -2,12 +2,14 @@ import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
+import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Banner.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Country.dart';
 import 'package:clubchat/models/FestivalBanner.dart';
 import 'package:clubchat/modules/Search_Screen/SearchScreen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/BannerServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/network/remote/CountryService.dart';
@@ -65,6 +67,8 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    AppUser? user =  AppUserServices().userGetter();
+    print(user?.id);
     getBanners();
   }
   @override

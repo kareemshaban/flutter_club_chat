@@ -1,7 +1,12 @@
 
+import 'package:clubchat/layout/tabs_screen.dart';
+import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/modules/Home/Home_Screen.dart';
 import 'package:clubchat/modules/Login/LoginScreen.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -18,15 +23,41 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
+   Widget startPage  = LoginScreen();
   void initState() {
     super.initState();
     intialize();
 
   }
   void intialize() async {
-    await Future.delayed(Duration(seconds: 2));
-    FlutterNativeSplash.remove();
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int id = await prefs.getInt('userId') ?? 0;
+    if(id == 0){
+      setState(() {
+        startPage = LoginScreen();
+      });
+    } else {
+      setState(() {
+        startPage = TabsScreen();
+      });
+
+    }
+
+     AppUser? user = await AppUserServices().getUser(id);
+     if(user != null){
+       setState(() {
+         AppUserServices().userSetter(user);
+         startPage = TabsScreen();
+       });
+       FlutterNativeSplash.remove();
+     } else {
+       setState(() {
+         startPage = LoginScreen();
+       });
+       FlutterNativeSplash.remove();
+     }
+
+
   }
   // FlutterNativeSplash.remove();
   
@@ -40,7 +71,7 @@ class _MyAppState extends State<MyApp> {
 
       ),
       debugShowCheckedModeBanner: false,
-      home: LoginScreen(),
+      home: startPage,
     );
   }
 }

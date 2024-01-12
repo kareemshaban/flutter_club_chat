@@ -56,14 +56,14 @@ class LoginScreenState extends State<LoginScreen> {
 
   }
   void checkUserLogin() async{
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    if(prefs.getInt('userId') != null){
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => const TabsScreen()),
-      );
-    }
+    // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //
+    // if(prefs.getInt('userId') != null){
+    //   Navigator.pushReplacement(
+    //     context,
+    //     MaterialPageRoute(builder: (context) => const TabsScreen()),
+    //   );
+    // }
   }
   Future<void> _handleSignIn() async {
     try {
