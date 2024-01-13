@@ -1,13 +1,18 @@
 
+import 'dart:io';
+
 import 'package:clubchat/models/Post.dart';
 import 'package:clubchat/models/PostLike.dart';
 import 'package:clubchat/models/PostReport.dart';
 import 'package:clubchat/models/Comment.dart';
+import 'package:clubchat/models/Tag.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:clubchat/shared/components/Constants.dart';
+import 'package:path/path.dart';
+import 'package:async/async.dart';
 
 class PostServices {
 
@@ -16,12 +21,14 @@ class PostServices {
     List<Post> posts = [];
     List<PostLike> likes = [];
     List<PostReport> reports = [];
+    List<Comment> comments = [];
     if (res.statusCode == 200) {
       final Map resonse = json.decode(res.body);
       for (var i = 0; i < resonse['posts'].length; i ++) {
         Post post = Post.fromJson(resonse['posts'][i]);
         likes = [];
         reports = [] ;
+        comments = [] ;
         for (var j = 0; j < resonse['likes'].length; j ++) {
           if (resonse['likes'][j]['post_id'] == post.id) {
             PostLike like = PostLike.fromJson(resonse['likes'][j]);
@@ -34,9 +41,16 @@ class PostServices {
             reports.add(report);
           }
         }
+        for (var c = 0; c < resonse['comments'].length; c ++) {
+          if (resonse['comments'][c]['post_id'] == post.id) {
+            Comment comment = Comment.fromJson(resonse['comments'][c]);
+            comments.add(comment);
+          }
+        }
 
         post.likes = likes;
         post.reports = reports ;
+        post.comments = comments ;
 
         posts.add(post);
       }
@@ -55,9 +69,11 @@ class PostServices {
     List<Post> posts = [];
     List<PostLike> likes = [];
     List<PostReport> reports = [];
-
+    print(post_id  );
+    print(user_id  );
     if (res.statusCode == 200) {
       final Map resonse = json.decode(res.body);
+
       for (var i = 0; i < resonse['posts'].length; i ++) {
         Post post = Post.fromJson(resonse['posts'][i]);
         likes = [];
@@ -172,6 +188,10 @@ class PostServices {
   }
 
   Future<List<Comment>> addComment( post_id , user_id , content) async {
+    print(post_id);
+    print(user_id);
+    print(content);
+
     List<Comment> comments = [] ;
     var res = await http.post(
       Uri.parse('${BASEURL}Comments/addComment'),
@@ -179,11 +199,12 @@ class PostServices {
         'Content-Type': 'application/json; charset=UTF-8',
       },
       body: jsonEncode(<String, String>{
-        'post_id': post_id,
-        'user_id': user_id  ,
-        'content': content  ,
+        'post_id': post_id.toString(),
+        'user_id': user_id.toString()  ,
+        'content': content.toString()  ,
       }),
     );
+    print(res);
     if (res.statusCode == 200) {
       final Map resonse = json.decode(res.body);
       for (var i = 0; i < resonse['comments'].length; i ++) {
@@ -196,5 +217,50 @@ class PostServices {
       throw Exception('Failed to load post');
     }
   }
+  Future<List<Tag>> getAllTags() async {
+    final response = await http.get(Uri.parse('${BASEURL}posts/tags/all'));
+    List<Tag> tags  = [];
+
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      for( var i = 0 ; i < jsonData['tags'].length ; i ++ ){
+        Tag tag = Tag.fromJson(jsonData['tags'][i]);
+        tags.add(tag);
+      }
+      return tags ;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load tags');
+    }
+
+  }
+
+
+  AddPost(File? imageFile , content , user_id , tag_id) async {
+    var stream = new http.ByteStream(DelegatingStream.typed(imageFile!.openRead()));
+    var length = await imageFile.length();
+
+    var uri = Uri.parse(BASEURL+'posts/add');
+
+    var request = new http.MultipartRequest("POST", uri);
+    var multipartFile = new http.MultipartFile('img', stream, length,
+        filename: basename(imageFile.path));
+    //contentType: new MediaType('image', 'png'));
+
+    request.files.add(multipartFile);
+    request.fields.addAll(<String, String>{
+      'content': content,
+      'user_id': user_id.toString() ,
+      'auth': "0"  ,
+      'tag_id': tag_id.toString()
+    });
+    var response = await request.send();
+    print(response.statusCode);
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
+  }
+
 
 }

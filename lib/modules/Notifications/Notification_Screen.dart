@@ -1,6 +1,14 @@
+import 'package:clubchat/helpers/NotificationHelper.dart';
+import 'package:clubchat/models/Announcement.dart';
+import 'package:clubchat/shared/components/Constants.dart';
+import 'package:clubchat/shared/network/remote/NotificationServices.dart';
+import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:clubchat/models/Notification.dart';
 
 class NotificationScreen extends StatefulWidget {
+
   const NotificationScreen({super.key});
 
   @override
@@ -8,8 +16,182 @@ class NotificationScreen extends StatefulWidget {
 }
 
 class NotificationScreenState extends State<NotificationScreen> {
+  List<UserNotification> notifications = [] ;
+  List<Announcement> announcements = [] ;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getAllNotifications();
+  }
+  getAllNotifications() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    int id = await prefs.getInt('userId') ?? 0;
+    NotificationHelper  res = await NotificationServices().getAllNotifications(id);
+   setState(() {
+     notifications = res.notifications! ;
+     announcements = res.announcements! ;
+     print(notifications[0].id);
+   });
+
+  }
   @override
   Widget build(BuildContext context) {
-    return const Placeholder();
+    return  DefaultTabController(
+      length: 5,
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: IconThemeData(
+            color: MyColors.whiteColor, //change your color here
+          ),
+          backgroundColor: MyColors.solidDarkColor,
+          title: TabBar(
+          dividerColor: Colors.transparent,
+          tabAlignment: TabAlignment.start,
+          isScrollable: true ,
+          indicatorColor: MyColors.primaryColor,
+          labelColor: MyColors.primaryColor,
+          unselectedLabelColor: MyColors.unSelectedColor,
+          labelStyle: const TextStyle(fontSize: 17.0 , fontWeight: FontWeight.w900),
+
+          tabs: const [
+            Tab(child: Text("Moments" , style: TextStyle(fontSize: 15.0),), ),
+            Tab(child: Text("Profile" , style: TextStyle(fontSize: 15.0),), ),
+            Tab(child: Text("Charging" , style: TextStyle(fontSize: 15.0),), ),
+            Tab(child: Text("System" , style: TextStyle(fontSize: 15.0),), ),
+            Tab(child: Text("Announcement" , style: TextStyle(fontSize: 15.0),), ),
+          ],
+        ) ,
+        ),
+        body: Container(
+          color: MyColors.darkColor,
+          width: double.infinity,
+          padding: const EdgeInsets.all(20.0),
+         child: TabBarView(
+             children:[
+               Column(
+                 children: [
+                   Expanded(child: ListView.separated(itemBuilder:(ctx , index) => notificationsListItem(index , notifications.where((element) => element.type == "MOMENTS").toList() , 'MOMENTS'), separatorBuilder:(ctx , index) => listSeperator(), itemCount: notifications.where((element) => element.type == "MOMENTS").toList().length)),
+
+                 ],
+               ),
+               Column(
+                 children: [
+                   Expanded(child: ListView.separated(itemBuilder:(ctx , index) => notificationsListItem(index , notifications.where((element) => element.type == "PROFILE").toList() , 'PROFILE'), separatorBuilder:(ctx , index) => listSeperator(), itemCount: notifications.where((element) => element.type == "PROFILE").toList().length)),
+
+                 ],
+               ),
+               Column(
+                 children: [
+                   Expanded(child: ListView.separated(itemBuilder:(ctx , index) => notificationsListItem(index , notifications.where((element) => element.type == "CHARGING").toList() , 'CHARGING'), separatorBuilder:(ctx , index) => listSeperator(), itemCount: notifications.where((element) => element.type == "CHARGING").toList().length)),
+
+                 ],
+               ),
+               Column(
+                 children: [
+                   Expanded(child: ListView.separated(itemBuilder:(ctx , index) => notificationsListItem(index , notifications.where((element) => element.type == "SYSTEM").toList() , 'SYSTEM'), separatorBuilder:(ctx , index) => listSeperator(), itemCount: notifications.where((element) => element.type == "SYSTEM").toList().length)),
+
+                 ],
+               ),
+               Column(
+                 children: [
+                   Expanded(child: ListView.separated(itemBuilder:(ctx , index) => announcementListItem(index ), separatorBuilder:(ctx , index) => listSeperator(), itemCount: announcements.length)),
+                 ],
+               )
+
+             ]
+         )
+        ),
+      ),
+    );
   }
+  Widget notificationsListItem (index , list , key) => Container(
+    padding: EdgeInsets.all(8.0),
+    decoration: BoxDecoration(color: list[index].isRead == 0 ? Colors.black38  : Colors.transparent,  borderRadius: BorderRadius.circular(10.0)),
+    child:Row(
+      children: [
+        Column(
+          children: [
+            CircleAvatar(
+              backgroundColor: list[index].action_user_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+              backgroundImage: list[index].action_user_img != ""  ? NetworkImage('${ASSETSBASEURL}AppUsers/${list[index].action_user_img}') : null,
+              radius: 22,
+              child: list[index].action_user_img == "" ?
+              Text(list[index].action_user_name.toUpperCase().substring(0 , 1) +
+                  (list[index].action_user_name.contains(" ") ? list[index].action_user_name.substring(list[index].action_user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+            )
+          ],
+        ),
+        SizedBox(width: 10.0,),
+        Expanded(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(list[index].title  , style: TextStyle(color: Colors.white, fontSize: 15.0 , fontWeight: FontWeight.bold),),
+                ],
+              ),
+
+              SizedBox(height: 5.0,),
+              Row(
+                children: [
+                  Text(list[index].content , style: TextStyle(color: Colors.grey , fontSize: 13.0 ),),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(list[index].created_at , style: TextStyle(color: Colors.grey , fontSize: 13.0 ),),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
+    )
+    ,);
+
+  Widget announcementListItem(index) =>   Container(
+    padding: EdgeInsets.all(8.0),
+    decoration: BoxDecoration(color:  Colors.black38  ,  borderRadius: BorderRadius.circular(10.0)),
+    child:Row(
+      children: [
+        Column(
+          children: [
+            CircleAvatar(
+              backgroundImage:  AssetImage('assets/images/logo.jpg') ,
+              radius: 22,
+            )
+          ],
+        ),
+        SizedBox(width: 10.0,),
+        Expanded(
+          child: Column(
+            children: [
+              Row(
+                children: [
+                  Text(announcements[index].title  , style: TextStyle(color: Colors.white, fontSize: 15.0 , fontWeight: FontWeight.bold),),
+                ],
+              ),
+
+              SizedBox(height: 5.0,),
+              Row(
+                children: [
+                  Text(announcements[index].message , style: TextStyle(color: Colors.grey , fontSize: 13.0 ),),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Text(DateTime.parse(announcements[index].created_at ).toString() , style: TextStyle(color: Colors.grey , fontSize: 13.0 ),),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
+    )
+    ,);
+  Widget listSeperator() => SizedBox(height: 5.0,);
 }

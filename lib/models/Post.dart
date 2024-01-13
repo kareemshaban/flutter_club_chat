@@ -1,3 +1,4 @@
+import 'package:clubchat/models/Comment.dart';
 import 'package:clubchat/models/PostLike.dart';
 import 'package:clubchat/models/PostReport.dart';
 
@@ -21,9 +22,10 @@ class Post {
   final int comments_count ;
   List<PostLike>? likes = [];
   List<PostReport>? reports = [];
+  List<Comment>? comments = [];
   Post( {required this.id, required this.content, required this.user_id, required this.img, required this.auth, required this.accepted, required this.created_at,
     required this.user_name, required this.user_tag, required this.gender, required this.user_img, required this.share_level_img, required this.karizma_level_img,
-    required this.charging_level_img, required this.tag , required this.likes_count , required this.comments_count ,  this.likes , this.reports});
+    required this.charging_level_img, required this.tag , required this.likes_count , required this.comments_count ,  this.likes , this.reports , this.comments});
 
   factory Post.fromJson(Map<String, dynamic> json) {
     return switch (json) {

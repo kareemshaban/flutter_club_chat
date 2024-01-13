@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/Follower.dart';
+import 'package:clubchat/models/Friends.dart';
+import 'package:clubchat/models/Visitor.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get_ip_address/get_ip_address.dart';
@@ -8,6 +11,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class AppUserServices {
+  static AppUser? user  ;
+  userSetter(AppUser u){
+     user = u ;
+  }
+  AppUser? userGetter(){
+    return user ;
+  }
+
 
   Future<http.Response> createAccount( name , register_with ,img,  phone , email  ,  password) async {
     String deviceId = await getId() ?? "";
@@ -80,6 +91,54 @@ class AppUserServices {
 
   }
 
+
+  Future<AppUser?> getUser(id) async {
+    final response = await http.get(Uri.parse('${BASEURL}Account/GetUser/${id}'));
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+            Follower like = Follower.fromJson(jsonData['followers'][j]);
+            followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
 
 
 }
