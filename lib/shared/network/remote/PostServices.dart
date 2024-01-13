@@ -1,4 +1,6 @@
 
+import 'dart:io';
+
 import 'package:clubchat/models/Post.dart';
 import 'package:clubchat/models/PostLike.dart';
 import 'package:clubchat/models/PostReport.dart';
@@ -9,6 +11,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:clubchat/shared/components/Constants.dart';
+import 'package:path/path.dart';
+import 'package:async/async.dart';
 
 class PostServices {
 
@@ -65,9 +69,11 @@ class PostServices {
     List<Post> posts = [];
     List<PostLike> likes = [];
     List<PostReport> reports = [];
-
+    print(post_id  );
+    print(user_id  );
     if (res.statusCode == 200) {
       final Map resonse = json.decode(res.body);
+
       for (var i = 0; i < resonse['posts'].length; i ++) {
         Post post = Post.fromJson(resonse['posts'][i]);
         likes = [];
@@ -230,6 +236,31 @@ class PostServices {
 
   }
 
+
+  AddPost(File? imageFile , content , user_id , tag_id) async {
+    var stream = new http.ByteStream(DelegatingStream.typed(imageFile!.openRead()));
+    var length = await imageFile.length();
+
+    var uri = Uri.parse(BASEURL+'posts/add');
+
+    var request = new http.MultipartRequest("POST", uri);
+    var multipartFile = new http.MultipartFile('img', stream, length,
+        filename: basename(imageFile.path));
+    //contentType: new MediaType('image', 'png'));
+
+    request.files.add(multipartFile);
+    request.fields.addAll(<String, String>{
+      'content': content,
+      'user_id': user_id.toString() ,
+      'auth': "0"  ,
+      'tag_id': tag_id.toString()
+    });
+    var response = await request.send();
+    print(response.statusCode);
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
+  }
 
 
 }
