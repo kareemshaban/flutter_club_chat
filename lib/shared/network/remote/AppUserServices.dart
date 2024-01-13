@@ -1,6 +1,9 @@
 import 'dart:io';
 
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/Follower.dart';
+import 'package:clubchat/models/Friends.dart';
+import 'package:clubchat/models/Visitor.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get_ip_address/get_ip_address.dart';
@@ -95,6 +98,35 @@ class AppUserServices {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
         AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+            Follower like = Follower.fromJson(jsonData['followers'][j]);
+            followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+
         return  user;
       } else {
         return null ;
