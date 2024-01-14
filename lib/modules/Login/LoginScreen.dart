@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:clubchat/layout/tabs_screen.dart';
+import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:flutter/material.dart';
@@ -68,30 +69,29 @@ class LoginScreenState extends State<LoginScreen> {
   Future<void> _handleSignIn() async {
     try {
     // await   _googleSignIn.disconnect();
-      await _googleSignIn.signIn();
-     var res = await AppUserServices().createAccount(_googleSignIn.currentUser?.displayName , 'GOOGLE' ,
+     var googleREs = await _googleSignIn.signIn();
+      print(googleREs ) ;
+     AppUser? user = await AppUserServices().createAccount(_googleSignIn.currentUser?.displayName , 'GOOGLE' ,
        _googleSignIn.currentUser?.photoUrl ?? "" , "" , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.id );
-       final Map resonse = json.decode(res.body);
+     if(user!.id > 0){
+       Fluttertoast.showToast(
+           msg: 'Welcome To Club Chat !',
+           toastLength: Toast.LENGTH_SHORT,
+           gravity: ToastGravity.CENTER,
+           timeInSecForIosWeb: 1,
+           backgroundColor: Colors.black26,
+           textColor: Colors.orange,
+           fontSize: 16.0
+       );
+       final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-      //print( resonse['state']);
-      if(resonse['state'] == 'success'){
-        Fluttertoast.showToast(
-            msg: resonse['message'],
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.black26,
-            textColor: Colors.orange,
-            fontSize: 16.0
-        );
-        final SharedPreferences prefs = await SharedPreferences.getInstance();
-        print(resonse['user']['id']);
-        await prefs.setInt('userId', resonse['user']['id']);
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const TabsScreen()),
-        );
-      }
+       await prefs.setInt('userId', user.id);
+       AppUserServices().userSetter(user);
+       Navigator.pushReplacement(
+         context,
+         MaterialPageRoute(builder: (context) => const TabsScreen()),
+       );
+     }
 
     } catch (error) {
       print(error);

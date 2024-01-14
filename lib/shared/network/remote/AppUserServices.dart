@@ -20,11 +20,12 @@ class AppUserServices {
   }
 
 
-  Future<http.Response> createAccount( name , register_with ,img,  phone , email  ,  password) async {
+  Future<AppUser?> createAccount( name , register_with ,img,  phone , email  ,  password) async {
+    AppUser? user = null ;
     String deviceId = await getId() ?? "";
     var data = await getIpAddress() ;
     var ipAddress = data['ip'] ?? "" ;
-    return http.post(
+    var response = await http.post(
       Uri.parse('${BASEURL}Account/Create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -41,6 +42,49 @@ class AppUserServices {
         'deviceId': deviceId
       }),
     );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
   }
 
   dynamic getIpAddress() async {
