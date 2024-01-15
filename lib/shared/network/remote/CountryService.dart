@@ -5,7 +5,13 @@ import 'package:clubchat/shared/components/Constants.dart';
 import 'package:http/http.dart' as http;
 
 class CountryService {
-
+  static List<Country> countries = [] ;
+  countrySetter( List<Country> u){
+    countries = u ;
+  }
+  List<Country> countryGetter(){
+    return countries ;
+  }
   Future<List<Country>> getAllCountries() async {
     final response = await http.get(Uri.parse('${BASEURL}Countries/getAll'));
     List<Country> countries  = [];

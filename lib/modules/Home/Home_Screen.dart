@@ -50,6 +50,7 @@ class HomeScreenState extends State<HomeScreen> {
      List<Country> res2 = await CountryService().getAllCountries();
     setState(() {
       countries = res2 ;
+      CountryService().countrySetter(countries);
     });
     List<ChatRoom> res3 = await ChatRoomService().getAllChatRooms();
     setState(() {
