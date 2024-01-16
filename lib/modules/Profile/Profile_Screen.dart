@@ -1,4 +1,5 @@
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/modules/AddStatus/Add_Status_Screen.dart';
 import 'package:clubchat/modules/EditProfile/Edit_Profile_Screen.dart';
 import 'package:clubchat/modules/Followers/Followers_Screen.dart';
 import 'package:clubchat/modules/FollowingScreen/Following_Screen.dart';
@@ -8,6 +9,7 @@ import 'package:clubchat/modules/InnerProfile/Inner_Profile_Screen.dart';
 import 'package:clubchat/modules/Level/Level_Screen.dart';
 import 'package:clubchat/modules/Mall/Mall_Screen.dart';
 import 'package:clubchat/modules/Room/Room_Screen.dart';
+import 'package:clubchat/modules/Setting/Setting_Screen.dart';
 import 'package:clubchat/modules/VIP/Vip_Screen.dart';
 import 'package:clubchat/modules/VisitorsScreen/Visitors_Screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
@@ -384,20 +386,26 @@ class ProfileScreenState extends State<ProfileScreen> {
                       height: 1.0,
                       color: MyColors.darkColor.withAlpha(120),
                     ),
-                    Row(
-                      children: [
-                        Image(image: AssetImage('assets/images/Status.png') , width: 40.0, height: 40.5,),
-                        SizedBox(width: 10.0,),
-                        Text("My Status" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
-                            ],
-                          ),
-                        )
-                      ],
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => const AddStatusScreen()));
+                      },
+                      child: Row(
+                        children: [
+                          Image(image: AssetImage('assets/images/Status.png') , width: 40.0, height: 40.5,),
+                          SizedBox(width: 10.0,),
+                          Text("My Status" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                     Container(
                       margin: EdgeInsetsDirectional.only(start: 50.0 , end: 10.0),
@@ -494,20 +502,23 @@ class ProfileScreenState extends State<ProfileScreen> {
                       height: 1.0,
                       color: MyColors.darkColor.withAlpha(120),
                     ),
-                    Row(
-                      children: [
-                        Image(image: AssetImage('assets/images/SETTING.png') , width: 40.0, height: 40.5,),
-                        SizedBox(width: 10.0,),
-                        Text("Privacy Policy" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
-                            ],
-                          ),
-                        )
-                      ],
+                    GestureDetector(
+
+                      child: Row(
+                        children: [
+                          Image(image: AssetImage('assets/images/Userpolicy.png') , width: 40.0, height: 40.5,),
+                          SizedBox(width: 10.0,),
+                          Text("Privacy Policy" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),
@@ -520,20 +531,26 @@ class ProfileScreenState extends State<ProfileScreen> {
                 padding: EdgeInsets.all(10.0),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                        Image(image: AssetImage('assets/images/SETTING.png') , width: 40.0, height: 40.5,),
-                        SizedBox(width: 10.0,),
-                        Text("Account Settings" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
-                            ],
-                          ),
-                        )
-                      ],
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => const SettingScreen()));
+                      },
+                      child: Row(
+                        children: [
+                          Image(image: AssetImage('assets/images/SETTING.png') , width: 40.0, height: 40.5,),
+                          SizedBox(width: 10.0,),
+                          Text("Account Settings" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ],
                 ),

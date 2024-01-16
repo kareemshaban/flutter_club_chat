@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
 import 'package:clubchat/models/Tag.dart';
@@ -342,7 +344,6 @@ class AppUserServices {
     }
 
   }
-
   Future<AppUser?> updateCountry(user_id , country  ) async {
     AppUser? user = null ;
     var response = await http.post(
@@ -405,7 +406,6 @@ class AppUserServices {
     }
 
   }
-
   Future<AppUser?> updateBirthdate(user_id , birth_date  ) async {
     AppUser? user = null ;
     var response = await http.post(
@@ -468,7 +468,6 @@ class AppUserServices {
     }
 
   }
-
   Future<AppUser?> updateStatus(user_id , status  ) async {
     AppUser? user = null ;
     var response = await http.post(
@@ -531,7 +530,6 @@ class AppUserServices {
     }
 
   }
-
   Future<AppUser?> updateProfileImg(user_id , File? imageFile   ) async {
 
     var stream = new http.ByteStream(DelegatingStream.typed(imageFile!.openRead()));
@@ -577,5 +575,30 @@ class AppUserServices {
       print(value);
     });
 
+  }
+
+  Future<DesignGiftHelper> getMyDesigns(id) async {
+    final response = await http.get(Uri.parse('${BASEURL}Account/designs/all/${id}'));
+    List<Design> designs  = [];
+    List<Design> gifts  = [];
+    DesignGiftHelper designGiftHelper = DesignGiftHelper(designs: designs , gifts:gifts );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      for( var i = 0 ; i < jsonData['designs'].length ; i ++ ){
+        Design design = Design.fromJson(jsonData['designs'][i]);
+        designs.add(design);
+      }
+      for( var i = 0 ; i < jsonData['gifts'].length ; i ++ ){
+        Design gift = Design.fromJson(jsonData['gifts'][i]);
+        gifts.add(gift);
+      }
+      designGiftHelper.designs = designs ;
+      designGiftHelper.gifts = gifts ;
+      return designGiftHelper ;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load tags');
+    }
   }
 }
