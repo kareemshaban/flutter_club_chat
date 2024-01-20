@@ -1,4 +1,6 @@
+import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/modules/AddStatus/Add_Status_Screen.dart';
 import 'package:clubchat/modules/EditProfile/Edit_Profile_Screen.dart';
 import 'package:clubchat/modules/Followers/Followers_Screen.dart';
@@ -8,6 +10,9 @@ import 'package:clubchat/modules/Gifts/Gifts_Screen.dart';
 import 'package:clubchat/modules/InnerProfile/Inner_Profile_Screen.dart';
 import 'package:clubchat/modules/Level/Level_Screen.dart';
 import 'package:clubchat/modules/Mall/Mall_Screen.dart';
+import 'package:clubchat/modules/MyGifts/My_Gifts_Screen.dart';
+import 'package:clubchat/modules/MyLevel/My_Level_Screen.dart';
+import 'package:clubchat/modules/MyPosts/My_Posts_Screen.dart';
 import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/modules/Setting/Setting_Screen.dart';
 import 'package:clubchat/modules/VIP/Vip_Screen.dart';
@@ -19,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
+import 'package:svgaplayer_flutter/player.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -28,7 +34,33 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class ProfileScreenState extends State<ProfileScreen> {
-  AppUser? user = AppUserServices().userGetter();
+  AppUser? user ;
+  List<Design> designs = [] ;
+  String frame = "" ;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      user = AppUserServices().userGetter();
+    });
+    getMyDesigns();
+
+  }
+  getMyDesigns() async{
+    DesignGiftHelper _helper =  await AppUserServices().getMyDesigns(user!.id);
+    setState(() {
+      designs = _helper.designs! ;
+    });
+    if(designs.where((element) => (element.category_id == 4 && element.isDefault == 1)).toList().length > 0){
+      String icon = designs.where((element) => (element.category_id == 4 && element.isDefault == 1)).toList()[0].motion_icon ;
+
+      setState(() {
+        frame = ASSETSBASEURL + 'Designs/Motion/' + icon +'?raw=true' ;
+        print(frame);
+       });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -40,32 +72,40 @@ class ProfileScreenState extends State<ProfileScreen> {
           title: Row(
             children: [
               SizedBox(width: 10.0,),
+
               Stack(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.center,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                    backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
-                    radius: 30,
-                    child: user?.img== "" ?
-                    Text(user!.name.toUpperCase().substring(0 , 1) +
-                        (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                      style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                  Stack(
+                    alignment: Alignment.bottomCenter,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                        backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
+                        radius: 30,
+                        child: user?.img== "" ?
+                        Text(user!.name.toUpperCase().substring(0 , 1) +
+                            (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                          style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                      ),
+                      GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx) => const EditProfileScreen()));
+                        },
+                        child: CircleAvatar(
+                          radius: 12.0,
+                          backgroundColor: Colors.black54 ,
+                          child: Icon(Icons.edit_outlined ,color: Colors.white, size: 15,),
+                        ),
+                      )
+                    ],
                   ),
-                  GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => const EditProfileScreen()));
-                    },
-                    child: CircleAvatar(
-                      radius: 12.0,
-                      backgroundColor: Colors.black54 ,
-                      child: Icon(Icons.edit_outlined ,color: Colors.white, size: 15,),
-                    ),
-                  )
+                  Container(height: 80.0, width: 80.0, child: frame != "" ? SVGASimpleImage(   resUrl: frame) : null),
                 ],
               ),
-              SizedBox(width: 25.0,),
+
+              SizedBox(width: 10.0,),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -121,7 +161,7 @@ class ProfileScreenState extends State<ProfileScreen> {
           ),
           actions: [
             IconButton(onPressed: (){
-              Navigator.push(context, MaterialPageRoute(builder: (ctx) => const InnerProfileScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (ctx) => const InnerProfileScreen(visitor_id: 0)));
             }, icon:Icon( Icons.arrow_forward_ios , color: MyColors.unSelectedColor , size: 25.0,))
           ],
         ),
@@ -328,30 +368,48 @@ class ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ),
                     Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image(image: AssetImage('assets/images/mall.png') , width: 45.0,),
-                          Text("Mall" , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 ),)
-                        ],
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx) => const MallScreen()));
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image(image: AssetImage('assets/images/mall.png') , width: 45.0,),
+                            Text("Mall" , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 ),)
+                          ],
+                        ),
                       ),
                     ),
                     Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image(image: AssetImage('assets/images/gIFT.png') , width: 45.0,),
-                          Text("Gifts" , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 ),)
-                        ],
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx) => const MyGiftsScreen()));
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image(image: AssetImage('assets/images/gIFT.png') , width: 45.0,),
+                            Text("Gifts" , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 ),)
+                          ],
+                        ),
                       ),
                     ),
                     Expanded(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Image(image: AssetImage('assets/images/LV.png') , width: 45.0,),
-                          Text("Level" , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 ),)
-                        ],
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: (){
+                          Navigator.push(context, MaterialPageRoute(builder: (ctx) => const MyLevelScreen()));
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Image(image: AssetImage('assets/images/LV.png') , width: 45.0,),
+                            Text("Level" , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 ),)
+                          ],
+                        ),
                       ),
                     ),
                   ],
@@ -365,20 +423,26 @@ class ProfileScreenState extends State<ProfileScreen> {
                 padding: EdgeInsets.all(10.0),
                 child: Column(
                   children: [
-                    Row(
-                      children: [
-                         Image(image: AssetImage('assets/images/POST.png') , width: 40.0, height: 40.5,),
-                         SizedBox(width: 10.0,),
-                         Text("My Posts" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
-                         Expanded(
-                           child: Column(
-                             crossAxisAlignment: CrossAxisAlignment.end,
-                             children: [
-                               Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
-                             ],
-                           ),
-                         )
-                      ],
+                    GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (ctx) => const MyPostsScreen()));
+                      },
+                      child: Row(
+                        children: [
+                           Image(image: AssetImage('assets/images/POST.png') , width: 40.0, height: 40.5,),
+                           SizedBox(width: 10.0,),
+                           Text("My Posts" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+                           Expanded(
+                             child: Column(
+                               crossAxisAlignment: CrossAxisAlignment.end,
+                               children: [
+                                 Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
+                               ],
+                             ),
+                           )
+                        ],
+                      ),
                     ),
                     Container(
                       margin: EdgeInsetsDirectional.only(start: 50.0 , end: 10.0),

@@ -11,7 +11,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 
 class InnerProfileScreen extends StatefulWidget {
-  const InnerProfileScreen({super.key});
+  final int visitor_id ;
+  const InnerProfileScreen({super.key , required this.visitor_id });
 
   @override
   State<InnerProfileScreen> createState() => _InnerProfileScreenState();
@@ -19,15 +20,18 @@ class InnerProfileScreen extends StatefulWidget {
 
 class _InnerProfileScreenState extends State<InnerProfileScreen> {
   AppUser? user ;
+  AppUser? visitor ;
+  bool? isVisitor ;
   List<Design> designs = [] ;
   List<Design> gifts = [] ;
-
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     AppUser? res = AppUserServices().userGetter();
     setState(() {
+      isVisitor = widget.visitor_id != 0 ;
+      print(isVisitor);
       user = res;
     });
     getDesigns();
@@ -96,7 +100,8 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
             ],
           ),
           actions: [
-            PopupMenuButton<int>(
+
+            isVisitor! ?  PopupMenuButton<int>(
               color: MyColors.darkColor,
               onSelected: (item) => {
 
@@ -119,7 +124,10 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                   ],
                 )),
               ],
-            )
+            ) :
+                IconButton(onPressed: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx) => const EditProfileScreen()));
+                }, icon: Icon(Icons.edit))
           ],
         ),
       ),
@@ -137,8 +145,8 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                       decoration: BoxDecoration(
                           image:  user!.cover != "" ?
                           DecorationImage( image: NetworkImage(ASSETSBASEURL + 'AppUsers/Covers/' + user!.cover), fit: BoxFit.cover) :
-                          DecorationImage( image: AssetImage('assets/images/cover.jpg'), fit: BoxFit.cover ,
-                            colorFilter:  ColorFilter.mode(Colors.black38.withAlpha(100), BlendMode.dstATop))
+                          DecorationImage( image: AssetImage('assets/images/cover.png'), fit: BoxFit.cover ,
+                            )
 
                       ),
                     ),
@@ -496,12 +504,45 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                 ),
               ),
             ),
-            Container(
-              child: Text('Your super cool Footer'),
-              color: MyColors.solidDarkColor,
+           isVisitor! ? Container(
+              color: MyColors.solidDarkColor.withAlpha(150),
               width: double.infinity,
-              height: 50.0,
-            )
+              height: 80.0,
+              padding: EdgeInsets.all(5.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Image(image: AssetImage('assets/images/add-user.png') , width: 80.0,),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Image(image: AssetImage('assets/images/message.png') , width: 80.0),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Image(image: AssetImage('assets/images/home.png') , width: 80.0),
+                      ],
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Image(image: AssetImage('assets/images/tracking.png') , width: 80.0),
+                      ],
+                    ),
+                  ),
+                  
+                ],
+              ),
+            ) : SizedBox(height: 5.0,)
           ],
         ),
       ),

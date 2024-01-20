@@ -1,4 +1,4 @@
-class Design {
+class Mall {
   final int id ;
   final int is_store ;
   final String name ;
@@ -14,17 +14,14 @@ class Design {
   final String dark_icon ;
   final int subject  ;
   final int vip_id ;
-  final String available_until ;
-  final int count ;
-  final int? isDefault ;
-  final int? design_cat ;
 
-  Design({required this.id , required this.name , required this.tag , required this.icon , required this.available_until ,
+
+  Mall({required this.id , required this.name , required this.tag , required this.icon  ,
     required this.behaviour , required this.category_id , required this.dark_icon , required this.days , required this.gift_category_id ,
-  required this.is_store , required this.motion_icon , required this.order , required this.price , required this.subject ,
-    required this.vip_id , required this.count ,  this.isDefault ,  this.design_cat});
+    required this.is_store , required this.motion_icon , required this.order , required this.price , required this.subject ,
+    required this.vip_id });
 
-  factory Design.fromJson(Map<String, dynamic> json) {
+  factory Mall.fromJson(Map<String, dynamic> json) {
     return switch (json) {
       {
       'id': int id,
@@ -42,14 +39,10 @@ class Design {
       'dark_icon': String dark_icon,
       'subject': int subject,
       'vip_id': int vip_id,
-      'available_until': String available_until,
-      'count': int count,
-       'isDefault': int isDefault,
-      'design_cat': int design_cat
 
 
       } =>
-          Design(
+          Mall(
               id: id,
               is_store: is_store,
               name: name,
@@ -65,10 +58,6 @@ class Design {
               dark_icon: dark_icon,
               subject: subject,
               vip_id: vip_id,
-              available_until: available_until,
-              count: count,
-              isDefault: isDefault,
-              design_cat: design_cat
           ),
       _ => throw const FormatException('Failed to load Country.'),
     };

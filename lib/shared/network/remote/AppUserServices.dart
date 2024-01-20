@@ -578,15 +578,18 @@ class AppUserServices {
   }
 
   Future<DesignGiftHelper> getMyDesigns(id) async {
-    final response = await http.get(Uri.parse('${BASEURL}Account/designs/all/${id}'));
+      final response = await http.get(Uri.parse('${BASEURL}Account/designs/all/${id}'));
     List<Design> designs  = [];
     List<Design> gifts  = [];
     DesignGiftHelper designGiftHelper = DesignGiftHelper(designs: designs , gifts:gifts );
     if (response.statusCode == 200) {
-      final Map jsonData = json.decode(response.body);
+        final Map jsonData = json.decode(response.body);
       for( var i = 0 ; i < jsonData['designs'].length ; i ++ ){
         Design design = Design.fromJson(jsonData['designs'][i]);
-        designs.add(design);
+        if(getRemainDays(design)){
+          designs.add(design);
+        }
+
       }
       for( var i = 0 ; i < jsonData['gifts'].length ; i ++ ){
         Design gift = Design.fromJson(jsonData['gifts'][i]);
@@ -600,5 +603,15 @@ class AppUserServices {
       // then throw an exception.
       throw Exception('Failed to load tags');
     }
+  }
+
+  bool getRemainDays(design){
+
+    final DateTime dateOne = DateTime.parse(design.available_until);
+    final DateTime dateTwo = DateTime.now() ;
+
+    final Duration duration = dateOne.difference(dateTwo);
+      print(duration.inDays );
+     return duration.inDays > -1  ;
   }
 }

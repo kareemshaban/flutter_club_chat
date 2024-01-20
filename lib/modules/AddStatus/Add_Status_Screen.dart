@@ -71,6 +71,9 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
                   ],
                 ),
               ),
+              SizedBox(height: 5.0,),
+              Text(user!.status , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 13.0),),
+
               Container(
                 width: double.infinity,
                 height: 6.0,
@@ -116,6 +119,9 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
   AddStatus() async{
     AppUser? res = await AppUserServices().updateStatus(user!.id, statusController.text);
     AppUserServices().userSetter(res!);
+    setState(() {
+      user = res;
+    });
     Fluttertoast.showToast(
         msg: "Status Updated Successfully",
         toastLength: Toast.LENGTH_SHORT,
@@ -125,6 +131,6 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
         textColor: Colors.orange,
         fontSize: 16.0
     );
-    Navigator.pop(context , true);
+  //  Navigator.pop(context , true);
   }
 }

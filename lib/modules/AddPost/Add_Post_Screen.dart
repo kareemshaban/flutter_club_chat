@@ -50,41 +50,41 @@ class AddPostScreenState extends State<AddPostScreen> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-       appBar: AppBar(
-         iconTheme: IconThemeData(
-           color: MyColors.whiteColor, //change your color here
-         ),
-         elevation: 0.0,
-         backgroundColor: MyColors.darkColor,
-         title: user != null ? Row(
-           children: [
-             CircleAvatar(
-               backgroundColor: user?.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-               backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
-               radius: 18,
-               child: user?.img == "" ?
-               Text(user!.name.toUpperCase().substring(0 , 1) +
-                   (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                 style: const TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),) : null,
-             ),
-             SizedBox(width: 5.0,),
-             Text(user!.name.length > 11 ?  user!.name.substring(0, 11)+'...' : user!.name , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0 , fontWeight: FontWeight.bold) ,)
-           ],
-         ) : SizedBox(width: 1,),
-         actions: [
-           GestureDetector(
-             onTap: () {post();},
-             child: Container(
-               decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(20.0)),
-               padding: EdgeInsets.symmetric(vertical: 10.0 , horizontal: 15.0),
-
-               child: Text("Post" , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0 , fontWeight: FontWeight.bold),),
-             ),
+         appBar: AppBar(
+           iconTheme: IconThemeData(
+             color: MyColors.whiteColor, //change your color here
            ),
-           SizedBox(width: 20.0,),
+           elevation: 0.0,
+           backgroundColor: MyColors.darkColor,
+           title: user != null ? Row(
+             children: [
+               CircleAvatar(
+                 backgroundColor: user?.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                 backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
+                 radius: 18,
+                 child: user?.img == "" ?
+                 Text(user!.name.toUpperCase().substring(0 , 1) +
+                     (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                   style: const TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),) : null,
+               ),
+               SizedBox(width: 5.0,),
+               Text(user!.name.length > 11 ?  user!.name.substring(0, 11)+'...' : user!.name , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0 , fontWeight: FontWeight.bold) ,)
+             ],
+           ) : SizedBox(width: 1,),
+           actions: [
+             GestureDetector(
+               onTap: () {post();},
+               child: Container(
+                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(20.0)),
+                 padding: EdgeInsets.symmetric(vertical: 10.0 , horizontal: 15.0),
 
-         ],
-       ),
+                 child: Text("Post" , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0 , fontWeight: FontWeight.bold),),
+               ),
+             ),
+             SizedBox(width: 20.0,),
+
+           ],
+         ),
       body: Container(
         color: MyColors.darkColor,
         height: double.infinity ,

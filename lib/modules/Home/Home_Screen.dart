@@ -96,18 +96,23 @@ class HomeScreenState extends State<HomeScreen> {
           actions:   [
 
             GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 child: const Image(
                   image: AssetImage('assets/images/chatroom_rank_ic.png') , width: 30.0, height: 30.0,),
                   onTap: (){}
             ),
             const SizedBox(width: 20.0,),
             GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 child: const Image(
                   image: AssetImage('assets/images/voice-message.png') , width: 30.0, height: 30.0,),
-                onTap: (){}
+                onTap: (){
+                  openMyRoom();
+                }
             ),
             const SizedBox(width: 20.0,),
             GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 child: const Image(
                   image: AssetImage('assets/images/search.png') , width: 30.0, height: 30.0,),
                 onTap: () =>  Navigator.push(context,  MaterialPageRoute(builder: (ctx) => const SearchScreen()))
@@ -217,7 +222,7 @@ class HomeScreenState extends State<HomeScreen> {
  Widget chatRoomListItem(room) =>  GestureDetector(
      onTap: (){openChatRoom(room);} ,
      child: Container(
-       width: MediaQuery.of(context).size.width / 2 ,
+         width: MediaQuery.of(context).size.width / 2 ,
        margin: const EdgeInsets.all(5.0),
        child: Stack(
          alignment: Alignment.topCenter,
