@@ -1,3 +1,9 @@
+import 'package:clubchat/models/Mic.dart';
+import 'package:clubchat/models/RoomAdmin.dart';
+import 'package:clubchat/models/RoomBlock.dart';
+import 'package:clubchat/models/RoomFollow.dart';
+import 'package:clubchat/models/RoomMember.dart';
+
 class ChatRoom {
   final int id ;
   final String tag ;
@@ -24,12 +30,18 @@ class ChatRoom {
   final String admin_tag ;
   final String admin_name ;
   final String admin_img ;
+  List<Mic>? mics ;
+  List<RoomMember>? members ;
+  List<RoomAdmin>? admins ;
+  List<RoomFollow>? followers ;
+  List<RoomBlock>? blockers ;
 
 
 
   ChatRoom({required this.id, required this.tag,required this.name, required this.img,required  this.state, required this.password, required this.userId, required this.subject, required this.talkers_count,
     required this.starred,required this.isBlocked,required this.blockedDate, required this.blockedUntil, required this.createdDate, required this.isTrend, required this.details, required this.micCount,
-    required this.enableMessages, required this.reportCount, required this.themeId , required this.flag , required this.admin_tag , required this.admin_name , required this .admin_img , required this.country_id});
+    required this.enableMessages, required this.reportCount, required this.themeId , required this.flag , required this.admin_tag , required this.admin_name , required this .admin_img , required this.country_id ,
+   this.members , this.followers , this.admins , this.blockers , this.mics});
 
 
   factory ChatRoom.fromJson(Map<String, dynamic> json) {

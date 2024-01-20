@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/Follower.dart';
+import 'package:clubchat/models/Friends.dart';
 import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
@@ -24,6 +26,7 @@ class AppUserServices {
   AppUser? userGetter(){
     return user ;
   }
+
 
 
   Future<AppUser?> createAccount( name , register_with ,img,  phone , email  ,  password) async {
@@ -159,8 +162,8 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [] ;
         for (var j = 0; j < jsonData['followers'].length; j ++) {
-            Follower like = Follower.fromJson(jsonData['followers'][j]);
-            followers.add(like);
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
 
         }
         for (var j = 0; j < jsonData['followings'].length; j ++) {

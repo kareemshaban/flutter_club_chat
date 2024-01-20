@@ -39,15 +39,14 @@ class AppUser {
    final String charging_level_order ;
    final int charging_level_points ;
    final String charging_level_icon ;
-   final String cover ;
-   final String status ;
-   final String country_name ;
-   final String country_flag ;
-
    List<Follower>? followers = [] ;
    List<Follower>? followings = [] ;
    List<Friends>? friends = [] ;
    List<Visitor>? visitors = [] ;
+   final String cover ;
+   final String status ;
+   final String country_name ;
+   final String country_flag ;
    List<UserHoppy>? hoppies = [] ;
 
 

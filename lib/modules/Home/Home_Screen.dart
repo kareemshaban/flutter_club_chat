@@ -7,6 +7,7 @@ import 'package:clubchat/models/Banner.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Country.dart';
 import 'package:clubchat/models/FestivalBanner.dart';
+import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/modules/Search_Screen/SearchScreen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
@@ -65,12 +66,16 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
   //var
+  AppUser? user ;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    AppUser? user =  AppUserServices().userGetter();
-    print(user?.id);
+    setState(() {
+      user =  AppUserServices().userGetter();
+    });
+    print(user!.id);
+
     getBanners();
   }
   @override
@@ -236,7 +241,7 @@ class HomeScreenState extends State<HomeScreen> {
                height: MediaQuery.of(context).size.width / 2 ,
 
                decoration: BoxDecoration( borderRadius: BorderRadius.circular(15.0) ,
-               image: DecorationImage(image: NetworkImage(ASSETSBASEURL + 'Rooms/' + room.img), fit: BoxFit.cover,
+               image: DecorationImage(image: getRoomImage(room), fit: BoxFit.cover,
                    colorFilter:  ColorFilter.mode(Colors.grey.withOpacity(.9), BlendMode.dstATop)
                )),),
 
@@ -332,14 +337,31 @@ class HomeScreenState extends State<HomeScreen> {
  void openTrendPage() {
 
  }
- void openMyRoom(){
-
+ void openMyRoom() async{
+   ChatRoom? room =  await ChatRoomService().openMyRoom(user!.id);
+    ChatRoomService().roomSetter(room!);
+   print(room);
+   Navigator.push(context, MaterialPageRoute(builder: (ctx) => const RoomScreen()));
  }
   void openSearch(){
-    Navigator.push( context,  MaterialPageRoute(builder: (context) =>  SearchScreen()));
+    Navigator.push( context,  MaterialPageRoute(builder: (context) =>  const SearchScreen()));
   }
 
- void openRoom() {
+ void openRoom() async{
+   print(user!.id);
 
+
+
+ }
+
+ ImageProvider getRoomImage(room){
+   String room_img = '';
+   if(room!.img == room!.admin_img){
+
+     room_img = '${ASSETSBASEURL}AppUsers/${room?.img}' ;
+   } else {
+     room_img = '${ASSETSBASEURL}Rooms/${room?.img}' ;
+   }
+  return  NetworkImage(room_img);
  }
 }

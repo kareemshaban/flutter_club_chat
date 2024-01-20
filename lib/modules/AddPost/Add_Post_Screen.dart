@@ -51,6 +51,7 @@ class AddPostScreenState extends State<AddPostScreen> {
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
+
          appBar: AppBar(
            iconTheme: IconThemeData(
              color: MyColors.whiteColor, //change your color here

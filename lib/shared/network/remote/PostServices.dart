@@ -263,6 +263,7 @@ class PostServices {
   }
 
 
+
   Future<List<Post>> getMyPosts(user_id) async {
     final res = await http.get(Uri.parse('${BASEURL}posts/getUserPosts/${user_id}'));
     List<Post> posts = [];
