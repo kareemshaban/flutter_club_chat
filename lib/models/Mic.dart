@@ -8,7 +8,7 @@ class Mic {
   final String? mic_user_tag ;
   final String? mic_user_name ;
   final String? mic_user_img ;
-  final String? mic_user_gender ;
+  final int? mic_user_gender ;
   final String? mic_user_birth_date ;
   final String? mic_user_share_level ;
   final String? mic_user_karizma_level ;
@@ -26,27 +26,34 @@ class Mic {
       {
       'id': int id,
       'room_id': int room_id,
-      'order': String order,
+      'order': int order,
       'user_id': int user_id,
-      'isClosed': String isClosed,
+      'isClosed': int isClosed,
       'isMute': int isMute,
       'mic_user_tag': String mic_user_tag,
-      'mic_user_name': int mic_user_name,
-      'mic_user_img': int mic_user_img,
-      'mic_user_img': int mic_user_img,
-      'mic_user_img': int mic_user_img,
-      'mic_user_img': int mic_user_img,
+      'mic_user_name': String mic_user_name,
+      'mic_user_img': String mic_user_img,
+      'mic_user_gender': int mic_user_gender,
+      'mic_user_birth_date': String mic_user_birth_date,
+      'mic_user_share_level': String mic_user_share_level,
+      'mic_user_karizma_level': String mic_user_karizma_level,
+      'mic_user_charging_level': String mic_user_charging_level,
       } =>
           Mic(
             id: id,
-            type: type,
-            name: name,
-            order: order,
-            img: img,
-            action: action,
-            url: url,
-            user_id: user_id,
             room_id: room_id,
+            order: order,
+            user_id: user_id,
+            isClosed: isClosed,
+            isMute: isMute,
+            mic_user_tag: mic_user_tag,
+            mic_user_name: mic_user_name,
+            mic_user_img: mic_user_img,
+            mic_user_gender: mic_user_gender,
+            mic_user_birth_date: mic_user_birth_date,
+            mic_user_share_level: mic_user_share_level,
+            mic_user_karizma_level: mic_user_karizma_level,
+            mic_user_charging_level: mic_user_charging_level,
           ),
       _ => throw const FormatException('Failed to load album.'),
     };
