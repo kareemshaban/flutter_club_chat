@@ -1,5 +1,6 @@
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Account_Management_Screen extends StatefulWidget {
   const Account_Management_Screen({super.key});
@@ -18,7 +19,7 @@ class _Account_Management_ScreenState extends State<Account_Management_Screen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("Account Management" , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
+        title: Text("account_management_title".tr , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
       ),
       body: Container(
         color: MyColors.darkColor,

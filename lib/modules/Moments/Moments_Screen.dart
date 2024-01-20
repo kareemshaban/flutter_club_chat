@@ -11,6 +11,7 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MomentsScreen extends StatefulWidget {
@@ -65,10 +66,10 @@ class MomentsScreenState extends State<MomentsScreen> {
               unselectedLabelColor: MyColors.unSelectedColor,
               labelStyle: const TextStyle(fontSize: 17.0 , fontWeight: FontWeight.w900),
 
-              tabs: const [
-                Tab(child: Text("Recommend" , style: TextStyle(fontSize: 15.0),), ),
-                Tab(child: Text("Following" , style: TextStyle(fontSize: 15.0),), ),
-                Tab(child: Text("Mine" , style: TextStyle(fontSize: 15.0),), ),
+              tabs:  [
+                Tab(child: Text("moments_recommend".tr , style: TextStyle(fontSize: 15.0),), ),
+                Tab(child: Text("following_title".tr , style: TextStyle(fontSize: 15.0),), ),
+                Tab(child: Text("moments_mine".tr , style: TextStyle(fontSize: 15.0),), ),
               ],
             ) ,
             actions: [
@@ -188,7 +189,7 @@ class MomentsScreenState extends State<MomentsScreen> {
              child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0),
                 decoration: BoxDecoration(border: Border.all(color: MyColors.primaryColor , width: 1.0 ) , borderRadius: BorderRadius.circular(15.0) , color: Colors.transparent),
-                child:  Text("Follow" , style: TextStyle(color: MyColors.primaryColor),),
+                child:  Text("moments_follow".tr , style: TextStyle(color: MyColors.primaryColor),),
              ),
            ),
            PopupMenuButton<int>(
@@ -198,8 +199,8 @@ class MomentsScreenState extends State<MomentsScreen> {
              iconColor: Colors.white,
              iconSize: 25.0,
              itemBuilder: (context) => [
-               const PopupMenuItem<int>(value: 0, child: Text('Not Interested')),
-               const PopupMenuItem<int>(value: 1, child: Text('report')),
+                PopupMenuItem<int>(value: 0, child: Text('moments_not_interested'.tr)),
+                PopupMenuItem<int>(value: 1, child: Text('moments_report'.tr)),
              ],
            )
     

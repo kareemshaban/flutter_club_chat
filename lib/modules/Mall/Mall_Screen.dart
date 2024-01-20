@@ -8,6 +8,7 @@ import 'package:clubchat/shared/network/remote/DesignServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:svgaplayer_flutter/parser.dart';
 import 'package:svgaplayer_flutter/player.dart';
@@ -88,7 +89,7 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
           color: MyColors.whiteColor, //change your color here
         ),
         backgroundColor: MyColors.darkColor,
-        title: Text("Mall" , style: TextStyle(color: Colors.white , fontSize: 22.0),),
+        title: Text("mall_title".tr , style: TextStyle(color: Colors.white , fontSize: 22.0),),
         actions: [
           IconButton(
               onPressed: () {
@@ -354,7 +355,7 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
                               child: Container(
                                 padding: EdgeInsets.symmetric(horizontal: 15.0 , vertical: 8.0),
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(20.0)),
-                                child: Text("Purchase" , style: TextStyle(color:  MyColors.darkColor , fontSize: 16.0),),
+                                child: Text("mall_purchase".tr , style: TextStyle(color:  MyColors.darkColor , fontSize: 16.0),),
                               ),
                             ),
                             // SizedBox(width: 10.0,),
@@ -406,7 +407,7 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
       AppUserServices().searchUser(user);
     } else {
       Fluttertoast.showToast(
-          msg: "Sorry you do not have enough gold !",
+          msg: "mall_msg".tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,

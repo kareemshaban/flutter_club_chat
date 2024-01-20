@@ -16,6 +16,7 @@ import 'package:clubchat/shared/network/remote/CountryService.dart';
 import 'package:clubchat/shared/network/remote/FestivalBannerServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
@@ -88,9 +89,9 @@ class HomeScreenState extends State<HomeScreen> {
             unselectedLabelColor: MyColors.unSelectedColor,
             labelStyle: const TextStyle(fontSize: 17.0 , fontWeight: FontWeight.w900),
 
-            tabs: const [
-              Tab(text: "Party" ),
-              Tab(text: "Discover",),
+            tabs:  [
+              Tab(text: "home_party".tr ),
+              Tab(text: "home_discover".tr,),
             ],
           ) ,
           actions:   [
@@ -134,10 +135,10 @@ class HomeScreenState extends State<HomeScreen> {
                     children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5.0 , vertical: 10.0),
-                  
+
                       child: CarouselSlider(items:
                         banners.map((banner) => Container(
-                  
+
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ),
                           clipBehavior: Clip.antiAliasWithSaveLayer,
                           child: Image.network('${ASSETSBASEURL}Banners/${banner.img}' , fit: BoxFit.cover, ),
@@ -148,7 +149,7 @@ class HomeScreenState extends State<HomeScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
                       height:40.0,
                       child: ListView.separated(itemBuilder: (ctx , index) => countryListItem(index)  , separatorBuilder: (ctx , index) => countryListSpacer(), itemCount: countries.length , scrollDirection: Axis.horizontal,),
-                  
+
                     ),
                     const SizedBox(height: 10.0,),
                     Expanded(

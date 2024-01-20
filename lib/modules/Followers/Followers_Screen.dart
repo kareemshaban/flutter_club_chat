@@ -4,6 +4,7 @@ import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class FollowersScreen extends StatefulWidget {
   const FollowersScreen({super.key});
@@ -30,7 +31,7 @@ class _FollowersScreenState extends State<FollowersScreen> {
          ),
          centerTitle: true,
          backgroundColor: MyColors.darkColor,
-         title: Text("Followers" , style: TextStyle(color: Colors.white),),
+         title: Text("followers_title".tr , style: TextStyle(color: Colors.white),),
        ),
       body: Container(
         color: MyColors.darkColor,

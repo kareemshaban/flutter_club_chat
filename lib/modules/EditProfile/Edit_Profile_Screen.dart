@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
@@ -70,7 +71,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
         title: Text(
-          "Edit Profile",
+          "edit_profile_title".tr,
           style: TextStyle(color: Colors.white),
         ),
         actions: [
@@ -173,7 +174,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           width: 10.0,
                         ),
                         Text(
-                          "Cover Photo",
+                          "edit_profile_Cover_photo".tr,
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 18.0,
@@ -219,7 +220,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   ),
                                 )
                                     :  Icon(Icons.upload , color: MyColors.darkColor),
-                                label:  Text('Upload' , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0), ),
+                                label:  Text('edit_profile_upload'.tr , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0), ),
                               )
                             ],
                           ))
@@ -252,7 +253,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           width: 10.0,
                         ),
                         Text(
-                          "Basic Information",
+                          "edit_profile_basic_information".tr,
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 18.0,
@@ -312,7 +313,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Row(
                         children: [
                           Text(
-                            "User Name",
+                            "edit_profile_user_name".tr,
                             style: TextStyle(
                                 fontSize: 16.0,
                                 color: MyColors.unSelectedColor,
@@ -357,7 +358,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Row(
                         children: [
                           Text(
-                            "Gender",
+                            "edit_profile_gender".tr,
                             style: TextStyle(
                                 fontSize: 16.0,
                                 color: MyColors.unSelectedColor,
@@ -371,7 +372,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
                                   Text(
-                                    user!.gender == 0 ? "Male" : "Female",
+                                    user!.gender == 0 ? "edit_profile_male".tr : "edit_profile_female".tr,
                                     style: TextStyle(
                                         fontSize: 16.0, color: Colors.white),
                                   ),
@@ -401,7 +402,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Row(
                         children: [
                           Text(
-                            "Date of Birth",
+                            "edit_profile_date_of_birth".tr,
                             style: TextStyle(
                                 fontSize: 16.0,
                                 color: MyColors.unSelectedColor,
@@ -447,7 +448,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       child: Row(
                         children: [
                           Text(
-                            "Country",
+                            "edit_profile_country".tr,
                             style: TextStyle(
                                 fontSize: 16.0,
                                 color: MyColors.unSelectedColor,
@@ -516,7 +517,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           width: 10.0,
                         ),
                         Text(
-                          "My Tags",
+                          "edit_profile_my_tags".tr,
                           style: TextStyle(
                               color: Colors.white,
                               fontSize: 18.0,
@@ -554,7 +555,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 color: Colors.black45,
                                 borderRadius: BorderRadius.circular(25.0)),
                             child: Text(
-                              "Add +/ Remove -",
+                              "edit_profile_update".tr,
                               style: TextStyle(
                                   color: Colors.white, fontSize: 15.0),
                             ),
@@ -658,7 +659,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             });
           }
           Fluttertoast.showToast(
-              msg: "Tags Updated Successfully",
+              msg: "edit_profile_tag_msg".tr,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,
               timeInSecForIosWeb: 1,
@@ -759,7 +760,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           child: AlertDialog(
             backgroundColor: MyColors.darkColor,
             title: Text(
-              'User Name',
+              'edit_profile_user_name_title'.tr,
               style: TextStyle(color: Colors.white, fontSize: 20.0),
               textAlign: TextAlign.center,
             ),
@@ -770,7 +771,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Text(
-                      "Up to 20 Characters !",
+                      "edit_profile_characters !".tr,
                       style: TextStyle(
                           color: MyColors.unSelectedColor, fontSize: 13.0),
                       textAlign: TextAlign.start,
@@ -785,7 +786,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     cursorColor: MyColors.primaryColor,
                     maxLength: 20,
                     decoration: InputDecoration(
-                        hintText: "Text Field in Dialog",
+                        hintText: "edit_profile_enter_user_name".tr,
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: BorderSide(color: MyColors.whiteColor)),
@@ -802,7 +803,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     borderRadius: BorderRadius.circular(15.0)),
                 child: MaterialButton(
                   child: Text(
-                    'CANCEL',
+                    'edit_profile_cancel'.tr,
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () async {
@@ -816,7 +817,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                     borderRadius: BorderRadius.circular(15.0)),
                 child: MaterialButton(
                   child: Text(
-                    'Edit',
+                    'edit_profile_edit'.tr,
                     style: TextStyle(color: MyColors.darkColor),
                   ),
                   onPressed: () async {
@@ -862,7 +863,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       user = res;
     });
     Fluttertoast.showToast(
-        msg: 'Your photo has been updated! ',
+        msg: 'edit_profile_photo_msg'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
@@ -883,7 +884,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       _isLoading = false ;
     });
     Fluttertoast.showToast(
-        msg: 'Your photo has been updated! ',
+        msg: 'edit_profile_Cover_msg'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
@@ -898,7 +899,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       builder: (context) => CupertinoActionSheet(
         actions: [
           CupertinoActionSheetAction(
-            child: Text('Photo Gallery'),
+            child: Text('add_photo_gallery'.tr),
             onPressed: () {
               // close the options modal
               Navigator.of(context).pop();
@@ -907,7 +908,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Camera'),
+            child: Text('add_camera'.tr),
             onPressed: () {
               // close the options modal
               Navigator.of(context).pop();

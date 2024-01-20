@@ -1,5 +1,6 @@
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class EditLanguageScreen extends StatefulWidget {
   const EditLanguageScreen({super.key});
@@ -26,7 +27,7 @@ class _EditLanguageScreenState extends State<EditLanguageScreen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("Edit Language" , style: TextStyle(color: Colors.white,fontSize: 18.0) ,),
+        title: Text("edit_language".tr , style: TextStyle(color: Colors.white,fontSize: 18.0) ,),
       ),
       body: Container(
         color: MyColors.darkColor,
@@ -64,7 +65,7 @@ class _EditLanguageScreenState extends State<EditLanguageScreen> {
               padding: EdgeInsets.all(15.0) ,
               child: Row(
                 children: [
-                  Text("Arabic" ,style:TextStyle(color: Colors.white,fontSize: 15.0) ,),
+                  Text("edit_arabic".tr ,style:TextStyle(color: Colors.white,fontSize: 15.0) ,),
                   Expanded(child:
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,

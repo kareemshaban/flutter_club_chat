@@ -4,8 +4,10 @@ import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/modules/Home/Home_Screen.dart';
 import 'package:clubchat/modules/Login/LoginScreen.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/translation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
@@ -63,7 +65,7 @@ class _MyAppState extends State<MyApp> {
   
   @override
   Widget build(BuildContext context) {
-    return    MaterialApp(
+    return    GetMaterialApp(
       theme: ThemeData(
         fontFamily: 'arabFont',
           primarySwatch: Colors.orange ,
@@ -72,6 +74,8 @@ class _MyAppState extends State<MyApp> {
       ),
       debugShowCheckedModeBanner: false,
       home: startPage,
+      translations:  Translation(),
+      locale: Locale('ar'),
     );
   }
 }

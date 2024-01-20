@@ -2,6 +2,7 @@
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class About_Screen extends StatefulWidget {
   const About_Screen({super.key});
@@ -20,7 +21,7 @@ class _About_ScreenState extends State<About_Screen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("About Us" , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
+        title: Text("about_us_title".tr , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
         actions: [
           IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.sync))
         ],
@@ -46,7 +47,7 @@ class _About_ScreenState extends State<About_Screen> {
                   SizedBox(height: 5.0,),
                   Text("Club chat",style: TextStyle(color: MyColors.whiteColor,fontSize: 18.0)),
                   SizedBox(height: 3.0,),
-                  Text("Version 1.0.0",style: TextStyle(color: MyColors.unSelectedColor,fontSize: 14.0)),
+                  Text("about_us_version".tr + "1.0.0",style: TextStyle(color: MyColors.unSelectedColor,fontSize: 14.0)),
 
                 ],
               ),
@@ -56,7 +57,7 @@ class _About_ScreenState extends State<About_Screen> {
               padding: EdgeInsets.all(15.0) ,
               child: Row(
                 children: [
-                  Text("Update Version" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                  Text("about_us_update_version".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                   Expanded(
                     child:Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -74,7 +75,7 @@ class _About_ScreenState extends State<About_Screen> {
               padding: EdgeInsets.all(15.0) ,
               child: Row(
                 children: [
-                  Text("Official Website" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                  Text("about_us_official_website".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                   Expanded(
                     child:Row(
                         mainAxisAlignment: MainAxisAlignment.end,

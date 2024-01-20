@@ -8,6 +8,7 @@ import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/DesignServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class MyDesignScreen extends StatefulWidget {
   const MyDesignScreen({super.key});
@@ -222,7 +223,7 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
                 Container(
                   padding: EdgeInsets.all(5.0),
                   decoration: BoxDecoration(color: Colors.black45 , borderRadius: BorderRadius.circular(15.0)),
-                  child: Text("Days: " + getRemainDays(design) , style: TextStyle(color: MyColors.primaryColor , fontSize: 13.0),),
+                  child: Text("my_designs_days".tr + getRemainDays(design) , style: TextStyle(color: MyColors.primaryColor , fontSize: 13.0),),
                 )
               ],
             ),
@@ -241,7 +242,7 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
                     padding: EdgeInsets.symmetric(horizontal: 15.0 , vertical: 3.0),
                     decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(20.0)),
                     child:
-                    Text("Use" , style: TextStyle(color:  MyColors.darkColor , fontSize: 16.0),)
+                    Text("my_designs_use".tr , style: TextStyle(color:  MyColors.darkColor , fontSize: 16.0),)
 
                   ): Container(),
                 )

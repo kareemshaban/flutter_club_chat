@@ -4,6 +4,7 @@ import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/NotificationServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:clubchat/models/Notification.dart';
 
@@ -54,12 +55,12 @@ class NotificationScreenState extends State<NotificationScreen> {
           unselectedLabelColor: MyColors.unSelectedColor,
           labelStyle: const TextStyle(fontSize: 17.0 , fontWeight: FontWeight.w900),
 
-          tabs: const [
-            Tab(child: Text("Moments" , style: TextStyle(fontSize: 15.0),), ),
-            Tab(child: Text("Profile" , style: TextStyle(fontSize: 15.0),), ),
-            Tab(child: Text("Charging" , style: TextStyle(fontSize: 15.0),), ),
-            Tab(child: Text("System" , style: TextStyle(fontSize: 15.0),), ),
-            Tab(child: Text("Announcement" , style: TextStyle(fontSize: 15.0),), ),
+          tabs:  [
+            Tab(child: Text("notification_moments".tr , style: TextStyle(fontSize: 15.0),), ),
+            Tab(child: Text("notification_profile".tr , style: TextStyle(fontSize: 15.0),), ),
+            Tab(child: Text("notification_charging".tr , style: TextStyle(fontSize: 15.0),), ),
+            Tab(child: Text("notification_system".tr , style: TextStyle(fontSize: 15.0),), ),
+            Tab(child: Text("notification_announcement".tr , style: TextStyle(fontSize: 15.0),), ),
           ],
         ) ,
         ),

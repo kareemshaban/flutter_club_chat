@@ -4,6 +4,7 @@ import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/DesignServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 
 class MyLevelScreen extends StatefulWidget {
@@ -51,22 +52,22 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
             unselectedLabelColor: MyColors.unSelectedColor,
             labelStyle:
                 const TextStyle(fontSize: 17.0, fontWeight: FontWeight.w900),
-            tabs: const [
+            tabs:  [
               Tab(
                 child: Text(
-                  "Wealth",
+                  "my_level_wealth".tr,
                   style: TextStyle(fontSize: 15.0),
                 ),
               ),
               Tab(
                 child: Text(
-                  "Karizma",
+                  "my_level_karizma".tr,
                   style: TextStyle(fontSize: 15.0),
                 ),
               ),
               Tab(
                 child: Text(
-                  "Charging",
+                  "my_level_charging".tr,
                   style: TextStyle(fontSize: 15.0),
                 ),
               ),
@@ -164,7 +165,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                           child: Column(
                             children: [
                               Text(
-                                "The Current Points",
+                                "my_level_current_points".tr,
                                 style: TextStyle(
                                     color: MyColors.unSelectedColor,
                                     fontSize: 16.0),
@@ -189,7 +190,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                           child: Column(
                             children: [
                               Text(
-                                "To The Next Level",
+                                "my_level_next_level".tr,
                                 style: TextStyle(
                                     color: MyColors.unSelectedColor,
                                     fontSize: 16.0),
@@ -224,7 +225,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
 
                               children: [
                                 Text(
-                                  "Ways To Level Up ?",
+                                  "my_level_ways_to_level_up".tr,
                                   style: TextStyle(
                                       color: MyColors.primaryColor,
                                       fontSize: 25.0,
@@ -239,8 +240,8 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text("Send Gift to friend in Chat Room" , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
-                                          Text("1 Gold = 1 Point" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
+                                          Text("my_level_send_gift".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
+                                          Text("my_level_gold_point".tr, style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
                                           SizedBox(height: 10.0,),
                                           Container(color: MyColors.unSelectedColor,
                                             height: 1.0 , child: null, width: ( MediaQuery.of(context).size.width - 100),)
@@ -383,7 +384,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                           child: Column(
                             children: [
                               Text(
-                                "The Current Points",
+                                "my_level_current_points".tr,
                                 style: TextStyle(
                                     color: MyColors.unSelectedColor,
                                     fontSize: 16.0),
@@ -408,7 +409,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                           child: Column(
                             children: [
                               Text(
-                                "To The Next Level",
+                                "my_level_next_level".tr,
                                 style: TextStyle(
                                     color: MyColors.unSelectedColor,
                                     fontSize: 16.0),
@@ -443,7 +444,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
 
                               children: [
                                 Text(
-                                  "Ways To Level Up ?",
+                                  "my_level_ways_to_level_up".tr,
                                   style: TextStyle(
                                       color: MyColors.primaryColor,
                                       fontSize: 25.0,
@@ -458,8 +459,8 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text("Receive Gift to Friend in Chat Room" , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
-                                          Text("1 Gold = 1 Point" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
+                                          Text("my_level_receive".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
+                                          Text("my_level_gold_point".tr , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
                                           SizedBox(height: 10.0,),
                                           Container(color: MyColors.unSelectedColor,
                                             height: 1.0 , child: null, width: ( MediaQuery.of(context).size.width - 100),)
@@ -603,7 +604,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                           child: Column(
                             children: [
                               Text(
-                                "The Current Points",
+                                "my_level_current_points".tr,
                                 style: TextStyle(
                                     color: MyColors.unSelectedColor,
                                     fontSize: 16.0),
@@ -628,7 +629,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                           child: Column(
                             children: [
                               Text(
-                                "To The Next Level",
+                                "my_level_next_level".tr,
                                 style: TextStyle(
                                     color: MyColors.unSelectedColor,
                                     fontSize: 16.0),
@@ -663,7 +664,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
 
                               children: [
                                 Text(
-                                  "Ways To Level Up ?",
+                                  "my_level_ways_to_level_up".tr,
                                   style: TextStyle(
                                       color: MyColors.primaryColor,
                                       fontSize: 25.0,
@@ -678,8 +679,8 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                       Column(
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
-                                          Text("Charge Your Gold !" , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
-                                          Text("1 Gold = 1 Point" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
+                                          Text("my_level_charge_your_gold".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
+                                          Text("my_level_gold_point".tr , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
                                           SizedBox(height: 10.0,),
                                           Container(color: MyColors.unSelectedColor,
                                             height: 1.0 , child: null, width: ( MediaQuery.of(context).size.width - 120),)

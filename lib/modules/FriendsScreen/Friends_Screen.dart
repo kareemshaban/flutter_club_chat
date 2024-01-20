@@ -4,6 +4,7 @@ import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class FriendsScreen extends StatefulWidget {
   const FriendsScreen({super.key});
@@ -30,7 +31,7 @@ class _FriendsScreenState extends State<FriendsScreen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("Friends" , style: TextStyle(color: Colors.white),),
+        title: Text("friends_title".tr , style: TextStyle(color: Colors.white),),
       ),
       body: Container(
         color: MyColors.darkColor,

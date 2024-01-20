@@ -1,5 +1,6 @@
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Network_Diagnosis_Screen extends StatefulWidget {
   const Network_Diagnosis_Screen({super.key});
@@ -18,7 +19,7 @@ class _Network_Diagnosis_ScreenState extends State<Network_Diagnosis_Screen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("Network Diagnosis" , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
+        title: Text("network_title".tr , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
       ),
         body: Container(
           color: MyColors.darkColor,
@@ -29,7 +30,7 @@ class _Network_Diagnosis_ScreenState extends State<Network_Diagnosis_Screen> {
                padding: EdgeInsetsDirectional.symmetric(horizontal: 40.0 , vertical: 5.0),
                decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(20.0)),
                child: MaterialButton(onPressed: (){} ,
-               child: Text("Start" , style: TextStyle(color: Colors.white , fontSize: 18.0),),
+               child: Text("network_start".tr , style: TextStyle(color: Colors.white , fontSize: 18.0),),
                ),
              ),
           ),

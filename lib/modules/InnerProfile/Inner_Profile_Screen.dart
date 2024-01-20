@@ -8,6 +8,7 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class InnerProfileScreen extends StatefulWidget {
@@ -113,14 +114,14 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                    children: [
                      Icon(Icons.block , color: MyColors.whiteColor , size: 18.0,),
                      SizedBox(width: 5.0,),
-                     Text("Report" , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
+                     Text("inner_report".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
                    ],
                  )),
                 PopupMenuItem<int>(value: 0, child: Row(
                   children: [
                     Icon(Icons.report , color: MyColors.whiteColor , size: 18.0,),
                     SizedBox(width: 5.0,),
-                    Text("Block" , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
+                    Text("inner_block".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
                   ],
                 )),
               ],
@@ -215,7 +216,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("Basic Information" , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("inner_basic_information".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
                           SizedBox(height: 15.0,),
@@ -247,7 +248,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("User Name" , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("edit_profile_user_name".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -273,7 +274,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("Gender" , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("edit_profile_gender".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -299,7 +300,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("Date of Birth" , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("edit_profile_date_of_birth".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -325,7 +326,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("Country" , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("edit_profile_country".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -368,7 +369,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("My Tags" , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("edit_profile_my_tags".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
                           SizedBox(height: 15.0,),
@@ -407,7 +408,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("Room Gifts" , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("inner_room_gifts".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
                           SizedBox(height: 15.0,),
@@ -444,7 +445,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("My Frames" , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("inner_my_frames".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
                           SizedBox(height: 15.0,),
@@ -481,7 +482,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("Cars (Entries)" , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("inner_cars_(Entries)".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
                           SizedBox(height: 15.0,),

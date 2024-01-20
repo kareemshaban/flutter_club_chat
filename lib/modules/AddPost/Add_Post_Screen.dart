@@ -11,6 +11,7 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddPostScreen extends StatefulWidget {
@@ -78,7 +79,7 @@ class AddPostScreenState extends State<AddPostScreen> {
                  decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(20.0)),
                  padding: EdgeInsets.symmetric(vertical: 10.0 , horizontal: 15.0),
 
-                 child: Text("Post" , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0 , fontWeight: FontWeight.bold),),
+                 child: Text("add_post".tr , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0 , fontWeight: FontWeight.bold),),
                ),
              ),
              SizedBox(width: 20.0,),
@@ -152,7 +153,7 @@ class AddPostScreenState extends State<AddPostScreen> {
       builder: (context) => CupertinoActionSheet(
         actions: [
           CupertinoActionSheetAction(
-            child: Text('Photo Gallery'),
+            child: Text('add_photo_gallery'.tr),
             onPressed: () {
               // close the options modal
               Navigator.of(context).pop();
@@ -161,7 +162,7 @@ class AddPostScreenState extends State<AddPostScreen> {
             },
           ),
           CupertinoActionSheetAction(
-            child: Text('Camera'),
+            child: Text('add_camera'.tr),
             onPressed: () {
               // close the options modal
               Navigator.of(context).pop();
@@ -176,7 +177,7 @@ class AddPostScreenState extends State<AddPostScreen> {
   post(){
     PostServices().AddPost(_image , contentController.text , user!.id , selectedTag);
     Fluttertoast.showToast(
-        msg: 'Your post is being reviewed by one of our admins and it will be accepted very soon ',
+        msg: 'add_post_msg'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,

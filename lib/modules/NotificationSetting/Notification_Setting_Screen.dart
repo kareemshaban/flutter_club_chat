@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../shared/styles/colors.dart';
 
@@ -25,7 +26,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("Notification" , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
+        title: Text("notification_setting_title".tr , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
       ),
       body: Container(
         color: MyColors.darkColor,
@@ -40,7 +41,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                 margin: EdgeInsetsDirectional.only(bottom: 5.0),
                 child: Row(
                   children: [
-                    Text("Private chat" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                    Text("notification_setting_private_chat".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                     Expanded(
                       child:Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -66,7 +67,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                 margin: EdgeInsetsDirectional.only(bottom: 5.0),
                 child: Row(
                   children: [
-                    Text("New followers" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                    Text("notification_setting_new_followers".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                     Expanded(
                       child:Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -92,7 +93,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                 margin: EdgeInsetsDirectional.only(bottom: 5.0),
                 child: Row(
                   children: [
-                    Text("Invitation message" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                    Text("notification_setting_invitation_message".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                     Expanded(
                       child:Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -118,7 +119,7 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
                 margin: EdgeInsetsDirectional.only(bottom: 5.0),
                 child: Row(
                   children: [
-                    Text("Moments notification" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                    Text("notification_setting_moments_notification".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                     Expanded(
                       child:Row(
                         mainAxisAlignment: MainAxisAlignment.end,

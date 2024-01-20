@@ -5,6 +5,7 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class AddStatusScreen extends StatefulWidget {
   const AddStatusScreen({super.key});
@@ -32,7 +33,7 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("My Status" , style: TextStyle(color: Colors.white),),
+        title: Text("add_status_my_status".tr , style: TextStyle(color: Colors.white),),
         actions: [
           IconButton(icon: Icon(FontAwesomeIcons.circleQuestion , color: Colors.white,) , onPressed: (){},)
         ],
@@ -98,7 +99,7 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
                 padding: EdgeInsets.symmetric( horizontal: 10.0),
                 margin: EdgeInsets.all(10.0),
                 decoration: BoxDecoration(  color: MyColors.primaryColor, borderRadius: BorderRadius.circular(15.0)),
-                child: MaterialButton(onPressed: (){ AddStatus();} , child: Text('Share' , style: TextStyle(color:MyColors.darkColor , fontSize: 18.0),),),
+                child: MaterialButton(onPressed: (){ AddStatus();} , child: Text('add_status_share'.tr , style: TextStyle(color:MyColors.darkColor , fontSize: 18.0),),),
               )
             ],
           ),
@@ -123,7 +124,7 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
       user = res;
     });
     Fluttertoast.showToast(
-        msg: "Status Updated Successfully",
+        msg: "add_status_msg".tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,

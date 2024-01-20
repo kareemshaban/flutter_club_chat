@@ -1,5 +1,6 @@
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Agreement_Screen extends StatefulWidget {
   const Agreement_Screen({super.key});
@@ -18,7 +19,7 @@ class _Agreement_ScreenState extends State<Agreement_Screen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("Agreement" , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
+        title: Text("agreement_title".tr , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
       ),
       body: Container(
         color: MyColors.darkColor,
@@ -27,7 +28,7 @@ class _Agreement_ScreenState extends State<Agreement_Screen> {
         child: Column(
           children: [
             SizedBox(height: 5.0,),
-            Text("club chat User Agreement",style: TextStyle(color: Colors.white,fontSize: 20.0),),
+            Text("agreement_user_agreement".tr,style: TextStyle(color: Colors.white,fontSize: 20.0),),
 
 
           ],

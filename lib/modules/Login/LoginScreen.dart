@@ -9,6 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -75,7 +76,7 @@ class LoginScreenState extends State<LoginScreen> {
        _googleSignIn.currentUser?.photoUrl ?? "" , "" , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.id );
      if(user!.id > 0){
        Fluttertoast.showToast(
-           msg: 'Welcome To Club Chat !',
+           msg: 'login_welcome_msg'.tr,
            toastLength: Toast.LENGTH_SHORT,
            gravity: ToastGravity.CENTER,
            timeInSecForIosWeb: 1,
@@ -115,7 +116,7 @@ class LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 100.0,),
               const Image(image: AssetImage("assets/images/logo_trans.png") , width: 200.0, height: 200.0,),
-              Text(" It's About Joy!" , style: TextStyle(fontSize: 30.0 , color: Colors.white.withOpacity(.7) , fontWeight: FontWeight.bold),),
+              Text(" login_title".tr , style: TextStyle(fontSize: 30.0 , color: Colors.white.withOpacity(.7) , fontWeight: FontWeight.bold),),
               Expanded(child:
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
@@ -152,10 +153,10 @@ class LoginScreenState extends State<LoginScreen> {
                       alignment: WrapAlignment.center,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                        const Text('By signing in ClubChat you agree to ' , style: TextStyle(fontSize: 12.0 , color: Colors.white)  ,),
-                        TextButton(onPressed: (){}, child: const Text("ClubChat Policy" , style: TextStyle(color: Colors.orange , fontSize: 12.0 , fontWeight: FontWeight.bold , decoration: TextDecoration.underline , decorationColor: Colors.orange,),) ),
-                        const Text('and' , style: TextStyle(fontSize: 12.0 , color: Colors.white) ),
-                        TextButton(onPressed: (){}, child: const Text("ClubChat Terms Services" , style: TextStyle(color: Colors.orange , fontSize: 12.0 , fontWeight: FontWeight.bold , decoration: TextDecoration.underline , decorationColor: Colors.orange,),)),
+                         Text('login_privacy'.tr , style: TextStyle(fontSize: 12.0 , color: Colors.white)  ,),
+                        TextButton(onPressed: (){}, child:  Text("login_policy".tr , style: TextStyle(color: Colors.orange , fontSize: 12.0 , fontWeight: FontWeight.bold , decoration: TextDecoration.underline , decorationColor: Colors.orange,),) ),
+                         Text('login_and'.tr , style: TextStyle(fontSize: 12.0 , color: Colors.white) ),
+                        TextButton(onPressed: (){}, child:  Text("login_services".tr , style: TextStyle(color: Colors.orange , fontSize: 12.0 , fontWeight: FontWeight.bold , decoration: TextDecoration.underline , decorationColor: Colors.orange,),)),
                       ],
                     ),
                   ),
