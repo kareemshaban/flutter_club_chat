@@ -42,4 +42,25 @@ class ChatRoomService {
 
   }
 
+  Future<ChatRoom> openMyRoom(user_id) async {
+    final response = await http.get(Uri.parse('${BASEURL}chatRooms/getRoom/${user_id}'));
+    ChatRoom? room ;
+
+    final Map jsonData = json.decode(response.body);
+    if (response.statusCode == 200) {
+      room =   ChatRoom.fromJson(jsonData['room']);
+      // for (var j = 0; j < jsonData['followers'].length; j ++) {
+      //   Follower like = Follower.fromJson(jsonData['followers'][j]);
+      //   followers.add(like);
+      //
+      // }
+      return room ;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
+
 }

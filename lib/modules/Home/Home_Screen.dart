@@ -68,7 +68,7 @@ class HomeScreenState extends State<HomeScreen> {
     // TODO: implement initState
     super.initState();
     AppUser? user =  AppUserServices().userGetter();
-    print(user?.id);
+    print(user?.followers?.length);
     getBanners();
   }
   @override
