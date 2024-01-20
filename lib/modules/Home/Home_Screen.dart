@@ -7,6 +7,7 @@ import 'package:clubchat/models/Banner.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Country.dart';
 import 'package:clubchat/models/FestivalBanner.dart';
+import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/modules/Search_Screen/SearchScreen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
@@ -50,6 +51,7 @@ class HomeScreenState extends State<HomeScreen> {
      List<Country> res2 = await CountryService().getAllCountries();
     setState(() {
       countries = res2 ;
+      CountryService().countrySetter(countries);
     });
     List<ChatRoom> res3 = await ChatRoomService().getAllChatRooms();
     setState(() {
@@ -63,12 +65,16 @@ class HomeScreenState extends State<HomeScreen> {
     });
   }
   //var
+  AppUser? user ;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    AppUser? user =  AppUserServices().userGetter();
-    print(user?.followers?.length);
+    setState(() {
+      user =  AppUserServices().userGetter();
+    });
+    print(user!.id);
+
     getBanners();
   }
   @override
@@ -95,18 +101,23 @@ class HomeScreenState extends State<HomeScreen> {
           actions:   [
 
             GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 child: const Image(
                   image: AssetImage('assets/images/chatroom_rank_ic.png') , width: 30.0, height: 30.0,),
                   onTap: (){}
             ),
             const SizedBox(width: 20.0,),
             GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 child: const Image(
                   image: AssetImage('assets/images/voice-message.png') , width: 30.0, height: 30.0,),
-                onTap: (){}
+                onTap: (){
+                  openMyRoom();
+                }
             ),
             const SizedBox(width: 20.0,),
             GestureDetector(
+                behavior: HitTestBehavior.opaque,
                 child: const Image(
                   image: AssetImage('assets/images/search.png') , width: 30.0, height: 30.0,),
                 onTap: () =>  Navigator.push(context,  MaterialPageRoute(builder: (ctx) => const SearchScreen()))
@@ -216,7 +227,7 @@ class HomeScreenState extends State<HomeScreen> {
  Widget chatRoomListItem(room) =>  GestureDetector(
      onTap: (){openChatRoom(room);} ,
      child: Container(
-       width: MediaQuery.of(context).size.width / 2 ,
+         width: MediaQuery.of(context).size.width / 2 ,
        margin: const EdgeInsets.all(5.0),
        child: Stack(
          alignment: Alignment.topCenter,
@@ -229,7 +240,7 @@ class HomeScreenState extends State<HomeScreen> {
                height: MediaQuery.of(context).size.width / 2 ,
 
                decoration: BoxDecoration( borderRadius: BorderRadius.circular(15.0) ,
-               image: DecorationImage(image: NetworkImage(ASSETSBASEURL + 'Rooms/' + room.img), fit: BoxFit.cover,
+               image: DecorationImage(image: getRoomImage(room), fit: BoxFit.cover,
                    colorFilter:  ColorFilter.mode(Colors.grey.withOpacity(.9), BlendMode.dstATop)
                )),),
 
@@ -325,14 +336,31 @@ class HomeScreenState extends State<HomeScreen> {
  void openTrendPage() {
 
  }
- void openMyRoom(){
-
+ void openMyRoom() async{
+   ChatRoom? room =  await ChatRoomService().openMyRoom(user!.id);
+    ChatRoomService().roomSetter(room!);
+   print(room);
+   Navigator.push(context, MaterialPageRoute(builder: (ctx) => const RoomScreen()));
  }
   void openSearch(){
-    Navigator.push( context,  MaterialPageRoute(builder: (context) =>  SearchScreen()));
+    Navigator.push( context,  MaterialPageRoute(builder: (context) =>  const SearchScreen()));
   }
 
- void openRoom() {
+ void openRoom() async{
+   print(user!.id);
 
+
+
+ }
+
+ ImageProvider getRoomImage(room){
+   String room_img = '';
+   if(room!.img == room!.admin_img){
+
+     room_img = '${ASSETSBASEURL}AppUsers/${room?.img}' ;
+   } else {
+     room_img = '${ASSETSBASEURL}Rooms/${room?.img}' ;
+   }
+  return  NetworkImage(room_img);
  }
 }

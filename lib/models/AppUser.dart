@@ -1,5 +1,6 @@
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
+import 'package:clubchat/models/UserHoppy.dart';
 import 'package:clubchat/models/Visitor.dart';
 
 class AppUser {
@@ -42,7 +43,11 @@ class AppUser {
    List<Follower>? followings = [] ;
    List<Friends>? friends = [] ;
    List<Visitor>? visitors = [] ;
-
+   final String cover ;
+   final String status ;
+   final String country_name ;
+   final String country_flag ;
+   List<UserHoppy>? hoppies = [] ;
 
 
    AppUser({ required this.id, required this.tag, required this.name, required this.img, required this.share_level_id,required this.karizma_level_id, required this.charging_level_id,required  this.phone,
@@ -50,7 +55,7 @@ class AppUser {
      required this.last_login, required this.birth_date, required this.enable, required this.ipAddress,required  this.macAddress, required this.deviceId, required this.isOnline, required this.isInRoom, required this.country,
      required this.register_with , required this.gender , required this.gold , required this.diamond , required this.share_level_order , required this.share_level_points ,required this.share_level_icon ,
      required  this.karizma_level_order , required this.karizma_level_points , required this.karizma_level_icon ,required this.charging_level_order , required this.charging_level_points , required this.charging_level_icon ,
-     this.followers , this.followings , this.visitors , this.friends});
+     this.followers , this.followings , this.visitors , this.friends , this.hoppies , required this.cover , required this.status , required this.country_name , required this.country_flag});
 
    factory AppUser.fromJson(Map<String, dynamic> json) {
       return switch (json) {
@@ -90,6 +95,10 @@ class AppUser {
          'charging_level_order': String charging_level_order,
          'charging_level_points': int charging_level_points,
          'charging_level_icon': String charging_level_icon,
+         'cover': String cover,
+         'status': String status,
+         'country_name': String country_name,
+         'country_flag': String country_flag,
 
 
          } =>
@@ -129,6 +138,10 @@ class AppUser {
                 charging_level_order: charging_level_order,
                 charging_level_points: charging_level_points,
                 charging_level_icon: charging_level_icon,
+               cover: cover,
+               status: status,
+               country_name: country_name,
+               country_flag: country_flag,
 
 
              ),

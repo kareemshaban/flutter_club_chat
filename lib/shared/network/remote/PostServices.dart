@@ -263,4 +263,51 @@ class PostServices {
   }
 
 
+
+  Future<List<Post>> getMyPosts(user_id) async {
+    final res = await http.get(Uri.parse('${BASEURL}posts/getUserPosts/${user_id}'));
+    List<Post> posts = [];
+    List<PostLike> likes = [];
+    List<PostReport> reports = [];
+    List<Comment> comments = [];
+    if (res.statusCode == 200) {
+      final Map resonse = json.decode(res.body);
+      for (var i = 0; i < resonse['posts'].length; i ++) {
+        Post post = Post.fromJson(resonse['posts'][i]);
+        likes = [];
+        reports = [] ;
+        comments = [] ;
+        for (var j = 0; j < resonse['likes'].length; j ++) {
+          if (resonse['likes'][j]['post_id'] == post.id) {
+            PostLike like = PostLike.fromJson(resonse['likes'][j]);
+            likes.add(like);
+          }
+        }
+        for (var n = 0; n < resonse['reports'].length; n ++) {
+          if (resonse['reports'][n]['post_id'] == post.id) {
+            PostReport report = PostReport.fromJson(resonse['reports'][n]);
+            reports.add(report);
+          }
+        }
+        for (var c = 0; c < resonse['comments'].length; c ++) {
+          if (resonse['comments'][c]['post_id'] == post.id) {
+            Comment comment = Comment.fromJson(resonse['comments'][c]);
+            comments.add(comment);
+          }
+        }
+
+        post.likes = likes;
+        post.reports = reports ;
+        post.comments = comments ;
+
+        posts.add(post);
+      }
+      return posts;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load post');
+    }
+  }
+
 }

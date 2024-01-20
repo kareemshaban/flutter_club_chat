@@ -1,14 +1,22 @@
 import 'dart:io';
 
+import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
+import 'package:clubchat/models/Design.dart';
+import 'package:clubchat/models/Follower.dart';
+import 'package:clubchat/models/Friends.dart';
+import 'package:clubchat/models/Tag.dart';
+import 'package:clubchat/models/UserHoppy.dart';
 import 'package:clubchat/models/Visitor.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:path/path.dart';
+import 'package:async/async.dart';
 
 class AppUserServices {
   static AppUser? user  ;
@@ -20,11 +28,13 @@ class AppUserServices {
   }
 
 
-  Future<http.Response> createAccount( name , register_with ,img,  phone , email  ,  password) async {
+
+  Future<AppUser?> createAccount( name , register_with ,img,  phone , email  ,  password) async {
+    AppUser? user = null ;
     String deviceId = await getId() ?? "";
     var data = await getIpAddress() ;
     var ipAddress = data['ip'] ?? "" ;
-    return http.post(
+    var response = await http.post(
       Uri.parse('${BASEURL}Account/Create'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
@@ -41,6 +51,54 @@ class AppUserServices {
         'deviceId': deviceId
       }),
     );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
   }
 
   dynamic getIpAddress() async {
@@ -102,9 +160,92 @@ class AppUserServices {
         List<Follower> followings = [];
         List<Friends> friends = [];
         List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [] ;
         for (var j = 0; j < jsonData['followers'].length; j ++) {
-            Follower like = Follower.fromJson(jsonData['followers'][j]);
-            followers.add(like);
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
+
+
+  Future<List<Tag>> getAllHoppies() async {
+    final response = await http.get(Uri.parse('${BASEURL}Account/hoppies'));
+    List<Tag> tags  = [];
+
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      for( var i = 0 ; i < jsonData['tags'].length ; i ++ ){
+        Tag tag = Tag.fromJson(jsonData['tags'][i]);
+        tags.add(tag);
+      }
+      return tags ;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load tags');
+    }
+  }
+  Future<AppUser?> addHoppy(user_id , tag_id ,   state ) async {
+    AppUser? user = null ;
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/hoppies/Add'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'tag_id': tag_id.toString(),
+        'state': state ,
+        'id': '0'
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
 
         }
         for (var j = 0; j < jsonData['followings'].length; j ++) {
@@ -122,11 +263,15 @@ class AppUserServices {
           visitors.add(like);
 
         }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
         user.friends = friends ;
         user.visitors = visitors ;
         user.followings = followings ;
         user.followers = followers ;
-
+        user.hoppies = hoppies ;
         return  user;
       } else {
         return null ;
@@ -140,5 +285,336 @@ class AppUserServices {
 
   }
 
+  Future<AppUser?> updateName(user_id , name  ) async {
+    AppUser? user = null ;
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/name/update'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'name': name.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
 
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
+  Future<AppUser?> updateCountry(user_id , country  ) async {
+    AppUser? user = null ;
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/country/update'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'country': country.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
+  Future<AppUser?> updateBirthdate(user_id , birth_date  ) async {
+    AppUser? user = null ;
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/birthdate/update'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'birth_date': birth_date.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
+  Future<AppUser?> updateStatus(user_id , status  ) async {
+    AppUser? user = null ;
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/status/update'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'status': status.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
+  Future<AppUser?> updateProfileImg(user_id , File? imageFile   ) async {
+
+    var stream = new http.ByteStream(DelegatingStream.typed(imageFile!.openRead()));
+    var length = await imageFile.length();
+
+    var uri = Uri.parse(BASEURL+'Account/img/update');
+
+    var request = new http.MultipartRequest("POST", uri);
+    var multipartFile = new http.MultipartFile('img', stream, length,
+        filename: basename(imageFile.path));
+    //contentType: new MediaType('image', 'png'));
+
+    request.files.add(multipartFile);
+    request.fields.addAll(<String, String>{
+      'user_id': user_id.toString() ,
+    });
+    var response = await request.send();
+    print(response.statusCode);
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
+
+  }
+  Future<AppUser?> updateProfileCover(user_id , File? imageFile   ) async {
+
+    var stream = new http.ByteStream(DelegatingStream.typed(imageFile!.openRead()));
+    var length = await imageFile.length();
+
+    var uri = Uri.parse(BASEURL+'Account/cover/update');
+
+    var request = new http.MultipartRequest("POST", uri);
+    var multipartFile = new http.MultipartFile('cover', stream, length,
+        filename: basename(imageFile.path));
+    //contentType: new MediaType('image', 'png'));
+
+    request.files.add(multipartFile);
+    request.fields.addAll(<String, String>{
+      'user_id': user_id.toString() ,
+    });
+    var response = await request.send();
+    print(response.statusCode);
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
+
+  }
+
+  Future<DesignGiftHelper> getMyDesigns(id) async {
+      final response = await http.get(Uri.parse('${BASEURL}Account/designs/all/${id}'));
+    List<Design> designs  = [];
+    List<Design> gifts  = [];
+    DesignGiftHelper designGiftHelper = DesignGiftHelper(designs: designs , gifts:gifts );
+    if (response.statusCode == 200) {
+        final Map jsonData = json.decode(response.body);
+      for( var i = 0 ; i < jsonData['designs'].length ; i ++ ){
+        Design design = Design.fromJson(jsonData['designs'][i]);
+        if(getRemainDays(design)){
+          designs.add(design);
+        }
+
+      }
+      for( var i = 0 ; i < jsonData['gifts'].length ; i ++ ){
+        Design gift = Design.fromJson(jsonData['gifts'][i]);
+        gifts.add(gift);
+      }
+      designGiftHelper.designs = designs ;
+      designGiftHelper.gifts = gifts ;
+      return designGiftHelper ;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load tags');
+    }
+  }
+
+  bool getRemainDays(design){
+
+    final DateTime dateOne = DateTime.parse(design.available_until);
+    final DateTime dateTwo = DateTime.now() ;
+
+    final Duration duration = dateOne.difference(dateTwo);
+      print(duration.inDays );
+     return duration.inDays > -1  ;
+  }
 }
