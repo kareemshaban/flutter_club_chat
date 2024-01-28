@@ -1,6 +1,8 @@
 import 'package:clubchat/shared/styles/colors.dart';
+import 'package:clubchat/utils/ar.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class EditLanguageScreen extends StatefulWidget {
   const EditLanguageScreen({super.key});
@@ -13,10 +15,23 @@ class _EditLanguageScreenState extends State<EditLanguageScreen> {
   dynamic groupValue ;
   dynamic englishRadioVal ;
   dynamic arabicRadioVal ;
+  String _SelectedLang ='';
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+
+    getLang();
+    Translation( );
+  }
+  getLang() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    String l = await prefs.getString('local_lang')!;
+    if(l == null) ;  l = 'en' ;
+    setState(() {
+      _SelectedLang = l;
+      groupValue = l;
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -47,7 +62,12 @@ class _EditLanguageScreenState extends State<EditLanguageScreen> {
                       children: [
                         Transform.scale(
                             scale:1.3 ,
-                            child: Radio(activeColor: MyColors.primaryColor,value: englishRadioVal, groupValue:groupValue , onChanged: (val){}))
+                            child: Radio(activeColor: MyColors.primaryColor,value:'en' , groupValue:groupValue , onChanged: ( val){
+                              setState(() {
+                                _SelectedLang= val.toString();
+                                showAlertDialog(context );
+                              });
+                            }))
                       ],
                     )
                   ),
@@ -73,7 +93,13 @@ class _EditLanguageScreenState extends State<EditLanguageScreen> {
                       Transform.scale(
                           scale: 1.3,
                           child:
-                          Radio( activeColor: MyColors.primaryColor,value: englishRadioVal, groupValue:groupValue , onChanged: (val){}))
+                          Radio( activeColor: MyColors.primaryColor,value: 'ar', groupValue:groupValue , onChanged: (val){
+                            setState(() {
+                              _SelectedLang= val.toString();
+                              print(_SelectedLang);
+                              showAlertDialog(context );
+                            });
+                          }))
                     ],
                   )
                   ),
@@ -84,5 +110,46 @@ class _EditLanguageScreenState extends State<EditLanguageScreen> {
           )
         ),
       );
+  }
+void Translation() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('local_lang', _SelectedLang);
+  Get.updateLocale(Locale(_SelectedLang));
+  Navigator.pop(context);
+  setState(() {
+    groupValue = _SelectedLang ;
+  });
+
+}
+
+
+  showAlertDialog(BuildContext context) {
+
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK" , style: TextStyle(color: MyColors.primaryColor),),
+      onPressed: () {
+        Translation();
+
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: MyColors.darkColor,
+      title: Text("change_local".tr , style: TextStyle(color: MyColors.primaryColor),),
+      content: Text("change_local_msg".tr , style: TextStyle(color: MyColors.whiteColor),),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

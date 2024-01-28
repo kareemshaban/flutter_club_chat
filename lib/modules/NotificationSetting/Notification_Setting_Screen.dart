@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../shared/styles/colors.dart';
@@ -32,115 +33,122 @@ class _NotificationSettingScreenState extends State<NotificationSettingScreen> {
         color: MyColors.darkColor,
         width: double.infinity,
         height: double.infinity,
-        child: SingleChildScrollView(
-          child: Column(
-            children: [
-              Container(
-                color: Colors.black26,
-                padding: EdgeInsets.all(15.0) ,
-                margin: EdgeInsetsDirectional.only(bottom: 5.0),
-                child: Row(
-                  children: [
-                    Text("notification_setting_private_chat".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
-                    Expanded(
-                      child:Row(
+        child: Stack(
+          alignment: Alignment.bottomRight,
+          children: [
+            Column(
+              children: [
+                Container(
+                  color: Colors.black26,
+                  padding: EdgeInsets.all(15.0) ,
+                  margin: EdgeInsetsDirectional.only(bottom: 5.0),
+                  child: Row(
+                    children: [
+                      Text("notification_setting_private_chat".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Expanded(
+                        child:Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            CupertinoSwitch(activeColor: MyColors.primaryColor,value: _ChatValue,
+                              onChanged: (value) {
+                                setState(() {
+                                  _ChatValue = value;
+                                });
+                              },
+                            ),
+                          ],
+                          //change your color here
+                        ),
+                      ),
+                    ],
+
+                  ),
+                ),
+                Container(
+                  color: Colors.black26,
+                  padding: EdgeInsets.all(15.0) ,
+                  margin: EdgeInsetsDirectional.only(bottom: 5.0),
+                  child: Row(
+                    children: [
+                      Text("notification_setting_new_followers".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Expanded(
+                        child:Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CupertinoSwitch(activeColor: MyColors.primaryColor,value: _ChatValue,
-                            onChanged: (value) {
-                              setState(() {
-                                _ChatValue = value;
-                              });
-                            },
-                          ),
-                        ],
-                        //change your color here
+                          children: [
+                            CupertinoSwitch(activeColor: MyColors.primaryColor,value: _FollowersValue,
+                              onChanged: (value) {
+                                setState(() {
+                                  _FollowersValue = value;
+                                });
+                              },
+                            ),
+                          ],
+                          //change your color here
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
 
+                  ),
                 ),
-              ),
-              Container(
-                color: Colors.black26,
-                padding: EdgeInsets.all(15.0) ,
-                margin: EdgeInsetsDirectional.only(bottom: 5.0),
-                child: Row(
-                  children: [
-                    Text("notification_setting_new_followers".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
-                    Expanded(
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CupertinoSwitch(activeColor: MyColors.primaryColor,value: _FollowersValue,
-                            onChanged: (value) {
-                              setState(() {
-                                _FollowersValue = value;
-                              });
-                            },
-                          ),
-                        ],
-                        //change your color here
+                Container(
+                  color: Colors.black26,
+                  padding: EdgeInsets.all(15.0) ,
+                  margin: EdgeInsetsDirectional.only(bottom: 5.0),
+                  child: Row(
+                    children: [
+                      Text("notification_setting_invitation_message".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Expanded(
+                        child:Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            CupertinoSwitch(activeColor: MyColors.primaryColor,value: _MessageValue,
+                              onChanged: (value) {
+                                setState(() {
+                                  _MessageValue = value;
+                                });
+                              },
+                            ),
+                          ],
+                          //change your color here
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
 
+                  ),
                 ),
-              ),
-              Container(
-                color: Colors.black26,
-                padding: EdgeInsets.all(15.0) ,
-                margin: EdgeInsetsDirectional.only(bottom: 5.0),
-                child: Row(
-                  children: [
-                    Text("notification_setting_invitation_message".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
-                    Expanded(
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CupertinoSwitch(activeColor: MyColors.primaryColor,value: _MessageValue,
-                            onChanged: (value) {
-                              setState(() {
-                                _MessageValue = value;
-                              });
-                            },
-                          ),
-                        ],
-                        //change your color here
+                Container(
+                  color: Colors.black26,
+                  padding: EdgeInsets.all(15.0) ,
+                  margin: EdgeInsetsDirectional.only(bottom: 5.0),
+                  child: Row(
+                    children: [
+                      Text("notification_setting_moments_notification".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Expanded(
+                        child:Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            CupertinoSwitch(activeColor: MyColors.primaryColor,value: _MomentsValue,
+                              onChanged: (value) {
+                                setState(() {
+                                  _MomentsValue = value;
+                                });
+                              },
+                            ),
+                          ],
+                          //change your color here
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
 
+                  ),
                 ),
-              ),
-              Container(
-                color: Colors.black26,
-                padding: EdgeInsets.all(15.0) ,
-                margin: EdgeInsetsDirectional.only(bottom: 5.0),
-                child: Row(
-                  children: [
-                    Text("notification_setting_moments_notification".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
-                    Expanded(
-                      child:Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          CupertinoSwitch(activeColor: MyColors.primaryColor,value: _MomentsValue,
-                            onChanged: (value) {
-                              setState(() {
-                                _MomentsValue = value;
-                              });
-                            },
-                          ),
-                        ],
-                        //change your color here
-                      ),
-                    ),
-                  ],
+              ],
+            ),
+            Container(
+                 padding: EdgeInsets.all(30.0),
+                child: FloatingActionButton(onPressed: (){} , backgroundColor: MyColors.primaryColor, mini: true, child: const Icon(FontAwesomeIcons.save , color: Colors.white),))
 
-                ),
-              ),
-            ],
-          ),
+          ],
         ),
       ),
     );

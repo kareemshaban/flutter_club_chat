@@ -26,6 +26,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
    Widget startPage  = LoginScreen();
+   String? local_lang  ;
   void initState() {
     super.initState();
     intialize();
@@ -33,31 +34,44 @@ class _MyAppState extends State<MyApp> {
   }
   void intialize() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    int id = await prefs.getInt('userId') ?? 0;
-    if(id == 0){
+    int? id = await prefs.getInt('userId');
+
+    String l = await prefs.getString('local_lang') ?? 'en';
+    setState(() {
+      if(l == null) ;  l = 'en' ;
+      local_lang = l ;
+    });
+    if(id == null){
+      FlutterNativeSplash.remove();
       setState(() {
         startPage = LoginScreen();
       });
     } else {
-      setState(() {
-        startPage = TabsScreen();
-      });
+      if(id == 0){
+        FlutterNativeSplash.remove();
+        setState(() {
+          startPage = LoginScreen();
+        });
+      } else {
+        AppUser? user = await AppUserServices().getUser(id);
+        if(user != null){
+          setState(() {
+            AppUserServices().userSetter(user);
+            startPage = TabsScreen();
+          });
+          FlutterNativeSplash.remove();
+        } else {
+          setState(() {
+            startPage = LoginScreen();
+          });
+          FlutterNativeSplash.remove();
+        }
 
+      }
     }
 
-     AppUser? user = await AppUserServices().getUser(id);
-     if(user != null){
-       setState(() {
-         AppUserServices().userSetter(user);
-         startPage = TabsScreen();
-       });
-       FlutterNativeSplash.remove();
-     } else {
-       setState(() {
-         startPage = LoginScreen();
-       });
-       FlutterNativeSplash.remove();
-     }
+
+
 
 
   }
@@ -65,17 +79,21 @@ class _MyAppState extends State<MyApp> {
   
   @override
   Widget build(BuildContext context) {
+    print(local_lang);
     return    GetMaterialApp(
       theme: ThemeData(
         fontFamily: 'arabFont',
           primarySwatch: Colors.orange ,
           primaryColor:  Colors.orange ,
+          bottomSheetTheme: BottomSheetThemeData(
+            backgroundColor: Colors.black.withOpacity(0)
+          )
 
       ),
       debugShowCheckedModeBanner: false,
       home: startPage,
       translations:  Translation(),
-      locale: Locale('ar'),
+      locale: Locale(local_lang!),
     );
   }
 }

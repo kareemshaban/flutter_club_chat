@@ -28,6 +28,7 @@ class AddPostScreenState extends State<AddPostScreen> {
   File? _image;
   final picker = ImagePicker();
   var contentController = TextEditingController()  ;
+  bool _isLoading = false ;
 
   @override
   void initState()  {
@@ -62,7 +63,7 @@ class AddPostScreenState extends State<AddPostScreen> {
              children: [
                CircleAvatar(
                  backgroundColor: user?.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                 backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
+                 backgroundImage: user?.img != "" ?  NetworkImage(getUserImage()!) : null,
                  radius: 18,
                  child: user?.img == "" ?
                  Text(user!.name.toUpperCase().substring(0 , 1) +
@@ -74,15 +75,27 @@ class AddPostScreenState extends State<AddPostScreen> {
              ],
            ) : SizedBox(width: 1,),
            actions: [
-             GestureDetector(
-               onTap: () {post();},
-               child: Container(
-                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(20.0)),
-                 padding: EdgeInsets.symmetric(vertical: 10.0 , horizontal: 15.0),
 
-                 child: Text("add_post".tr , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0 , fontWeight: FontWeight.bold),),
+             ElevatedButton.icon(
+               onPressed: (){
+                 post();
+               },
+               style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0) , backgroundColor: MyColors.primaryColor ,
                ),
+               icon: _isLoading
+                   ? Container(
+                 width: 20,
+                 height: 20,
+                 padding: const EdgeInsets.all(2.0),
+                 child: const CircularProgressIndicator(
+                   color: Colors.white,
+                   strokeWidth: 3,
+                 ),
+               )
+                   :  Icon(Icons.publish , color: MyColors.darkColor , size: 20.0,),
+               label:  Text('add_post'.tr , style: TextStyle(color: MyColors.darkColor , fontSize: 13.0), ),
              ),
+
              SizedBox(width: 20.0,),
 
            ],
@@ -101,7 +114,7 @@ class AddPostScreenState extends State<AddPostScreen> {
                   keyboardType: TextInputType.multiline,
                   maxLines: 5,
                   cursorColor: MyColors.primaryColor,
-                  decoration: InputDecoration(border: InputBorder.none , labelText: "#Share Your Thoughts on Moments wall !" , labelStyle: TextStyle(color: Colors.grey , fontSize: 18.0)),
+                  decoration: InputDecoration(border: InputBorder.none , labelText: "#add_post_label".tr , labelStyle: TextStyle(color: Colors.grey , fontSize: 18.0)),
                   style: TextStyle(color: MyColors.whiteColor),
                 ),
               ),
@@ -175,8 +188,14 @@ class AddPostScreenState extends State<AddPostScreen> {
       ),
     );
   }
-  post(){
-    PostServices().AddPost(_image , contentController.text , user!.id , selectedTag);
+  post() async {
+   setState(() {
+     _isLoading = true ;
+   });
+   await PostServices().AddPost(_image , contentController.text , user!.id , selectedTag);
+   setState(() {
+     _isLoading = false ;
+   });
     Fluttertoast.showToast(
         msg: 'add_post_msg'.tr,
         toastLength: Toast.LENGTH_SHORT,
@@ -188,6 +207,14 @@ class AddPostScreenState extends State<AddPostScreen> {
     );
     Navigator.pop(context);
 
+  }
+
+  String? getUserImage(){
+    if(user!.img.startsWith('https')){
+      return user?.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
+    }
   }
 
 }

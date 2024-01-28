@@ -1,11 +1,14 @@
 import 'package:clubchat/modules/About/About_Screen.dart';
+import 'package:clubchat/modules/AccountManagement/Account_Management_Screen.dart';
 import 'package:clubchat/modules/Agreement/Agreement_Screen.dart';
+import 'package:clubchat/modules/BlockList/block_list_screen.dart';
 import 'package:clubchat/modules/EditLanguage/Edit_Language_Screen.dart';
 import 'package:clubchat/modules/NetworkDiagnosis/Network_Diagnosis_screen.dart';
 import 'package:clubchat/modules/NotificationSetting/Notification_Setting_Screen.dart';
 import 'package:clubchat/modules/PrivacyPolicy/Privacy_Policy_Screen.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 
 
@@ -26,7 +29,7 @@ class _SettingScreenState extends State<SettingScreen> {
         ),
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
-        title: Text("Setting" , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
+        title: Text("setting_title".tr , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
       ),
       body: Container(
         color: MyColors.darkColor,
@@ -46,7 +49,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                   child: Row(
                     children: [
-                      Text("Language" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Text("setting_language".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                       Expanded(
                         child:Row(
                         mainAxisAlignment: MainAxisAlignment.end,
@@ -71,7 +74,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                   child: Row(
                     children: [
-                      Text("Notification" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Text("setting_notification".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                       Expanded(
                         child:Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -90,22 +93,28 @@ class _SettingScreenState extends State<SettingScreen> {
                 height: 1.0,
                 color: Colors.black45,
               ),
-              Container(
-                color: Colors.black26,
-                padding: EdgeInsets.all(15.0) ,
-                child: Row(
-                  children: [
-                    Text("Blocked List" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
-                    Expanded(
-                      child:Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor, size: 20.0,)
-                          ]
-                        //change your color here
+              GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx) => const BlockListScreen()));
+                },
+                child: Container(
+                  color: Colors.black26,
+                  padding: EdgeInsets.all(15.0) ,
+                  child: Row(
+                    children: [
+                      Text("setting_blocked_list".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Expanded(
+                        child:Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor, size: 20.0,)
+                            ]
+                          //change your color here
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
               Container(
@@ -118,7 +127,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 padding: EdgeInsets.all(15.0) ,
                 child: Row(
                   children: [
-                    Text("Identity Verification" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                    Text("setting_identity_verification".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                     Expanded(
                       child:Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -147,7 +156,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                   child: Row(
                     children: [
-                      Text("About Us" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Text("about_us_title".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                       Expanded(
                         child:Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -171,7 +180,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                   child: Row(
                     children: [
-                      Text("Agreement" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Text("agreement_title".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                       Expanded(
                         child:Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -200,7 +209,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                   child: Row(
                     children: [
-                      Text("Privacy Policy" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Text("privacy_policy_title".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                       Expanded(
                         child:Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -230,7 +239,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   },
                   child: Row(
                     children: [
-                      Text("Network Diagnosis" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Text("network_title".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                       Expanded(
                         child:Row(
                             mainAxisAlignment: MainAxisAlignment.end,
@@ -250,7 +259,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 margin: EdgeInsetsDirectional.only(bottom: 10.0),
                 child: Row(
                   children: [
-                    Text("Clear cache" ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                    Text("setting_clear_cache".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                     Expanded(
                       child:Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -263,22 +272,29 @@ class _SettingScreenState extends State<SettingScreen> {
                   ],
                 ),
               ),
-              Container(
-                color: Colors.black26,
-                padding: EdgeInsets.all(15.0) ,
-                child: Row(
-                  children: [
-                    Text("Account Management" ,style:TextStyle( color: MyColors.unSelectedColor,fontSize: 15.0) ,),
-                    Expanded(
-                      child:Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor , size: 20.0,)
-                          ]
-                        //change your color here
+              GestureDetector(
+
+                behavior: HitTestBehavior.opaque,
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx) => const Account_Management_Screen()));
+                },
+                child: Container(
+                  color: Colors.black26,
+                  padding: EdgeInsets.all(15.0) ,
+                  child: Row(
+                    children: [
+                      Text("account_management_title".tr ,style:TextStyle( color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Expanded(
+                        child:Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor , size: 20.0,)
+                            ]
+                          //change your color here
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ],

@@ -54,6 +54,9 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
     });
     getTabs();
   }
+  Future<void> _refresh()async{
+    await getData();
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -70,7 +73,7 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
             children: [
               CircleAvatar(
                 backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
+                backgroundImage: user?.img != "" ?  NetworkImage(getUserImage()!) : null,
                 radius: 20,
                 child: user?.img== "" ?
                 Text(user!.name.toUpperCase().substring(0 , 1) +
@@ -175,10 +178,14 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
     mainAxisSize: MainAxisSize.min,
     children: [
       Expanded(
-        child: GridView.count(
-          crossAxisCount: 3,
-          childAspectRatio: .7,
-          children: designs!.where((element) => element.category_id == catId).map((design ) => designListItem(design)).toList() ,
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          color: MyColors.primaryColor,
+          child: GridView.count(
+            crossAxisCount: 3,
+            childAspectRatio: .7,
+            children: designs!.where((element) => element.category_id == catId).map((design ) => designListItem(design)).toList() ,
+          ),
         ),
       ),
     ],
@@ -261,5 +268,12 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
     final Duration duration = dateOne.difference(dateTwo);
 
     return (duration.inDays + 1).toString() ;
+  }
+  String? getUserImage(){
+    if(user!.img.startsWith('https')){
+      return user!.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
+    }
   }
 }

@@ -11,4 +11,5 @@ class MyColors {
   static Color blueColor = Colors.blue ;
   static Color pinkColor = Colors.pinkAccent ;
   static Color successColor = Colors.green ;
+  static Color blueDarkColor = Color(0xFFF162732) ;
 }

@@ -107,8 +107,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             : MyColors.pinkColor,
                         backgroundImage: _image == null
                             ? (user!.img != ""
-                                ? NetworkImage(
-                                    '${ASSETSBASEURL}AppUsers/${user?.img}')
+                                ? NetworkImage(getUserImage()!)
                                 : null)
                             : Image.file(
                                 _image!,
@@ -780,19 +779,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 ),
                 Container(
                   height: 70.0,
-                  child: TextField(
-                    controller: userNameController,
-                    style: TextStyle(color: Colors.white),
-                    cursorColor: MyColors.primaryColor,
-                    maxLength: 20,
-                    decoration: InputDecoration(
-                        hintText: "edit_profile_enter_user_name".tr,
-                        focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0),
-                            borderSide: BorderSide(color: MyColors.whiteColor)),
-                        border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10.0))),
-                  ),
+                    child: TextField(
+                      controller: userNameController,
+                      style: TextStyle(color: Colors.white),
+                      cursorColor: MyColors.primaryColor,
+                      maxLength: 20,
+                      decoration: InputDecoration(
+                          hintText: "edit_profile_enter_user_name".tr,
+                          focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0),
+                              borderSide: BorderSide(color: MyColors.whiteColor)),
+                          border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10.0))),
+                    ),
                 ),
               ],
             ),
@@ -919,5 +918,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ],
       ),
     );
+  }
+
+  String? getUserImage(){
+    if(user!.img.startsWith('https')){
+      return user?.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
+    }
   }
 }

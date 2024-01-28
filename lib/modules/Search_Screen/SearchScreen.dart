@@ -5,6 +5,7 @@ import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -45,9 +46,9 @@ class SearchScreenState extends State<SearchScreen> {
           unselectedLabelColor: MyColors.unSelectedColor,
           labelStyle: const TextStyle(fontSize: 17.0 , fontWeight: FontWeight.w900),
 
-          tabs: const [
-            Tab(text: "User" ),
-            Tab(text: "Room",),
+          tabs:  [
+            Tab(text: "search_user".tr ),
+            Tab(text: "profile_room".tr,),
           ],
         ) ,
       ),
@@ -70,6 +71,11 @@ class SearchScreenState extends State<SearchScreen> {
                         style: const TextStyle(color: Colors.white , fontSize: 10.0), cursorColor: MyColors.primaryColor,),
                     ),
                     const SizedBox(height: 20.0,),
+
+                    CircularProgressIndicator(
+                        value: isLoading ? null : 0 ,
+                      color: Colors.red,
+                    ),
                     Expanded(child: ListView.separated(itemBuilder:(ctx , index) => usersListItem(index), separatorBuilder:(ctx , index) => listSeperator(), itemCount: users.length))
                   ],
                 ),
@@ -80,7 +86,7 @@ class SearchScreenState extends State<SearchScreen> {
                   children: [
                     SizedBox(
                       height: 45.0 ,
-                      child: TextField(controller: roomTxt, decoration: InputDecoration(labelText: "Search in Users by ID / Name" , suffixIcon: IconButton(icon: const Icon(Icons.search , color: Colors.white, size: 25.0,),
+                      child: TextField(controller: roomTxt, decoration: InputDecoration(labelText: "search_label_search".tr , suffixIcon: IconButton(icon: const Icon(Icons.search , color: Colors.white, size: 25.0,),
                         onPressed: (){searchRooms();},) , fillColor: MyColors.primaryColor, focusColor: MyColors.primaryColor, focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ,
                           borderSide: BorderSide(color: MyColors.whiteColor) ) ,  border: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ) , labelStyle: const TextStyle(color: Colors.white , fontSize: 13.0) ),
                         style: const TextStyle(color: Colors.white), cursorColor: MyColors.primaryColor,),
@@ -98,10 +104,12 @@ class SearchScreenState extends State<SearchScreen> {
     ),);
   }
   void searchUsers() async{
+
       setState(() {
         isLoading = true ;
       });
      List<AppUser> res = await AppUserServices().searchUser(userTxt.text);
+     print(res);
      setState(() {
        users = res ;
        isLoading = false ;

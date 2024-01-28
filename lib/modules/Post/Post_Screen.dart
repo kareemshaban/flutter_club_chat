@@ -7,6 +7,7 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PostScreen extends StatefulWidget {
@@ -47,8 +48,8 @@ class _PostScreenState extends State<PostScreen> {
               color: MyColors.whiteColor, //change your color here
             ),
             backgroundColor: MyColors.solidDarkColor,
-            title: const Text(
-              "Moment Content",
+            title:  Text(
+              "post_title".tr,
               style: TextStyle(color: Colors.white),
             ),
             centerTitle: true,
@@ -120,7 +121,7 @@ class _PostScreenState extends State<PostScreen> {
                                   child: Container(
                                     padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0),
                                     decoration: BoxDecoration(border: Border.all(color: MyColors.primaryColor , width: 1.0 ) , borderRadius: BorderRadius.circular(15.0) , color: Colors.transparent),
-                                    child:  Text("Follow" , style: TextStyle(color: MyColors.primaryColor),),
+                                    child:  Text("moments_follow".tr , style: TextStyle(color: MyColors.primaryColor),),
                                   ),
                                 ),
                                 PopupMenuButton<int>(
@@ -130,8 +131,8 @@ class _PostScreenState extends State<PostScreen> {
                                   iconColor: Colors.white,
                                   iconSize: 25.0,
                                   itemBuilder: (context) => [
-                                    const PopupMenuItem<int>(value: 0, child: Text('Not Interested')),
-                                    const PopupMenuItem<int>(value: 1, child: Text('report')),
+                                     PopupMenuItem<int>(value: 0, child: Text('moments_not_interested'.tr)),
+                                     PopupMenuItem<int>(value: 1, child: Text('moments_report'.tr)),
                                   ],
                                 )
 
@@ -267,7 +268,7 @@ class _PostScreenState extends State<PostScreen> {
                                                 color: Colors
                                                     .transparent)
                                         ),
-                                        labelText: "Please be Friendly !",
+                                        labelText: "post_label".tr,
                                         labelStyle: TextStyle(color: MyColors.whiteColor),
                                         enabledBorder: OutlineInputBorder(
                                           borderSide: const BorderSide(
@@ -414,7 +415,7 @@ class _PostScreenState extends State<PostScreen> {
                             borderRadius: BorderRadius.circular(15.0),
                             color: Colors.transparent),
                         child: Text(
-                          "Follow",
+                          "moments_follow".tr,
                           style: TextStyle(color: MyColors.primaryColor),
                         ),
                       ),
@@ -531,7 +532,7 @@ class _PostScreenState extends State<PostScreen> {
                             borderRadius: BorderRadius.circular(15.0),
                             color: Colors.transparent),
                         child: Text(
-                          "Follow",
+                          "moments_follow".tr,
                           style: TextStyle(color: MyColors.primaryColor),
                         ),
                       ),
@@ -585,7 +586,7 @@ class _PostScreenState extends State<PostScreen> {
     FocusScope.of(context).unfocus();
     contentTxt.text = "" ;
     Fluttertoast.showToast(
-        msg: "Your comment Sent Successfully!",
+        msg: "post_msg".tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,

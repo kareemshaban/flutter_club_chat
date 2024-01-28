@@ -49,7 +49,7 @@ class _MyGiftsScreenState extends State<MyGiftsScreen> {
             children: [
               CircleAvatar(
                 backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
+                backgroundImage: user?.img != "" ?  NetworkImage(getUserImage()!) : null,
                 radius: 20,
                 child: user?.img== "" ?
                 Text(user!.name.toUpperCase().substring(0 , 1) +
@@ -114,24 +114,6 @@ class _MyGiftsScreenState extends State<MyGiftsScreen> {
     );
   }
 
-  // Widget giftItemBuilder(gift) =>  Container(
-  //   height: 200,
-  //   width: 100,
-  //   color: Colors.blue,
-  //   child: Column(
-  //     children: [
-  //       Container(
-  //           width: 80.0,
-  //           height: 50.0,
-  //           decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.5), color: Colors.black12),
-  //           child: Image(image: NetworkImage(ASSETSBASEURL + 'Designs/' + gift.icon) , width: 50,)
-  //       ),
-  //       SizedBox(height: 5.0,),
-  //       Text(gift.name , style: TextStyle(fontSize: 13.0 , color: MyColors.unSelectedColor),),
-  //       Text('X ' +  gift.count.toString() , style: TextStyle(fontSize: 12.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
-  //     ],
-  //   ),
-  // );
 
   Widget giftItemBuilder(gift) =>  GestureDetector(
     onTap: (){} ,
@@ -154,4 +136,13 @@ class _MyGiftsScreenState extends State<MyGiftsScreen> {
   );
 
   Widget seperatorItem() => SizedBox(width: 10.0,);
+
+
+  String? getUserImage(){
+    if(user!.img.startsWith('https')){
+      return user!.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
+    }
+  }
 }

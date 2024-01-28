@@ -16,6 +16,7 @@ class AddStatusScreen extends StatefulWidget {
 
 class _AddStatusScreenState extends State<AddStatusScreen> {
   AppUser? user ;
+  bool _isLoading = false ;
   var statusController = TextEditingController()  ;
   @override
   void initState() {
@@ -49,7 +50,7 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
                 padding: EdgeInsets.only(top: 10.0) ,
                 child: CircleAvatar(
                   backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                  backgroundImage:(user!.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null),
+                  backgroundImage:(user!.img != "" ?  NetworkImage(getUserImage()!) : null),
                   radius: 50,
                   child: user?.img== ""  ?
                   Text(user!.name.toUpperCase().substring(0 , 1) +
@@ -96,10 +97,31 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
                 ),
               ),
               Container(
-                padding: EdgeInsets.symmetric( horizontal: 10.0),
+                padding: EdgeInsets.symmetric( horizontal: 20.0),
                 margin: EdgeInsets.all(10.0),
-                decoration: BoxDecoration(  color: MyColors.primaryColor, borderRadius: BorderRadius.circular(15.0)),
-                child: MaterialButton(onPressed: (){ AddStatus();} , child: Text('add_status_share'.tr , style: TextStyle(color:MyColors.darkColor , fontSize: 18.0),),),
+                // decoration: BoxDecoration(  color: MyColors.primaryColor, borderRadius: BorderRadius.circular(15.0)),
+                child: ElevatedButton.icon(
+                  onPressed: (){
+                    AddStatus();
+                  },
+                  style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0) , backgroundColor: MyColors.primaryColor ,
+                  ),
+                  icon: _isLoading
+                      ? Container(
+                    width: 20,
+                    height: 20,
+                    padding: const EdgeInsets.all(2.0),
+                    child: const CircularProgressIndicator(
+                      color: Colors.white,
+                      strokeWidth: 3,
+                    ),
+                  )
+                      :  Icon(Icons.publish , color: MyColors.darkColor , size: 20.0,),
+                  label:  Text('add_status_share'.tr , style: TextStyle(color: MyColors.darkColor , fontSize: 18.0), ),
+                ),
+
+
+                //MaterialButton(onPressed: (){ AddStatus();} , child: Text('add_status_share'.tr , style: TextStyle(color:MyColors.darkColor , fontSize: 18.0),),),
               )
             ],
           ),
@@ -118,10 +140,15 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
   }
 
   AddStatus() async{
+    setState(() {
+      _isLoading = true ;
+    });
     AppUser? res = await AppUserServices().updateStatus(user!.id, statusController.text);
     AppUserServices().userSetter(res!);
     setState(() {
       user = res;
+      _isLoading = false ;
+      statusController.text = "" ;
     });
     Fluttertoast.showToast(
         msg: "add_status_msg".tr,
@@ -133,5 +160,13 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
         fontSize: 16.0
     );
   //  Navigator.pop(context , true);
+  }
+
+  String? getUserImage(){
+    if(user!.img.startsWith('https')){
+      return user?.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
+    }
   }
 }

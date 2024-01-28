@@ -122,7 +122,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
             children: [
               CircleAvatar(
                 backgroundColor: _posts[index].gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                backgroundImage: _posts[index].user_img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${_posts[index].user_img}') : null,
+                backgroundImage: _posts[index].user_img != "" ?  NetworkImage(getUserImage()!) : null,
                 radius: 25,
                 child: _posts[index].user_img == "" ?
                 Text(_posts[index].user_name.toUpperCase().substring(0 , 1) +
@@ -242,5 +242,13 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
 
     });
 
+  }
+
+  String? getUserImage(){
+    if(user!.img.startsWith('https')){
+      return user!.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
+    }
   }
 }

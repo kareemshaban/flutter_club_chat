@@ -1,10 +1,16 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:clubchat/firebase_options.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/modules/Agreement/Agreement_Screen.dart';
+import 'package:clubchat/modules/PrivacyPolicy/Privacy_Policy_Screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/styles/colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -33,12 +39,15 @@ class LoginScreenState extends State<LoginScreen> {
   GoogleSignInAccount? _currentUser;
   bool _isAuthorized = false; // has granted permissions?
   String _contactText = '';
-
+  var phoneController = TextEditingController();
+  var codeController = TextEditingController();
+  bool _isLoading = false ;
+  FirebaseAuth? auth ;
   @override
   void initState()  {
     super.initState();
 
-    checkUserLogin();
+    intializeFireBase();
     _googleSignIn.onCurrentUserChanged
         .listen((GoogleSignInAccount? account) async {
       bool isAuthorized = account != null;
@@ -57,23 +66,26 @@ class LoginScreenState extends State<LoginScreen> {
     _googleSignIn.signInSilently();
 
   }
-  void checkUserLogin() async{
-    // final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //
-    // if(prefs.getInt('userId') != null){
-    //   Navigator.pushReplacement(
-    //     context,
-    //     MaterialPageRoute(builder: (context) => const TabsScreen()),
-    //   );
-    // }
+  void intializeFireBase() async{
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+     auth = FirebaseAuth.instance;
   }
   Future<void> _handleSignIn() async {
     try {
     // await   _googleSignIn.disconnect();
-     var googleREs = await _googleSignIn.signIn();
-      print(googleREs ) ;
+     var googleUser  = await _googleSignIn.signIn();
+     final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+     final credential = GoogleAuthProvider.credential(
+       accessToken: googleAuth?.accessToken,
+       idToken: googleAuth?.idToken,
+     );
+     print(credential);
+     await auth!.signInWithCredential(credential);
      AppUser? user = await AppUserServices().createAccount(_googleSignIn.currentUser?.displayName , 'GOOGLE' ,
-       _googleSignIn.currentUser?.photoUrl ?? "" , "" , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.id );
+        "" , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.id );
+     print(user ) ;
      if(user!.id > 0){
        Fluttertoast.showToast(
            msg: 'login_welcome_msg'.tr,
@@ -103,31 +115,51 @@ class LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return     Scaffold(
-      body: SafeArea(
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration:  BoxDecoration(  image: DecorationImage(
-            image: AssetImage("assets/images/login_bg.jpg"),
-            fit: BoxFit.cover,
-            colorFilter:  ColorFilter.mode(Colors.grey.withOpacity(.75), BlendMode.dstATop),
-          ), ),
-          child:  Column(
-            children: [
-              const SizedBox(height: 100.0,),
-              const Image(image: AssetImage("assets/images/logo_trans.png") , width: 200.0, height: 200.0,),
-              Text(" login_title".tr , style: TextStyle(fontSize: 30.0 , color: Colors.white.withOpacity(.7) , fontWeight: FontWeight.bold),),
-              Expanded(child:
-              Column(
+      appBar: PreferredSize(
+        preferredSize: Size.zero,
+        child: AppBar(
+          backgroundColor: MyColors.darkColor,
+          elevation: 0,
+        ),
+      ),
+      body: Container(
+        width: double.infinity,
+         color: MyColors.blueDarkColor,
+        child:  Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    const SizedBox(height: 120.0,),
+                    Container(
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(40.0)),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: const Image(image: AssetImage("assets/images/logo_blue.png") , width: 200.0, height: 200.0,)),
+                    SizedBox(height: 10.0,),
+                    Text("login_title".tr , style: TextStyle(fontSize: 25.0 , color: MyColors.primaryColor , fontWeight: FontWeight.bold),),
+                   
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              height: MediaQuery.sizeOf(context).height / 3,
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      CircleAvatar(
-                        radius: 30.0,
-                        backgroundColor: Colors.grey.withOpacity(.4),
-                        child: const Image(image: AssetImage('assets/images/phone.png') , width: 40.0 , height: 40.0,),
+                      GestureDetector(
+                        onTap:(){
+                          _displayTextInputDialog(context);
+                        },
+                        child: CircleAvatar(
+                          radius: 30.0,
+                          backgroundColor: Colors.grey.withOpacity(.4),
+                          child: const Image(image: AssetImage('assets/images/phone.png') , width: 35.0 , height: 35.0,),
+                        ),
                       ),
                       const SizedBox(width: 40.0,),
                       GestureDetector(
@@ -135,15 +167,15 @@ class LoginScreenState extends State<LoginScreen> {
                         child: CircleAvatar(
                           backgroundColor: Colors.grey.withOpacity(.4),
                           radius: 30.0,
-                          child: const Image(image: AssetImage('assets/images/gmail.png') , width: 40.0 , height: 40.0,),
+                          child: const Image(image: AssetImage('assets/images/gmail.png') , width: 35.0 , height: 35.0,),
                         ),
                       ),
-                      const SizedBox(width: 40.0,),
-                      CircleAvatar(
-                        backgroundColor: Colors.grey.withOpacity(.4),
-                        radius: 30.0,
-                        child: const Image(image: AssetImage('assets/images/facebook.png') , width: 40.0 , height: 40.0,),
-                      ),
+                      // const SizedBox(width: 40.0,),
+                      // CircleAvatar(
+                      //   backgroundColor: Colors.grey.withOpacity(.4),
+                      //   radius: 30.0,
+                      //   child: const Image(image: AssetImage('assets/images/facebook.png') , width: 40.0 , height: 40.0,),
+                      // ),
                     ],
                   ),
                   const SizedBox(height: 20.0,),
@@ -153,21 +185,262 @@ class LoginScreenState extends State<LoginScreen> {
                       alignment: WrapAlignment.center,
                       crossAxisAlignment: WrapCrossAlignment.center,
                       children: [
-                         Text('login_privacy'.tr , style: TextStyle(fontSize: 12.0 , color: Colors.white)  ,),
-                        TextButton(onPressed: (){}, child:  Text("login_policy".tr , style: TextStyle(color: Colors.orange , fontSize: 12.0 , fontWeight: FontWeight.bold , decoration: TextDecoration.underline , decorationColor: Colors.orange,),) ),
-                         Text('login_and'.tr , style: TextStyle(fontSize: 12.0 , color: Colors.white) ),
-                        TextButton(onPressed: (){}, child:  Text("login_services".tr , style: TextStyle(color: Colors.orange , fontSize: 12.0 , fontWeight: FontWeight.bold , decoration: TextDecoration.underline , decorationColor: Colors.orange,),)),
+                        Text('login_privacy'.tr , style: TextStyle(fontSize: 12.0 , color: Colors.white)  ,),
+                        TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const Privacy_Policy_Screen(),));}, child:  Text("login_policy".tr , style: TextStyle(color: Colors.orange , fontSize: 12.0 , fontWeight: FontWeight.bold , decoration: TextDecoration.underline , decorationColor: Colors.orange,),) ),
+                        Text('login_and'.tr , style: TextStyle(fontSize: 12.0 , color: Colors.white) ),
+                        TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => const Agreement_Screen(),));}, child:  Text("login_services".tr , style: TextStyle(color: Colors.orange , fontSize: 12.0 , fontWeight: FontWeight.bold , decoration: TextDecoration.underline , decorationColor: Colors.orange,),)),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20.0,),
                 ],
-              )
-              )
-            ],
-          ),
+              ),
+            )
+          ],
         ),
       ),
+    );
+  }
+
+  phoneAuthLogin() async{
+    _isLoading = true ;
+    await auth!.verifyPhoneNumber(
+      phoneNumber: phoneController.text,
+      verificationCompleted: (PhoneAuthCredential credential) {
+         print(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        _isLoading = false;
+        Fluttertoast.showToast(
+            msg: "sorry we can not verify phone right now !",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0);
+      },
+      codeSent: (String verificationId, int? resendToken) {
+        _isLoading = false;
+        Navigator.pop(context);
+
+        Fluttertoast.showToast(
+            msg: "code sent successfully",
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0);
+        _displayTextInputDialog2(context , verificationId);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
+  }
+
+  verifyCode(verificationId) async{
+    _isLoading = true ;
+    PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: codeController.text);
+    await auth!.signInWithCredential(credential);
+
+    AppUser? user = await AppUserServices().createAccount('new user' , 'PHONE' ,
+        "" , phoneController.text , phoneController.text, credential.verificationId);
+    print(user ) ;
+    _isLoading = false ;
+    Navigator.pop(context);
+    if(user!.id > 0){
+      Fluttertoast.showToast(
+          msg: 'login_welcome_msg'.tr,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+      await prefs.setInt('userId', user.id);
+      AppUserServices().userSetter(user);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TabsScreen()),
+      );
+    }
+  }
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Container(
+          child: AlertDialog(
+            backgroundColor: MyColors.darkColor,
+            title: Text(
+              'login_phone_title'.tr,
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              textAlign: TextAlign.center,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "login_phone_hint".tr,
+                      style: TextStyle(
+                          color: MyColors.unSelectedColor, fontSize: 13.0),
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 70.0,
+                  child: TextField(
+                    controller: phoneController,
+                    style: TextStyle(color: Colors.white),
+                    keyboardType: TextInputType.phone,
+                    cursorColor: MyColors.primaryColor,
+                    decoration: InputDecoration(
+                        hintText: "+20XXXXXXXXXX",
+                        hintStyle: TextStyle(color: Colors.white),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: MyColors.whiteColor)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0))),
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    color: MyColors.solidDarkColor,
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: MaterialButton(
+                  child: Text(
+                    'edit_profile_cancel'.tr,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: (){
+                  _isLoading = true ;
+                  phoneAuthLogin();
+                },
+                style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0) , backgroundColor: MyColors.primaryColor ,
+                ),
+                icon: _isLoading
+                    ? Container(
+                  width: 20,
+                  height: 20,
+                  padding: const EdgeInsets.all(2.0),
+                  child:  CircularProgressIndicator(
+                    color: MyColors.darkColor,
+                    strokeWidth: 3,
+                  ),
+                )
+                    :  Icon(Icons.send_to_mobile , color: MyColors.darkColor , size: 20.0,),
+                label:  Text('send_btn'.tr , style: TextStyle(color: MyColors.darkColor , fontSize: 13.0), ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _displayTextInputDialog2(BuildContext context , verificationId) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Container(
+          child: AlertDialog(
+            backgroundColor: MyColors.darkColor,
+            title: Text(
+              'verify_phone_title'.tr,
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              textAlign: TextAlign.center,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      "verify_phone_hint".tr,
+                      style: TextStyle(
+                          color: MyColors.unSelectedColor, fontSize: 13.0),
+                      textAlign: TextAlign.start,
+                    ),
+                  ],
+                ),
+                Container(
+                  height: 70.0,
+                  child: TextField(
+                    controller: codeController,
+                    style: TextStyle(color: Colors.white),
+                    keyboardType: TextInputType.phone,
+                    cursorColor: MyColors.primaryColor,
+                    maxLength: 6,
+                    decoration: InputDecoration(
+                        hintText: "XXXXXX",
+                        hintStyle: TextStyle(color: Colors.white),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: MyColors.whiteColor)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0))),
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    color: MyColors.solidDarkColor,
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: MaterialButton(
+                  child: Text(
+                    'edit_profile_cancel'.tr,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              ElevatedButton.icon(
+                onPressed: (){
+                  _isLoading = true ;
+                  verifyCode(verificationId);
+                },
+                style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0) , backgroundColor: MyColors.primaryColor ,
+                ),
+                icon: _isLoading
+                    ? Container(
+                  width: 20,
+                  height: 20,
+                  padding: const EdgeInsets.all(2.0),
+                  child:  CircularProgressIndicator(
+                    color: MyColors.darkColor,
+                    strokeWidth: 3,
+                  ),
+                )
+                    :  Icon(Icons.check_circle , color: MyColors.darkColor , size: 20.0,),
+                label:  Text('verify_btn'.tr , style: TextStyle(color: MyColors.darkColor , fontSize: 13.0), ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

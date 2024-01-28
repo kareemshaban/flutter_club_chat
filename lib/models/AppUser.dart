@@ -1,3 +1,4 @@
+import 'package:clubchat/models/Block.dart';
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
 import 'package:clubchat/models/UserHoppy.dart';
@@ -43,6 +44,7 @@ class AppUser {
    List<Follower>? followings = [] ;
    List<Friends>? friends = [] ;
    List<Visitor>? visitors = [] ;
+   List<Block>? blocks = [] ;
    final String cover ;
    final String status ;
    final String country_name ;
@@ -55,7 +57,7 @@ class AppUser {
      required this.last_login, required this.birth_date, required this.enable, required this.ipAddress,required  this.macAddress, required this.deviceId, required this.isOnline, required this.isInRoom, required this.country,
      required this.register_with , required this.gender , required this.gold , required this.diamond , required this.share_level_order , required this.share_level_points ,required this.share_level_icon ,
      required  this.karizma_level_order , required this.karizma_level_points , required this.karizma_level_icon ,required this.charging_level_order , required this.charging_level_points , required this.charging_level_icon ,
-     this.followers , this.followings , this.visitors , this.friends , this.hoppies , required this.cover , required this.status , required this.country_name , required this.country_flag});
+     this.followers , this.followings , this.visitors , this.friends , this.blocks , this.hoppies , required this.cover , required this.status , required this.country_name , required this.country_flag});
 
    factory AppUser.fromJson(Map<String, dynamic> json) {
       return switch (json) {

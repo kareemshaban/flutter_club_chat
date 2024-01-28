@@ -44,10 +44,11 @@ class HomeScreenState extends State<HomeScreen> {
 
   }
 
-  void getBanners() async {
+   getBanners() async {
     List<BannerData> res = await BannerServices().getAllBanners();
     setState(() {
       banners = res ;
+      print(banners[0].img);
     });
      List<Country> res2 = await CountryService().getAllCountries();
     setState(() {
@@ -67,14 +68,20 @@ class HomeScreenState extends State<HomeScreen> {
   }
   //var
   AppUser? user ;
+  Future<void> _refresh ()async{
+
+    await getBanners() ;
+
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     setState(() {
       user =  AppUserServices().userGetter();
+      print(user!.id);
     });
-    print(user!.id);
+
 
     getBanners();
   }
@@ -158,9 +165,13 @@ class HomeScreenState extends State<HomeScreen> {
                     ),
                     const SizedBox(height: 10.0,),
                     Expanded(
-                      child: GridView.count(
-                        crossAxisCount: 2,
-                        children: rooms.where((element) => element.country_id == selectedCountry || selectedCountry == 0).map((room ) => chatRoomListItem(room)).toList() ,
+                      child: RefreshIndicator(
+                        color: MyColors.primaryColor,
+                        onRefresh: _refresh,
+                        child: GridView.count(
+                          crossAxisCount: 2,
+                          children: rooms.where((element) => element.country_id == selectedCountry || selectedCountry == 0).map((room ) => chatRoomListItem(room)).toList() ,
+                        ),
                       ),
                     )
                   ],),
@@ -188,9 +199,13 @@ class HomeScreenState extends State<HomeScreen> {
                    ),
                    const SizedBox(height: 10.0,),
                    Expanded(
-                     child: GridView.count(
-                       crossAxisCount: 2,
-                       children: rooms.where((element) => element.subject == selectedChatRoomCategory).map((room ) => chatRoomListItem(room)).toList() ,
+                     child: RefreshIndicator(
+                       color: MyColors.primaryColor,
+                       onRefresh: _refresh,
+                       child: GridView.count(
+                         crossAxisCount: 2,
+                         children: rooms.where((element) => element.subject == selectedChatRoomCategory).map((room ) => chatRoomListItem(room)).toList() ,
+                       ),
                      ),
                    )
                  ],
@@ -226,7 +241,7 @@ class HomeScreenState extends State<HomeScreen> {
  Widget countryListSpacer() => const SizedBox(width: 5.0,);
 
  Widget chatRoomListItem(room) =>  GestureDetector(
-     onTap: (){openChatRoom(room);} ,
+     onTap: (){openRoom(room.id);} ,
      child: Container(
          width: MediaQuery.of(context).size.width / 2 ,
        margin: const EdgeInsets.all(5.0),
@@ -270,7 +285,7 @@ class HomeScreenState extends State<HomeScreen> {
                        Container(
                          decoration:  BoxDecoration( color: getMyColor(room.subject)
 
-                             , borderRadius: BorderRadius.only(bottomRight: Radius.circular(15.0) , topLeft: Radius.circular(15.0))),
+                             , borderRadius: BorderRadiusDirectional.only(bottomEnd: Radius.circular(15.0) , topStart: Radius.circular(15.0))),
                          width: 60.0 ,
                          height: 30.0,
                          child: Row(
@@ -347,11 +362,14 @@ class HomeScreenState extends State<HomeScreen> {
     Navigator.push( context,  MaterialPageRoute(builder: (context) =>  const SearchScreen()));
   }
 
- void openRoom() async{
-   print(user!.id);
+ void openRoom(id) async{
 
+   ChatRoom? res = await ChatRoomService().openRoomById(id);
+   if(res != null){
+     ChatRoomService().roomSetter(res);
+     Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
 
-
+   }
  }
 
  ImageProvider getRoomImage(room){
@@ -364,4 +382,5 @@ class HomeScreenState extends State<HomeScreen> {
    }
   return  NetworkImage(room_img);
  }
+
 }

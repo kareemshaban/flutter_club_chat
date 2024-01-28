@@ -72,6 +72,9 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
 
     });
   }
+  Future<void> _refresh()async{
+   await getData() ;
+  }
 
   @override
   void dispose() {
@@ -251,10 +254,14 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
     mainAxisSize: MainAxisSize.min,
     children: [
       Expanded(
-        child: GridView.count(
-          crossAxisCount: 3,
-          childAspectRatio: .7,
-          children: helper!.designs!.where((element) => element.category_id == catId).map((design ) => designListItem(design)).toList() ,
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          color: MyColors.primaryColor,
+          child: GridView.count(
+            crossAxisCount: 3,
+            childAspectRatio: .7,
+            children: helper!.designs!.where((element) => element.category_id == catId).map((design ) => designListItem(design)).toList() ,
+          ),
         ),
       ),
     ],
@@ -418,4 +425,6 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
     }
 
   }
+
+
 }

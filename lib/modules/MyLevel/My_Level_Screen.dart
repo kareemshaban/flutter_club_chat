@@ -250,44 +250,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                     ],
                                   ),
                                 ),
-                                // Padding(
-                                //   padding: const EdgeInsets.all(15.0),
-                                //   child: Row(
-                                //     children: [
-                                //       Image(image: AssetImage('assets/images/frame.png') , width:40, height: 40,),
-                                //       SizedBox(width: 20.0,),
-                                //       Column(
-                                //         crossAxisAlignment: CrossAxisAlignment.start,
-                                //         children: [
-                                //           Text("Buy a Frame From Mall" , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
-                                //           Text("1 Gold = 1 Point" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
-                                //           SizedBox(height: 10.0,),
-                                //           Container(color: MyColors.unSelectedColor,
-                                //             height: 1.0 , child: null, width: ( MediaQuery.of(context).size.width - 100),)
-                                //         ],
-                                //       )
-                                //     ],
-                                //   ),
-                                // ),
-                                // Padding(
-                                //   padding: const EdgeInsets.all(15.0),
-                                //   child: Row(
-                                //     children: [
-                                //       Image(image: AssetImage('assets/images/mall_icon.png') , width:45, height: 45,),
-                                //       SizedBox(width: 15.0,),
-                                //       Column(
-                                //         crossAxisAlignment: CrossAxisAlignment.start,
-                                //         children: [
-                                //           Text("Buy a Car From Mall" , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
-                                //           Text("1 Gold = 1 Point" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
-                                //           SizedBox(height: 10.0,),
-                                //           Container(color: MyColors.unSelectedColor,
-                                //             height: 1.0 , child: null, width: ( MediaQuery.of(context).size.width - 100),)
-                                //         ],
-                                //       )
-                                //     ],
-                                //   ),
-                                // ),
+
 
                               ],
                             ),
@@ -469,45 +432,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                     ],
                                   ),
                                 ),
-                                // Padding(
-                                //   padding: const EdgeInsets.all(15.0),
-                                //   child: Row(
-                                //     children: [
-                                //       Image(image: AssetImage('assets/images/frame.png') , width:40, height: 40,),
-                                //       SizedBox(width: 20.0,),
-                                //       Column(
-                                //         crossAxisAlignment: CrossAxisAlignment.start,
-                                //         children: [
-                                //           Text("Receive a Frame From Friend" , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
-                                //           Text("1 Gold = 1 Point" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
-                                //           SizedBox(height: 10.0,),
-                                //           Container(color: MyColors.unSelectedColor,
-                                //             height: 1.0 , child: null, width: ( MediaQuery.of(context).size.width - 100),)
-                                //         ],
-                                //       )
-                                //     ],
-                                //   ),
-                                // ),
 
-                                // Padding(
-                                //   padding: const EdgeInsets.all(15.0),
-                                //   child: Row(
-                                //     children: [
-                                //       Image(image: AssetImage('assets/images/mall_icon.png') , width:45, height: 45,),
-                                //       SizedBox(width: 15.0,),
-                                //       Column(
-                                //         crossAxisAlignment: CrossAxisAlignment.start,
-                                //         children: [
-                                //           Text("Receive a Car From Friend" , style: TextStyle(color: MyColors.whiteColor , fontSize: 16.0),),
-                                //           Text("1 Gold = 1 Point" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
-                                //           SizedBox(height: 10.0,),
-                                //           Container(color: MyColors.unSelectedColor,
-                                //             height: 1.0 , child: null, width: ( MediaQuery.of(context).size.width - 100),)
-                                //         ],
-                                //       )
-                                //     ],
-                                //   ),
-                                // ),
 
                               ],
                             ),
@@ -549,8 +474,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                         ? MyColors.blueColor
                                         : MyColors.pinkColor,
                                     backgroundImage: user?.img != ""
-                                        ? NetworkImage(
-                                            '${ASSETSBASEURL}AppUsers/${user?.img}')
+                                        ? NetworkImage(getUserImage()!)
                                         : null,
                                     radius: 60,
                                     child: user?.img == ""
@@ -720,6 +644,14 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
         ),
       ),
     );
+  }
+
+  String? getUserImage(){
+    if(user!.img.startsWith('https')){
+      return user!.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
+    }
   }
 
 }

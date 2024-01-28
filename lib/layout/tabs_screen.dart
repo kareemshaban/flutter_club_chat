@@ -5,6 +5,7 @@ import 'package:clubchat/modules/Profile/Profile_Screen.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
@@ -41,11 +42,11 @@ class TabsScreenState extends State<TabsScreen> {
            activeIndex = index ;
          });
         },
-        items: const [
-          BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.homeUser) , label: "Home" ),
-          BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.globe) , label: "Moments"),
-          BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.solidMessage) , label: "Chats"),
-          BottomNavigationBarItem(icon: FaIcon(FontAwesomeIcons.person) , label: "Me"),
+        items:  [
+          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.homeAlt) , label: ""),
+          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.globe) , label: ""),
+          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.commentDots) , label: ""),
+          BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.user) , label: ""),
       ],),
     );
   }

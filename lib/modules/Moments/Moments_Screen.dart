@@ -51,6 +51,12 @@ class MomentsScreenState extends State<MomentsScreen> {
 
     });
   }
+  Future<void> _refresh ()async{
+
+    await getAllPosts() ;
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return  DefaultTabController(length: 3,
@@ -86,16 +92,21 @@ class MomentsScreenState extends State<MomentsScreen> {
            child: Stack(
              alignment: AlignmentDirectional.bottomEnd,
              children: [
-               TabBarView(
+              posts.length > 0 ? TabBarView(
                  children: [
                    Column(
                      crossAxisAlignment: CrossAxisAlignment.end,
                      children: [
                        posts.isNotEmpty ?
-                           Expanded(child: ListView.separated(  itemBuilder:(ctx , index) => postListItem(index , posts), separatorBuilder:(ctx , index) => listSeperatorItem(), itemCount: posts.length))
-                           : const Center(
-                         child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0, ),
-                       ),
+                           Expanded(child: RefreshIndicator( color:MyColors.primaryColor ,onRefresh:_refresh ,child: ListView.separated(  itemBuilder:(ctx , index) => postListItem(index , posts), separatorBuilder:(ctx , index) => listSeperatorItem(), itemCount: posts.length)))
+                           :  RefreshIndicator(
+                         color: MyColors.primaryColor,
+                         onRefresh: _refresh,
+                         child: ListView.builder(
+                           itemBuilder: (context,index)=>Show_image(),
+                           itemCount: 1,
+                         ),
+                       ) ,
                      ],
                    ),
                    Column(
@@ -103,10 +114,15 @@ class MomentsScreenState extends State<MomentsScreen> {
                      children: [
                        Expanded(
                            child: followingPosts.isNotEmpty ?
-                           ListView.separated( shrinkWrap: true,itemBuilder:(ctx , index) => postListItem(index , posts), separatorBuilder:(ctx , index) => listSeperatorItem(), itemCount: followingPosts.length)
-                               : const Center(
-                             child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0, ),
-                           )
+                           RefreshIndicator(color:MyColors.primaryColor ,onRefresh:_refresh ,child: ListView.separated( shrinkWrap: true,itemBuilder:(ctx , index) => postListItem(index , posts), separatorBuilder:(ctx , index) => listSeperatorItem(), itemCount: followingPosts.length))
+                               : RefreshIndicator(
+                                 color: MyColors.primaryColor,
+                                 onRefresh: _refresh,
+                                 child: ListView.builder(
+                                     itemBuilder: (context,index)=>Show_image(),
+                                     itemCount: 1,
+                                 ),
+                               ) ,
 
                      ),
                      ],
@@ -116,17 +132,21 @@ class MomentsScreenState extends State<MomentsScreen> {
                      children: [
                        Expanded(
                            child: myPosts.isNotEmpty ?
-                           ListView.separated(shrinkWrap: true ,itemBuilder:(ctx , index) => postListItem(index , posts), separatorBuilder:(ctx , index) => listSeperatorItem(), itemCount: myPosts.length)
-                               : const Center(
-                             child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0,),
-                           )
-
+                           RefreshIndicator(color:MyColors.primaryColor,onRefresh:_refresh,child: ListView.separated(shrinkWrap: true ,itemBuilder:(ctx , index) => postListItem(index , posts), separatorBuilder:(ctx , index) => listSeperatorItem(), itemCount: myPosts.length))
+                               : RefreshIndicator(
+                               color: MyColors.primaryColor,
+                               onRefresh: _refresh,
+                               child: ListView.builder(
+                                 itemBuilder: (context,index)=>Show_image(),
+                                 itemCount: 1,
+                               ),
+                             ) ,
                        ),
                      ],
                    ),
 
                  ],
-               ),
+               ) : Container(),
                 FloatingActionButton(onPressed: (){openAddPostPage();} , backgroundColor: MyColors.primaryColor, mini: true, child: const Icon(FontAwesomeIcons.pen , color: Colors.white),)
 
              ],
@@ -305,3 +325,9 @@ class MomentsScreenState extends State<MomentsScreen> {
   }
 
 }
+
+Widget Show_image() => Column(
+  children: [
+    Center(child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0,))
+  ],
+) ;

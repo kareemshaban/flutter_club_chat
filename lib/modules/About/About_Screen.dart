@@ -3,6 +3,7 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class About_Screen extends StatefulWidget {
   const About_Screen({super.key});
@@ -43,7 +44,7 @@ class _About_ScreenState extends State<About_Screen> {
                   Container(
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0)),
                       clipBehavior: Clip.antiAliasWithSaveLayer,
-                      child: Image(image: AssetImage('assets/images/logo.jpg') , width: 100.0, height: 100.0,)),
+                      child: Image(image: AssetImage('assets/images/logo_blue.png') , width: 100.0, height: 100.0,)),
                   SizedBox(height: 5.0,),
                   Text("Club chat",style: TextStyle(color: MyColors.whiteColor,fontSize: 18.0)),
                   SizedBox(height: 3.0,),
@@ -70,22 +71,27 @@ class _About_ScreenState extends State<About_Screen> {
                 ],
               ),
             ),
-            Container(
-              color: Colors.black26,
-              padding: EdgeInsets.all(15.0) ,
-              child: Row(
-                children: [
-                  Text("about_us_official_website".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
-                  Expanded(
-                    child:Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor, size: 20.0,)
-                        ]
-                      //change your color here
+            GestureDetector(
+              onTap: (){
+                openWebsite();
+              },
+              child: Container(
+                color: Colors.black26,
+                padding: EdgeInsets.all(15.0) ,
+                child: Row(
+                  children: [
+                    Text("about_us_official_website".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                    Expanded(
+                      child:Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor, size: 20.0,)
+                          ]
+                        //change your color here
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ],
@@ -94,4 +100,11 @@ class _About_ScreenState extends State<About_Screen> {
       ),
       );
   }
+  void openWebsite() async {
+    final Uri url = Uri.parse('https://flutter.dev');
+    if (!await launchUrl(url)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
 }

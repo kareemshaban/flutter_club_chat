@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/Block.dart';
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
 import 'package:clubchat/models/Design.dart';
@@ -12,6 +13,8 @@ import 'package:clubchat/models/UserHoppy.dart';
 import 'package:clubchat/models/Visitor.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:device_info_plus/device_info_plus.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -51,6 +54,7 @@ class AppUserServices {
         'deviceId': deviceId
       }),
     );
+    print(response.body);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
@@ -59,6 +63,7 @@ class AppUserServices {
         List<Follower> followings = [];
         List<Friends> friends = [];
         List<Visitor> visitors = [];
+        List<Block> blocks = [];
         List<UserHoppy> hoppies = [];
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
@@ -80,6 +85,12 @@ class AppUserServices {
           visitors.add(like);
 
         }
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
+
         for (var j = 0; j < jsonData['tags'].length; j ++) {
           UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
           hoppies.add(hoppy);
@@ -89,6 +100,7 @@ class AppUserServices {
         user.followings = followings ;
         user.followers = followers ;
         user.hoppies = hoppies ;
+        user.blocks = blocks ;
         return  user;
       } else {
         return null ;
@@ -160,6 +172,8 @@ class AppUserServices {
         List<Follower> followings = [];
         List<Friends> friends = [];
         List<Visitor> visitors = [];
+        List<Block> blocks = [];
+
         List<UserHoppy> hoppies = [] ;
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
@@ -180,6 +194,11 @@ class AppUserServices {
           Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
           visitors.add(like);
         }
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
         for (var j = 0; j < jsonData['tags'].length; j ++) {
           UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
           hoppies.add(hoppy);
@@ -189,6 +208,7 @@ class AppUserServices {
         user.followings = followings ;
         user.followers = followers ;
         user.hoppies = hoppies ;
+        user.blocks = blocks ;
         return  user;
       } else {
         return null ;
@@ -243,6 +263,7 @@ class AppUserServices {
         List<Friends> friends = [];
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -263,6 +284,11 @@ class AppUserServices {
           visitors.add(like);
 
         }
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
         for (var j = 0; j < jsonData['tags'].length; j ++) {
           UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
           hoppies.add(hoppy);
@@ -272,6 +298,7 @@ class AppUserServices {
         user.followings = followings ;
         user.followers = followers ;
         user.hoppies = hoppies ;
+        user.blocks = blocks ;
         return  user;
       } else {
         return null ;
@@ -297,7 +324,7 @@ class AppUserServices {
         'name': name.toString(),
       }),
     );
-    if (response.statusCode == 200) {
+        if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
         AppUser user = AppUser.fromJson(jsonData['user']) ;
@@ -306,6 +333,7 @@ class AppUserServices {
         List<Friends> friends = [];
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -326,6 +354,12 @@ class AppUserServices {
           visitors.add(like);
 
         }
+
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
         for (var j = 0; j < jsonData['tags'].length; j ++) {
           UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
           hoppies.add(hoppy);
@@ -335,6 +369,7 @@ class AppUserServices {
         user.followings = followings ;
         user.followers = followers ;
         user.hoppies = hoppies ;
+        user.blocks = blocks ;
         return  user;
       } else {
         return null ;
@@ -368,6 +403,7 @@ class AppUserServices {
         List<Friends> friends = [];
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -388,6 +424,12 @@ class AppUserServices {
           visitors.add(like);
 
         }
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
+
         for (var j = 0; j < jsonData['tags'].length; j ++) {
           UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
           hoppies.add(hoppy);
@@ -397,6 +439,7 @@ class AppUserServices {
         user.followings = followings ;
         user.followers = followers ;
         user.hoppies = hoppies ;
+        user.blocks = blocks ;
         return  user;
       } else {
         return null ;
@@ -430,6 +473,7 @@ class AppUserServices {
         List<Friends> friends = [];
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -450,6 +494,12 @@ class AppUserServices {
           visitors.add(like);
 
         }
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
+
         for (var j = 0; j < jsonData['tags'].length; j ++) {
           UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
           hoppies.add(hoppy);
@@ -459,6 +509,7 @@ class AppUserServices {
         user.followings = followings ;
         user.followers = followers ;
         user.hoppies = hoppies ;
+        user.blocks = blocks ;
         return  user;
       } else {
         return null ;
@@ -492,6 +543,7 @@ class AppUserServices {
         List<Friends> friends = [];
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -512,6 +564,11 @@ class AppUserServices {
           visitors.add(like);
 
         }
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
         for (var j = 0; j < jsonData['tags'].length; j ++) {
           UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
           hoppies.add(hoppy);
@@ -521,6 +578,7 @@ class AppUserServices {
         user.followings = followings ;
         user.followers = followers ;
         user.hoppies = hoppies ;
+        user.blocks = blocks ;
         return  user;
       } else {
         return null ;
@@ -617,4 +675,286 @@ class AppUserServices {
       print(duration.inDays );
      return duration.inDays > -1  ;
   }
+
+
+  Future<void> reportUser(user_id , reported_user)async {
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/reportUser'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'reported_user': reported_user.toString(),
+        'category_id': '0' ,
+        'description':'description',
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: 'You have reported this user !',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+    } else{
+      Fluttertoast.showToast(
+          msg: 'Error! Something went wrong',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+    }
+  }
+
+  Future<void> blockUser(user_id , blocke_user)async {
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/blockUser'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'blocke_user': blocke_user.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: 'You have blocked this user !',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+    } else{
+      Fluttertoast.showToast(
+          msg: 'Error! Something went wrong',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+    }
+  }
+
+  Future<AppUser?> unblockUser(user_id , blocke_user)async {
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/unblockUser'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'blocke_user': blocke_user.toString(),
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        user.blocks = blocks ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future<AppUser?> followUser(user_id , follower_id)async {
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/followUser'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'follower_id': follower_id.toString(),
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        user.blocks = blocks ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+  Future<AppUser?> unfollowkUser(user_id , follower_id)async {
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/unfollowkUser'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'follower_id': follower_id.toString(),
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        user.blocks = blocks ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
 }

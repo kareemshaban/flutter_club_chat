@@ -1,15 +1,22 @@
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/modules/EditProfile/Edit_Profile_Screen.dart';
+import 'package:clubchat/modules/MyGifts/My_Gifts_Screen.dart';
+import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:svgaplayer_flutter/player.dart';
 
 class InnerProfileScreen extends StatefulWidget {
   final int visitor_id ;
@@ -22,20 +29,38 @@ class InnerProfileScreen extends StatefulWidget {
 class _InnerProfileScreenState extends State<InnerProfileScreen> {
   AppUser? user ;
   AppUser? visitor ;
-  bool? isVisitor ;
+  bool isVisitor  = false;
   List<Design> designs = [] ;
   List<Design> gifts = [] ;
+  String frame = "" ;
+  Widget followBtn = Container();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    AppUser? res = AppUserServices().userGetter();
+
     setState(() {
       isVisitor = widget.visitor_id != 0 ;
-      print(isVisitor);
-      user = res;
     });
-    getDesigns();
+    getProfileUser();
+
+  }
+  getProfileUser() async {
+    if(isVisitor ){
+      print(visitor)   ;
+      AppUser? res = await AppUserServices().getUser(widget.visitor_id);
+      print(res)   ;
+      setState(() {
+        user = res;
+      });
+      getDesigns();
+    } else {
+      AppUser? res = AppUserServices().userGetter();
+      setState(() {
+        user = res;
+      });
+      getDesigns();
+    }
   }
   getDesigns () async {
     DesignGiftHelper helper = await AppUserServices().getMyDesigns(user!.id);
@@ -44,11 +69,18 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
       gifts = helper.gifts! ;
 
     });
-    print(gifts[0].id);
+    if(designs.where((element) => (element.category_id == 4 && element.isDefault == 1)).toList().length > 0){
+      String icon = designs.where((element) => (element.category_id == 4 && element.isDefault == 1)).toList()[0].motion_icon ;
+
+      setState(() {
+        frame = ASSETSBASEURL + 'Designs/Motion/' + icon +'?raw=true' ;
+        print(frame);
+      });
+    }
   }
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
+    return user != null ?  Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(70.0),
         child: AppBar(
@@ -61,7 +93,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
             children: [
               CircleAvatar(
                 backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
+                backgroundImage: user?.img != "" ?  NetworkImage(getUserImage()!) : null,
                 radius: 20,
                 child: user?.img== "" ?
                 Text(user!.name.toUpperCase().substring(0 , 1) +
@@ -105,7 +137,11 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
             isVisitor! ?  PopupMenuButton<int>(
               color: MyColors.darkColor,
               onSelected: (item) => {
-
+               if(item == 0){
+                 reportUser()
+               } else {
+                 blockUser()
+               }
               },
               iconColor: Colors.white,
               iconSize: 25.0,
@@ -117,7 +153,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                      Text("inner_report".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
                    ],
                  )),
-                PopupMenuItem<int>(value: 0, child: Row(
+                PopupMenuItem<int>(value: 1, child: Row(
                   children: [
                     Icon(Icons.report , color: MyColors.whiteColor , size: 18.0,),
                     SizedBox(width: 5.0,),
@@ -162,13 +198,28 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                             children: [
                               SizedBox(height: 40.0,),
                               Text(user!.name , style: TextStyle(color: Colors.white , fontSize: 18.0),),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Text("ID:" + user!.tag , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 12.0),),
-                                  const SizedBox(width: 5.0,),
-                                  Icon(Icons.copy_outlined , color: MyColors.unSelectedColor , size: 20.0,)
-                                ],
+                              GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () async{
+                                  await Clipboard.setData(ClipboardData(text: user!.tag));
+                                  Fluttertoast.showToast(
+                                      msg: 'profile_msg_copied'.tr,
+                                      toastLength: Toast.LENGTH_SHORT,
+                                      gravity: ToastGravity.CENTER,
+                                      timeInSecForIosWeb: 1,
+                                      backgroundColor: Colors.black26,
+                                      textColor: Colors.orange,
+                                      fontSize: 16.0
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Text("ID:" + user!.tag , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 12.0),),
+                                    const SizedBox(width: 5.0,),
+                                    Icon(Icons.copy_outlined , color: MyColors.unSelectedColor , size: 20.0,)
+                                  ],
+                                ),
                               ),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
@@ -180,20 +231,27 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                   Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.charging_level_icon}') , width: 30,),
                                 ],
                               ),
-                              Text(user!.status !="" ? user!.status  : "Nothing here , update your bio" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+                              Text(user!.status !="" ? user!.status  : (isVisitor ? "Nothing here" : "Nothing here , update your bio")  , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
                             ],
                           ),
                         ),
                         Transform.translate(
-                          offset: Offset(0, -30.0),
-                          child: CircleAvatar(
-                            backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                            backgroundImage: user?.img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}') : null,
-                            radius: 40,
-                            child: user?.img== "" ?
-                            Text(user!.name.toUpperCase().substring(0 , 1) +
-                                (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                              style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                          offset: Offset(0, -40.0),
+                          child: Stack(
+                            alignment: Alignment.center,
+
+                            children: [
+                              CircleAvatar(
+                                backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                                backgroundImage: user?.img != "" ?  NetworkImage(getUserImage()!) : null,
+                                radius: 40,
+                                child: user?.img== "" ?
+                                Text(user!.name.toUpperCase().substring(0 , 1) +
+                                    (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                                  style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                              ),
+                              Container(height: 100.0, width: 100.0, child: frame != "" ? SVGASimpleImage(   resUrl: frame) : null),
+                            ],
                           ),
                         ),
                       ],
@@ -238,7 +296,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                       ],
                                     )                          ],
                                 )
-                
+
                                 )
                               ],
                             ),
@@ -261,10 +319,10 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                         IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.faceGrinWide , color: Colors.white , size: 20.0))
                                       ],
                                     )
-                
+
                                   ],
                                 )
-                
+
                                 )
                               ],
                             ),
@@ -287,10 +345,10 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                         IconButton(onPressed: (){}, icon: Icon(user!.gender == 0 ?  FontAwesomeIcons.male : FontAwesomeIcons.female , color: Colors.white , size: 20.0))
                                       ],
                                     )
-                
+
                                   ],
                                 )
-                
+
                                 )
                               ],
                             ),
@@ -313,10 +371,10 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                         IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.birthdayCake  , color: Colors.white , size: 20.0))
                                       ],
                                     )
-                
+
                                   ],
                                 )
-                
+
                                 )
                               ],
                             ),
@@ -337,13 +395,13 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                         Image(image: NetworkImage(ASSETSBASEURL + 'Countries/' + user!.country_flag) , width: 30.0,),
                                         SizedBox(width: 5.0,),
                                         IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.flag  , color: Colors.white , size: 20.0))
-                
+
                                       ],
                                     )
-                
+
                                   ],
                                 )
-                
+
                                 )
                               ],
                             ),
@@ -515,36 +573,52 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                   Expanded(
                     child: Column(
                       children: [
-                        Image(image: AssetImage('assets/images/add-user.png') , width: 80.0,),
+                        getFollowBtn()
                       ],
                     ),
                   ),
                   Expanded(
                     child: Column(
                       children: [
-                        Image(image: AssetImage('assets/images/message.png') , width: 80.0),
+                        GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: (){openChat();},
+                            child: Image(image: AssetImage('assets/images/message.png') , width: 80.0)),
                       ],
                     ),
                   ),
                   Expanded(
                     child: Column(
                       children: [
-                        Image(image: AssetImage('assets/images/home.png') , width: 80.0),
+                        GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: (){openUserRoom();}, child: Image(image: AssetImage('assets/images/home.png') , width: 80.0)),
                       ],
                     ),
                   ),
                   Expanded(
-                    child: Column(
-                      children: [
-                        Image(image: AssetImage('assets/images/tracking.png') , width: 80.0),
-                      ],
+                    child: GestureDetector(
+                     behavior: HitTestBehavior.opaque,
+                     onTap: (){trackUser();},
+                      child: Column(
+                        children: [
+                          Image(image: AssetImage('assets/images/tracking.png') , width: 80.0),
+                        ],
+                      ),
                     ),
                   ),
-                  
+
                 ],
               ),
             ) : SizedBox(height: 5.0,)
           ],
+        ),
+      ),
+    ) : Container(
+      child: Center(
+        child:  CircularProgressIndicator(
+          value: null  ,
+          color: MyColors.primaryColor,
         ),
       ),
     );
@@ -597,12 +671,17 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
     ],
   ) :  Column(
     children: [
-      Container(
-          width: 80.0,
-          height: 55.0,
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.5), color: Colors.black12),
-          child: Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor , size: 20.0,)
-      ),
+     !isVisitor ? GestureDetector(
+        onTap: (){
+          Navigator.push(context, MaterialPageRoute(builder: (ctx) => const MyGiftsScreen()));
+        },
+        child: Container(
+            width: 80.0,
+            height: 55.0,
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.5), color: Colors.black12),
+            child: Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor , size: 20.0,)
+        ),
+      ) : Container(),
     ],
   );
 
@@ -621,4 +700,107 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
       ],
     ),
   );
+
+  String? getUserImage(){
+    if(user!.img.startsWith('https')){
+      return user!.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
+    }
+  }
+  reportUser() async{
+     AppUser? currentUser = AppUserServices().userGetter();
+     await AppUserServices().reportUser(currentUser!.id, user!.id);
+     Navigator.pop(context);
+  }
+  blockUser() async{
+    AppUser? currentUser = AppUserServices().userGetter();
+    await AppUserServices().blockUser(currentUser!.id, user!.id);
+    currentUser = await AppUserServices().getUser(currentUser!.id);
+    AppUserServices().userSetter(currentUser!);
+    Navigator.pop(context);
+  }
+  followUser() async{
+    AppUser? currentUser = AppUserServices().userGetter();
+    AppUser? res = await AppUserServices().followUser(currentUser!.id, user!.id);
+
+    AppUserServices().userSetter(res!);
+    Fluttertoast.showToast(
+        msg: 'you have followed this user',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black26,
+        textColor: Colors.orange,
+        fontSize: 16.0
+    );
+    Navigator.pop(context);
+  }
+  unFollowUser() async{
+    AppUser? currentUser = AppUserServices().userGetter();
+    AppUser? res = await AppUserServices().unfollowkUser(currentUser!.id, user!.id);
+    AppUserServices().userSetter(res!);
+    Fluttertoast.showToast(
+        msg: 'you have unfollowed this user',
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black26,
+        textColor: Colors.orange,
+        fontSize: 16.0
+    );
+    Navigator.pop(context);
+  }
+  openChat(){
+
+  }
+  openUserRoom() async{
+
+    ChatRoom? res = await ChatRoomService().openRoomByAdminId(user!.id);
+    if(res != null){
+      ChatRoomService().roomSetter(res!);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+    } else {
+      print('clicked');
+      Fluttertoast.showToast(
+          msg: 'Sorry this user has no room',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+    }
+
+
+  }
+  trackUser() async {
+    ChatRoom? res = await ChatRoomService().trackUser(user!.id);
+    if(res != null){
+      ChatRoomService().roomSetter(res!);
+      Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+    } else {
+      print('clicked');
+      Fluttertoast.showToast(
+          msg: 'Sorry this user not in any room',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+    }
+  }
+
+
+  Widget getFollowBtn(){
+    AppUser? currentUser = AppUserServices().userGetter();
+    if(currentUser!.followings!.where((element) => element.follower_id == user!.id).length == 0){
+      return  GestureDetector(onTap: () {followUser();},  child: Image(image: AssetImage('assets/images/add-user.png') , width: 80.0,));
+    } else {
+      return  GestureDetector(onTap: () {unFollowUser();},  child: Image(image: AssetImage('assets/images/remove-user.png') , width: 80.0,));
+    }
+  }
 }
