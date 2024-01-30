@@ -92,7 +92,7 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
                   keyboardType: TextInputType.multiline,
                   maxLines: 5,
                   cursorColor: MyColors.primaryColor,
-                  decoration: InputDecoration(border: InputBorder.none , labelText: "#Share Your Bio With Friends!" , labelStyle: TextStyle(color: Colors.grey , fontSize: 18.0)),
+                  decoration: InputDecoration(border: InputBorder.none , labelText: "add_status_label_text".tr , labelStyle: TextStyle(color: Colors.grey , fontSize: 18.0)),
                   style: TextStyle(color: MyColors.whiteColor),
                 ),
               ),

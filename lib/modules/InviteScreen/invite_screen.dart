@@ -37,13 +37,13 @@ class _InviteScreenState extends State<InviteScreen> {
             SizedBox(height: 25.0,),
             Container(
               child:
-              Text("Invite Your Friends to club chat and party together! ", textAlign: TextAlign.center, style: TextStyle(color: MyColors.whiteColor,fontSize: 18.0)),
+              Text("invite_invite_friends ".tr, textAlign: TextAlign.center, style: TextStyle(color: MyColors.whiteColor,fontSize: 18.0)),
             ),
             SizedBox(height: 25.0,),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text('Copy the invitation link ' ,
+                Text('invite_copy'.tr ,
                   textAlign: TextAlign.center, style: TextStyle(color: MyColors.primaryColor , fontSize: 20) ,),
                 SizedBox(width: 10.0,),
                Icon(Icons.copy_outlined , color: MyColors.primaryColor, size: 30.0,)

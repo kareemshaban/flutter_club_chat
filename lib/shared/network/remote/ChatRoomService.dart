@@ -15,6 +15,7 @@ import 'package:clubchat/models/RoomTheme.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class ChatRoomService {
@@ -116,7 +117,7 @@ class ChatRoomService {
         return room;
       } else {
         Fluttertoast.showToast(
-            msg: 'Failed to open room , please contact support !',
+            msg: 'remote_chat_msg_failed'.tr,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -178,7 +179,7 @@ class ChatRoomService {
         return room;
       } else {
         Fluttertoast.showToast(
-            msg: 'Failed to open room , please contact support !',
+            msg: 'remote_chat_msg_failed'.tr,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -407,7 +408,7 @@ class ChatRoomService {
         return room;
       } else {
         Fluttertoast.showToast(
-            msg: 'Failed to open room , please contact support !',
+            msg: 'remote_chat_msg_failed'.tr,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -476,7 +477,7 @@ class ChatRoomService {
         return room;
       } else {
         Fluttertoast.showToast(
-            msg: 'Failed to open room , please contact support !',
+            msg: 'remote_chat_msg_failed'.tr,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -544,7 +545,7 @@ class ChatRoomService {
         return room;
       } else {
         Fluttertoast.showToast(
-            msg: 'Failed to open room , please contact support !',
+            msg: 'remote_chat_msg_failed'.tr,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,

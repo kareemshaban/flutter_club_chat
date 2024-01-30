@@ -9,6 +9,7 @@ import 'package:clubchat/models/Mall.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
 class DesignServices {
@@ -125,7 +126,7 @@ class DesignServices {
       helper.designs = designs ;
       helper.gifts = gifts ;
       Fluttertoast.showToast(
-          msg: 'Design set to default',
+          msg: 'remote_design_msg_design'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,

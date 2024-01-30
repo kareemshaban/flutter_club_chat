@@ -1,5 +1,6 @@
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class RoomCloseModal extends StatefulWidget {
   const RoomCloseModal({super.key});
@@ -33,7 +34,7 @@ class _RoomCloseModalState extends State<RoomCloseModal> {
                     ),
                   ),
                   SizedBox(height: 5.0,),
-                  Text("Keep" , style: TextStyle(color: Colors.white , fontSize: 18.0),)
+                  Text("room_close_keep".tr , style: TextStyle(color: Colors.white , fontSize: 18.0),)
                 ],
               ),
               SizedBox(height: 20.0,),
@@ -50,7 +51,7 @@ class _RoomCloseModalState extends State<RoomCloseModal> {
                     ),
                   ),
                   SizedBox(height: 5.0,),
-                  Text("Exit" , style: TextStyle(color: Colors.white , fontSize: 18.0),)
+                  Text("room_close_exit".tr , style: TextStyle(color: Colors.white , fontSize: 18.0),)
                 ],
               ),
             ],

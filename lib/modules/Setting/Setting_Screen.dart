@@ -45,7 +45,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: (){
-                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => const EditLanguageScreen()));
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => const EditLanguageScreen(),),);
                   },
                   child: Row(
                     children: [

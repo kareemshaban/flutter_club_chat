@@ -1,4 +1,6 @@
+
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/modules/chat/chat.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -169,7 +171,7 @@ class ChatsScreenState extends State<ChatsScreen> {
                                       children: [
                                         Image(image: AssetImage('assets/images/customer-service.png') , width: 35.0, height: 35.0,),
                                       ],
-                                    )
+                                    ),
                                   ],
                                 )
                             )
@@ -191,7 +193,14 @@ class ChatsScreenState extends State<ChatsScreen> {
                         Text("chats_system_massage".tr,style: TextStyle(fontSize: 17.0,color: Colors.white),)
                       ],
                     ),
-                  )
+                  ),
+                  SizedBox(height: 5.0),
+                  ListView.separated(
+                      shrinkWrap: true,
+                      itemBuilder: (ctx,index)=> build_list(ctx),
+                      separatorBuilder: (ctx,index)=>SizedBox(height: 1.0,),
+                      itemCount: 3
+                  ),
                 ],
               ),
 
@@ -205,7 +214,7 @@ class ChatsScreenState extends State<ChatsScreen> {
                         Container(
                           height: 45.0 ,
                           decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.0) , color: MyColors.lightUnSelectedColor,),
-                          child: TextField( controller: userTxt, decoration: InputDecoration(labelText: "Search in Your Friend by ID / Name" , suffixIcon: IconButton(icon: const Icon(Icons.search , color: Colors.white, size: 25.0,),
+                          child: TextField( controller: userTxt, decoration: InputDecoration(labelText: "chat_search_friend".tr , suffixIcon: IconButton(icon: const Icon(Icons.search , color: Colors.white, size: 25.0,),
                             onPressed: (){searchUsers();},) , fillColor: MyColors.primaryColor, focusColor: MyColors.primaryColor, focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ,
                               borderSide: BorderSide(color: MyColors.whiteColor) ) ,  border: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ) , labelStyle: const TextStyle(color: Colors.white , fontSize: 13.0) ,  ),
                             style: const TextStyle(color: Colors.white , fontSize: 10.0), cursorColor: MyColors.primaryColor,),
@@ -232,6 +241,59 @@ class ChatsScreenState extends State<ChatsScreen> {
         ),
       );
   }
+
+  Widget build_list(ctx) => GestureDetector(
+  onTap: (){
+    Navigator.push(ctx, MaterialPageRoute(builder:(context) => ChatScreen(
+        receiverUserEmail: 'receiverUserEmail',
+        receiverUserID: 'receiverUserID'
+    ),));
+  },
+    child: Container(
+      color: Colors.black26,
+      padding: EdgeInsets.all(15.0) ,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Column(
+            children: [
+              CircleAvatar(
+                radius: 28.0,
+                backgroundImage: AssetImage('assets/images/user.png') ,
+                backgroundColor: Colors.black26,
+              ),
+            ],
+          ),
+          SizedBox(width: 15.0,),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text('Mohamed Yousri' , style: TextStyle(color: Colors.white , fontSize: 16.0),),
+              SizedBox(height: 5.0,),
+              Text('Hello World!!', style: TextStyle(color: Colors.grey[600]),),
+            ],
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Text('Yesterday', style: TextStyle(color: Colors.grey[600]),),
+                    SizedBox(width: 5.0),
+                    Text('03:02', style: TextStyle(color: Colors.grey[600]),),
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+
   Widget itemListBuilder(index) => Column(
     children: [
       Row(
@@ -302,3 +364,5 @@ class ChatsScreenState extends State<ChatsScreen> {
 
   void searchUsers() {}
 }
+
+

@@ -58,7 +58,9 @@ dependencies:
   url_launcher: ^6.2.4
   firebase_auth: ^4.16.0
   flutter_facebook_auth: ^6.0.4
-
+  firebase_messaging: ^14.7.10
+  emoji_picker_flutter: ^1.6.4
+  cloud_firestore: ^4.14.0
 
 
 dev_dependencies:

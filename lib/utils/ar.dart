@@ -104,7 +104,7 @@ const Map<String,String> ar ={
   'profile_terms_of_use':'شروط الاستخدام',
   'profile_account_settings':'إعدادات الحساب',
   'search_user':'مستخدم',
-  'search_label_search':'البحث في المستخدمين حسب ID / الاسم',
+  'search_label_search':'البحث عن المستخدمين حسب ID / الاسم',
   'setting_title':'الاعدادات',
   'setting_language':'اللغة',
   'setting_notification':'الاشعارات',
@@ -154,14 +154,26 @@ const Map<String,String> ar ={
   "send_btn": "أرسل",
   "verify_btn":"تأكيد",
   "verify_phone_hint": "أدخل كود التفعيل",
-  "verify_phone_title": "تفعيل رقم الجوال الخاص بك"
-
-
-
-
-
-
-
+  "verify_phone_title": "تفعيل رقم الجوال الخاص بك",
+  "room_close_keep": "حفظ",
+  "room_close_exit": "خروج",
+  'edit_ok' : 'موافق',
+  'add_status_label_text' : '#شارك سيرتك الذاتية مع الأصدقاء!',
+  'invite_invite_friends' : 'قم بدعوة أصدقائك إلى كلوب شات والاحتفال معا!',
+  'invite_copy' : 'نسخ رابط الدعوة ',
+  'inner_msg_followed' : 'لقد تابعت هذا المستخدم',
+  'inner_msg_unfollowed' : 'لقد قمت بإلغاء متابعة هذا المستخدم',
+  'inner_msg_no_room' : 'عذرا هذا المستخدم ليس لديه غرفة',
+  'inner_msg_not_any_room' : 'عذرا هذا المستخدم ليس في أي غرفة',
+  'chat_search_friend' : 'ابحث عن اصدقائك عن طريق المعرف / الاسم',
+  'remote_app_msg' : 'لقد أبلغت عن هذا المستخدم!',
+  'remote_app_msg_error ' : 'خطأ! حدث خطأ ما',
+  'remote_app_msg_blocked' : 'لقد قمت بحظر هذا المستخدم !',
+  'remote_chat_msg_failed' : 'فشل فتح الغرفة ، يرجى الاتصال بالدعم',
+  'remote_design_msg_design' : 'تعيين التصميم إلى الوضع الافتراضي',
+  'contact_Us_title' : 'اتصل بنا',
+  'contact_Us_club_chat' : 'نحن في كلوب شات يسعدنا مساعدتك وتلبية طلباتك وجعل تجربة استخدامك للتطبيق تجربة ممتعه لذا لا تتاخر من التواصل معنا اذا واجهتك اي مشكلة , نحن دائما في خدمتك 24 ساعة طوال ايام الاسبوع ',
+  'contact_Us_social_media' : 'كما سيسعدنا متابعتك لنا على منصات التواصل ',
 
 
 

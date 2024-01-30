@@ -30,6 +30,9 @@ import 'package:get/get.dart';
 import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:svgaplayer_flutter/player.dart';
 
+import '../ContactUs/contact_us_screen.dart';
+import '../modols/medals_screen.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -537,20 +540,25 @@ class ProfileScreenState extends State<ProfileScreen> {
                         height: 1.0,
                         color: MyColors.darkColor.withAlpha(120),
                       ),
-                      Row(
-                        children: [
-                          Image(image: AssetImage('assets/images/badge.png') , width: 40.0, height: 40.5,),
-                          SizedBox(width: 10.0,),
-                          Text("profile_medals".tr , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
-                              ],
-                            ),
-                          )
-                        ],
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context,MaterialPageRoute(builder: (context)=> MedalsScreen(),),);
+                        },
+                        child: Row(
+                          children: [
+                            Image(image: AssetImage('assets/images/badge.png') , width: 40.0, height: 40.5,),
+                            SizedBox(width: 10.0,),
+                            Text("profile_medals".tr , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ],
                   ),
@@ -563,20 +571,25 @@ class ProfileScreenState extends State<ProfileScreen> {
                   padding: EdgeInsets.all(10.0),
                   child: Column(
                     children: [
-                      Row(
-                        children: [
-                          Image(image: AssetImage('assets/images/contact.png') , width: 40.0, height: 40.5,),
-                          SizedBox(width: 10.0,),
-                          Text("profile_contact_us".tr , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
-                              ],
-                            ),
-                          )
-                        ],
+                      GestureDetector(
+                        onTap: (){
+                          Navigator.push(context,MaterialPageRoute(builder: (context)=> ContactUsScreen(),),);
+                        },
+                        child: Row(
+                          children: [
+                            Image(image: AssetImage('assets/images/contact.png') , width: 40.0, height: 40.5,),
+                            SizedBox(width: 10.0,),
+                            Text("profile_contact_us".tr , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Icon(Icons.arrow_forward_ios , size: 22.0, color: MyColors.unSelectedColor,)
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                       Container(
                         margin: EdgeInsetsDirectional.only(start: 50.0 , end: 10.0),

@@ -1,6 +1,7 @@
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -76,6 +77,7 @@ class _Account_Management_ScreenState extends State<Account_Management_Screen> {
               children: [
                 GestureDetector(
                   onTap:(){
+                    FirebaseMessaging.instance.unsubscribeFromTopic('all');
                     showAlertDialog(context);
                   } ,
                   child: Container(
@@ -173,7 +175,7 @@ class _Account_Management_ScreenState extends State<Account_Management_Screen> {
 
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK" , style: TextStyle(color: MyColors.primaryColor),),
+      child: Text("dit_ok".tr , style: TextStyle(color: MyColors.primaryColor),),
       onPressed: () { },
     );
 

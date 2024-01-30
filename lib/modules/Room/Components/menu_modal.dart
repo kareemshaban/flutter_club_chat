@@ -36,7 +36,7 @@ class _MenuModalState extends State<MenuModal> {
                     children: [
                       Image(image: AssetImage('assets/images/theme.png') , width: 40.0,),
                       SizedBox(height: 8.0,),
-                      Text('menu_theme' , style: TextStyle(color: Colors.white , fontSize: 12.0),)
+                      Text('menu_theme'.tr , style: TextStyle(color: Colors.white , fontSize: 12.0),)
                     ],
                   ),
                 ),

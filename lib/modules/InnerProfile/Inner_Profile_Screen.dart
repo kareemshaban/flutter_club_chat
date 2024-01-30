@@ -726,7 +726,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
 
     AppUserServices().userSetter(res!);
     Fluttertoast.showToast(
-        msg: 'you have followed this user',
+        msg: 'inner_msg_followed'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
@@ -741,7 +741,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
     AppUser? res = await AppUserServices().unfollowkUser(currentUser!.id, user!.id);
     AppUserServices().userSetter(res!);
     Fluttertoast.showToast(
-        msg: 'you have unfollowed this user',
+        msg: 'inner_msg_unfollowed'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,
@@ -763,7 +763,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
     } else {
       print('clicked');
       Fluttertoast.showToast(
-          msg: 'Sorry this user has no room',
+          msg: 'inner_msg_no_room'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -783,7 +783,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
     } else {
       print('clicked');
       Fluttertoast.showToast(
-          msg: 'Sorry this user not in any room',
+          msg: 'inner_msg_not_any_room'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,

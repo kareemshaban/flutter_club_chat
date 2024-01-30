@@ -154,14 +154,26 @@ const Map<String,String> en ={
   "send_btn": "Send",
   "verify_btn":"Verify",
   "verify_phone_hint": "Enter Verification Code ",
-  "verify_phone_title": "Verify Phone Number"
-
-
-
-
-
-
-
+  "verify_phone_title": "Verify Phone Number",
+  "room_close_keep": "Keep",
+  "room_close_exit": "Exit",
+  'edit_ok' : 'OK',
+  'add_status_label_text' : '#Share Your Bio With Friends!',
+  'invite_invite_friends' : 'Invite Your Friends to club chat and party together!',
+  'invite_copy' : 'Copy the invitation link ',
+  'inner_msg_followed' : 'you have followed this user',
+  'inner_msg_unfollowed' : 'you have unfollowed this user',
+  'inner_msg_no_room' : 'Sorry this user has no room',
+  'inner_msg_not_any_room' : 'Sorry this user has no room',
+  'chat_search_friend' : 'Search in Your Friend by ID / Name',
+  'remote_app_msg' : 'You have reported this user !',
+  'remote_app_msg_error' : 'Error! Something went wrong',
+  'remote_app_msg_blocked' : 'You have blocked this user !',
+  'remote_chat_msg_failed' : 'Failed to open room , please contact support',
+  'remote_design_msg_design' : 'Design set to default',
+  'contact_Us_title' : 'Contact Us',
+  'contact_Us_club_chat' : 'We at Club Chat are happy to help you, fulfill your requests and make your experience of using the application a fun experience, so do not delay in contacting us if you face any problem, we are always at your service 24 hours a day, 7 days a week ',
+  'contact_Us_social_media' : 'We will also be happy to follow you on social media platforms',
 
 
 

@@ -15,6 +15,7 @@ import 'package:clubchat/shared/components/Constants.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:get/get.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -32,7 +33,7 @@ class AppUserServices {
 
 
 
-  Future<AppUser?> createAccount( name , register_with ,img,  phone , email  ,  password) async {
+  Future<AppUser?> createAccount( name , register_with ,img,  phone , email  ,  password , token) async {
     AppUser? user = null ;
     String deviceId = await getId() ?? "";
     var data = await getIpAddress() ;
@@ -51,7 +52,8 @@ class AppUserServices {
         'register_with': register_with,
         'ipAddress': ipAddress,
         'macAddress': "2.0.0.0",
-        'deviceId': deviceId
+        'deviceId': deviceId,
+        'token': token
       }),
     );
     print(response.body);
@@ -693,7 +695,7 @@ class AppUserServices {
     print(response.body);
     if (response.statusCode == 200) {
       Fluttertoast.showToast(
-          msg: 'You have reported this user !',
+          msg: 'remote_app_msg'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -703,7 +705,7 @@ class AppUserServices {
       );
     } else{
       Fluttertoast.showToast(
-          msg: 'Error! Something went wrong',
+          msg: 'remote_app_msg_error'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -727,7 +729,7 @@ class AppUserServices {
     );
     if (response.statusCode == 200) {
       Fluttertoast.showToast(
-          msg: 'You have blocked this user !',
+          msg: 'remote_app_msg_blocked'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -737,7 +739,7 @@ class AppUserServices {
       );
     } else{
       Fluttertoast.showToast(
-          msg: 'Error! Something went wrong',
+          msg: 'remote_app_msg_error'.tr,
           toastLength: Toast.LENGTH_SHORT,
           gravity: ToastGravity.CENTER,
           timeInSecForIosWeb: 1,
@@ -896,6 +898,76 @@ class AppUserServices {
       body: jsonEncode(<String, String>{
         'user_id': user_id.toString(),
         'follower_id': follower_id.toString(),
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        AppUser user = AppUser.fromJson(jsonData['user']) ;
+        List<Follower> followers = [];
+        List<Follower> followings = [];
+        List<Friends> friends = [];
+        List<Visitor> visitors = [];
+        List<UserHoppy> hoppies = [];
+        List<Block> blocks = [] ;
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followers'][j]);
+          followers.add(like);
+
+        }
+        for (var j = 0; j < jsonData['followings'].length; j ++) {
+          Follower like = Follower.fromJson(jsonData['followings'][j]);
+          followings.add(like);
+
+        }
+        for (var j = 0; j < jsonData['friends'].length; j ++) {
+          Friends like = Friends.fromJson(jsonData['friends'][j]);
+          friends.add(like);
+
+        }
+        for (var j = 0; j < jsonData['visitors'].length; j ++) {
+          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+          visitors.add(like);
+
+        }
+
+        for (var j = 0; j < jsonData['blocks'].length; j ++) {
+          Block like = Block.fromJson(jsonData['blocks'][j]);
+          blocks.add(like);
+
+        }
+        for (var j = 0; j < jsonData['tags'].length; j ++) {
+          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+          hoppies.add(hoppy);
+        }
+        user.friends = friends ;
+        user.visitors = visitors ;
+        user.followings = followings ;
+        user.followers = followers ;
+        user.hoppies = hoppies ;
+        user.blocks = blocks ;
+        return  user;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future<AppUser?> updateUserToken(user_id , token)async {
+    var response = await http.post(
+      Uri.parse('${BASEURL}Account/updateToken'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'token': token.toString(),
       }),
     );
     print(response.body);

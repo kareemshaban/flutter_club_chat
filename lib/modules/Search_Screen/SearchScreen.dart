@@ -65,7 +65,7 @@ class SearchScreenState extends State<SearchScreen> {
                     Container(
                       height: 45.0 ,
                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.0) , color: MyColors.lightUnSelectedColor,),
-                      child: TextField( controller: userTxt, decoration: InputDecoration(labelText: "Search in Users by ID / Name" , suffixIcon: IconButton(icon: const Icon(Icons.search , color: Colors.white, size: 25.0,),
+                      child: TextField( controller: userTxt, decoration: InputDecoration(labelText: "search_label_search".tr , suffixIcon: IconButton(icon: const Icon(Icons.search , color: Colors.white, size: 25.0,),
                         onPressed: (){searchUsers();},) , fillColor: MyColors.primaryColor, focusColor: MyColors.primaryColor, focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ,
                           borderSide: BorderSide(color: MyColors.whiteColor) ) ,  border: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ) , labelStyle: const TextStyle(color: Colors.white , fontSize: 13.0) ,  ),
                         style: const TextStyle(color: Colors.white , fontSize: 10.0), cursorColor: MyColors.primaryColor,),

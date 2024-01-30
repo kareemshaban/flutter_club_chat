@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/firebase_options.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
@@ -11,6 +11,7 @@ import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +44,17 @@ class LoginScreenState extends State<LoginScreen> {
   var codeController = TextEditingController();
   bool _isLoading = false ;
   FirebaseAuth? auth ;
+   FirebaseFirestore? _firestore ;
+
+  void createNewDocument(email , credintial){
+    print('database created') ;
+    _firestore!.collection('users').doc(credintial.user!.uid).set({
+      'uid':credintial.user!.uid,
+      'email':email,
+    },SetOptions(merge: true));
+
+  }
+
   @override
   void initState()  {
     super.initState();
@@ -71,6 +83,7 @@ class LoginScreenState extends State<LoginScreen> {
       options: DefaultFirebaseOptions.currentPlatform,
     );
      auth = FirebaseAuth.instance;
+    _firestore = FirebaseFirestore.instance;
   }
   Future<void> _handleSignIn() async {
     try {
@@ -81,12 +94,20 @@ class LoginScreenState extends State<LoginScreen> {
        accessToken: googleAuth?.accessToken,
        idToken: googleAuth?.idToken,
      );
+
+     UserCredential userCredential =await auth!.signInWithCredential(credential);
+     print('credential');
      print(credential);
-     await auth!.signInWithCredential(credential);
+     var token = await FirebaseMessaging.instance.getToken();
      AppUser? user = await AppUserServices().createAccount(_googleSignIn.currentUser?.displayName , 'GOOGLE' ,
-        "" , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.id );
-     print(user ) ;
+        "" , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.id , token);
+     print('user' ) ;
+    print(user ) ;
      if(user!.id > 0){
+       print('go to database created') ;
+       createNewDocument(_googleSignIn.currentUser?.email , userCredential) ;
+       // put subscripe here
+       FirebaseMessaging.instance.subscribeToTopic('all') ;
        Fluttertoast.showToast(
            msg: 'login_welcome_msg'.tr,
            toastLength: Toast.LENGTH_SHORT,
@@ -241,14 +262,17 @@ class LoginScreenState extends State<LoginScreen> {
   verifyCode(verificationId) async{
     _isLoading = true ;
     PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: codeController.text);
-    await auth!.signInWithCredential(credential);
-
+    UserCredential userCredential = await auth!.signInWithCredential(credential);
+    var token = await FirebaseMessaging.instance.getToken();
     AppUser? user = await AppUserServices().createAccount('new user' , 'PHONE' ,
-        "" , phoneController.text , phoneController.text, credential.verificationId);
+        "" , phoneController.text , phoneController.text, credential.verificationId , token);
     print(user ) ;
     _isLoading = false ;
     Navigator.pop(context);
     if(user!.id > 0){
+      // put subscripe here
+      createNewDocument(phoneController.text , userCredential) ;
+      FirebaseMessaging.instance.subscribeToTopic('all') ;
       Fluttertoast.showToast(
           msg: 'login_welcome_msg'.tr,
           toastLength: Toast.LENGTH_SHORT,

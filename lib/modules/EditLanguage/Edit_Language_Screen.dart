@@ -27,7 +27,7 @@ class _EditLanguageScreenState extends State<EditLanguageScreen> {
   getLang() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     String l = await prefs.getString('local_lang')!;
-    if(l == null) ;  l = 'en' ;
+    if(l == null){l = ('en') ;};
     setState(() {
       _SelectedLang = l;
       groupValue = l;
@@ -127,7 +127,7 @@ void Translation() async {
 
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK" , style: TextStyle(color: MyColors.primaryColor),),
+      child: Text("edit_ok".tr , style: TextStyle(color: MyColors.primaryColor),),
       onPressed: () {
         Translation();
 
