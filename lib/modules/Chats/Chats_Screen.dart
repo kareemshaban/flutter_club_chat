@@ -1,7 +1,9 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/modules/chat/chat.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -20,6 +22,8 @@ class ChatsScreenState extends State<ChatsScreen> {
   var userTxt = TextEditingController()  ;
   List<Friends>? friends = [];
   AppUser? user;
+  AppUser? reciver ;
+  final FirebaseAuth _auth = FirebaseAuth.instance ;
    @override
   void initState() {
     // TODO: implement initState
@@ -194,46 +198,14 @@ class ChatsScreenState extends State<ChatsScreen> {
                       ],
                     ),
                   ),
-                  SizedBox(height: 5.0),
-                  ListView.separated(
-                      shrinkWrap: true,
-                      itemBuilder: (ctx,index)=> build_list(ctx),
-                      separatorBuilder: (ctx,index)=>SizedBox(height: 1.0,),
-                      itemCount: 3
-                  ),
+                  SizedBox(height: 10.0),
+                  _buildUserList(),
                 ],
               ),
-
               Column(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(20.0),
-
-                    child: Column(
-                      children: [
-                        Container(
-                          height: 45.0 ,
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.0) , color: MyColors.lightUnSelectedColor,),
-                          child: TextField( controller: userTxt, decoration: InputDecoration(labelText: "chat_search_friend".tr , suffixIcon: IconButton(icon: const Icon(Icons.search , color: Colors.white, size: 25.0,),
-                            onPressed: (){searchUsers();},) , fillColor: MyColors.primaryColor, focusColor: MyColors.primaryColor, focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ,
-                              borderSide: BorderSide(color: MyColors.whiteColor) ) ,  border: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ) , labelStyle: const TextStyle(color: Colors.white , fontSize: 13.0) ,  ),
-                            style: const TextStyle(color: Colors.white , fontSize: 10.0), cursorColor: MyColors.primaryColor,),
-                        ),
-                        SizedBox(height: 20.0,),
-                        // Expanded(
-                        //   child: RefreshIndicator(
-                        //     onRefresh: _refresh,
-                        //     color: MyColors.primaryColor,
-                        //     child: ListView.separated(shrinkWrap: true,  itemBuilder: (ctx , index) =>itemListBuilder(index) ,
-                        //         separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: friends!.length),
-                        //   ),
-                        // ),
-                      ],
-                    ),
-                  )
-                ],
-
+                children: [],
               )
+
             ],
 
           ),
@@ -241,128 +213,62 @@ class ChatsScreenState extends State<ChatsScreen> {
         ),
       );
   }
-
-  Widget build_list(ctx) => GestureDetector(
-  onTap: (){
-    Navigator.push(ctx, MaterialPageRoute(builder:(context) => ChatScreen(
-        receiverUserEmail: 'receiverUserEmail',
-        receiverUserID: 'receiverUserID'
-    ),));
-  },
-    child: Container(
-      color: Colors.black26,
-      padding: EdgeInsets.all(15.0) ,
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            children: [
-              CircleAvatar(
-                radius: 28.0,
-                backgroundImage: AssetImage('assets/images/user.png') ,
-                backgroundColor: Colors.black26,
-              ),
-            ],
+  // build a list of users except for the current logged in user
+  Widget _buildUserList(){
+    return StreamBuilder<QuerySnapshot>(
+      stream: FirebaseFirestore.instance.collection('chat_rooms').snapshots(),
+      builder: (context,snapshot){
+        if(snapshot.hasError){
+          return const Text('error') ;
+        }
+        if(snapshot.connectionState == ConnectionState.waiting){
+          return const Text('loading') ;
+        }
+        return Expanded(
+          child: ListView(
+              children:
+              snapshot.data!.docs
+                  .map<Widget>((doc) => _buildUserListItem(doc),
+              ).toList()
           ),
-          SizedBox(width: 15.0,),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text('Mohamed Yousri' , style: TextStyle(color: Colors.white , fontSize: 16.0),),
-              SizedBox(height: 5.0,),
-              Text('Hello World!!', style: TextStyle(color: Colors.grey[600]),),
-            ],
+        );
+      },
+    );
+  }
+//build individual user list items
+  Widget _buildUserListItem(DocumentSnapshot document){
+    Map<String , dynamic> data = document.data()! as Map<String,dynamic>;
+    //display all users except current user
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 7.0 , horizontal: 5.0),
+        child: Container(
+          height: 80,
+          decoration: BoxDecoration(
+              color: Colors.blue,
+              borderRadius: BorderRadius.circular(10.0)
           ),
-          Expanded(
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: [
-                    Text('Yesterday', style: TextStyle(color: Colors.grey[600]),),
-                    SizedBox(width: 5.0),
-                    Text('03:02', style: TextStyle(color: Colors.grey[600]),),
-                  ],
-                ),
-              ],
+          child: Center(
+            child: ListTile(
+              title: Text(document.id, style: TextStyle(color: Colors.white),),
+              onTap: (){
+                // pass the clicked user's UID to the chat page
+                // Navigator.push(
+                //     context,
+                //     MaterialPageRoute(
+                //       builder: (context) => ChatScreen(
+                //         receiverUserEmail: data['email'],
+                //         receiverUserID: data['uid'],
+                //         receiver: user!,
+                //       ),
+                //     )
+                // );
+              },
             ),
-          )
-        ],
-      ),
-    ),
-  );
+          ),
+        ),
+      );
 
-  Widget itemListBuilder(index) => Column(
-    children: [
-      Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Column(
-              children: [
-                CircleAvatar(
-                  backgroundColor: friends![index].follower_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-
-                  backgroundImage: friends![index].follower_img != "" ?
-                  NetworkImage('${ASSETSBASEURL}AppUsers/${friends![index].follower_img}') : null,
-                  radius: 30,
-                  child: friends![index].follower_img == "" ?
-                  Text(friends![index].follower_name.toUpperCase().substring(0 , 1) +
-                      (friends![index].follower_name.contains(" ") ? friends![index].follower_name.substring(friends![index].follower_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                    style: const TextStyle(color: Colors.white , fontSize: 24.0 , fontWeight: FontWeight.bold),) : null,
-                )
-              ],
-            ),
-            const SizedBox(width: 10.0,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(friends![index].follower_name , style: TextStyle(color: MyColors.whiteColor , fontSize: 18.0),),
-                    const SizedBox(width: 5.0,),
-                    CircleAvatar(
-                      backgroundColor: friends![index].follower_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                      radius: 10.0,
-                      child: friends![index].follower_gender == 0 ?  const Icon(Icons.male , color: Colors.white, size: 15.0,) :  const Icon(Icons.female , color: Colors.white, size: 15.0,),
-                    )
-                  ],
-                ),
-                Row(
-
-                  children: [
-                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + friends![index].share_level_img) , width: 40,),
-                    const SizedBox(width: 10.0,),
-                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + friends![index].karizma_level_img) , width: 40,),
-                    const SizedBox(width: 10.0,),
-                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + friends![index].charging_level_img) , width: 30,),
-
-                  ],
-                ),
-
-                Text("ID:${friends![index].follower_tag}" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 13.0),),
-
-
-              ],
-
-            ),
-
-          ]),
-      Container(
-        width: double.infinity,
-        height: 1.0,
-        color: MyColors.lightUnSelectedColor,
-        margin: EdgeInsetsDirectional.only(start: 50.0),
-        child: const Text(""),
-      )
-    ],
-  );
-
-  Widget itemSperatorBuilder() => SizedBox(height: 5.0,);
-
-  void searchUsers() {}
+  }
 }
 
 

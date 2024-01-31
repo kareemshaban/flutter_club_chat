@@ -174,7 +174,6 @@ const Map<String,String> en ={
   'contact_Us_title' : 'Contact Us',
   'contact_Us_club_chat' : 'We at Club Chat are happy to help you, fulfill your requests and make your experience of using the application a fun experience, so do not delay in contacting us if you face any problem, we are always at your service 24 hours a day, 7 days a week ',
   'contact_Us_social_media' : 'We will also be happy to follow you on social media platforms',
-
-
-
+  'delete_chat' : 'Delete Chat',
+  'block_user' : 'Block User',
 };

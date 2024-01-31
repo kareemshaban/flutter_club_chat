@@ -55,7 +55,7 @@ const Map<String,String> ar ={
   'mall_title' : 'المتجر',
   'mall_purchase' : 'شراء',
   'mall_msg' : 'آسف ليس لديك ما يكفي من الذهب!',
-  'moments_recommend':'موصى يها',
+  'moments_recommend':'موصى بها',
   'moments_mine':'منشوراتي',
   'moments_follow':'متابعة',
   'moments_not_interested':'غير مهتم',
@@ -174,7 +174,6 @@ const Map<String,String> ar ={
   'contact_Us_title' : 'اتصل بنا',
   'contact_Us_club_chat' : 'نحن في كلوب شات يسعدنا مساعدتك وتلبية طلباتك وجعل تجربة استخدامك للتطبيق تجربة ممتعه لذا لا تتاخر من التواصل معنا اذا واجهتك اي مشكلة , نحن دائما في خدمتك 24 ساعة طوال ايام الاسبوع ',
   'contact_Us_social_media' : 'كما سيسعدنا متابعتك لنا على منصات التواصل ',
-
-
-
-};
+  'delete_chat': 'حذف المحادثه',
+  'block_user' : 'حظر' ,
+ };

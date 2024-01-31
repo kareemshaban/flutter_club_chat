@@ -46,14 +46,19 @@ class LoginScreenState extends State<LoginScreen> {
   FirebaseAuth? auth ;
    FirebaseFirestore? _firestore ;
 
-  void createNewDocument(email , credintial){
+  void createNewDocument(email , credintial , name , img ,phone , id){
     print('database created') ;
     _firestore!.collection('users').doc(credintial.user!.uid).set({
-      'uid':credintial.user!.uid,
       'email':email,
+      'uid':credintial.user!.uid,
+      'name': name,
+      'img': img,
+      'phone':email,
+      'id': id
     },SetOptions(merge: true));
 
   }
+  bool isLoading1 = false ;
 
   @override
   void initState()  {
@@ -86,6 +91,7 @@ class LoginScreenState extends State<LoginScreen> {
     _firestore = FirebaseFirestore.instance;
   }
   Future<void> _handleSignIn() async {
+
     try {
     // await   _googleSignIn.disconnect();
      var googleUser  = await _googleSignIn.signIn();
@@ -96,8 +102,9 @@ class LoginScreenState extends State<LoginScreen> {
      );
 
      UserCredential userCredential =await auth!.signInWithCredential(credential);
-     print('credential');
-     print(credential);
+     setState(() {
+       isLoading1 = true ;
+     });
      var token = await FirebaseMessaging.instance.getToken();
      AppUser? user = await AppUserServices().createAccount(_googleSignIn.currentUser?.displayName , 'GOOGLE' ,
         "" , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.email , _googleSignIn.currentUser?.id , token);
@@ -105,7 +112,7 @@ class LoginScreenState extends State<LoginScreen> {
     print(user ) ;
      if(user!.id > 0){
        print('go to database created') ;
-       createNewDocument(_googleSignIn.currentUser?.email , userCredential) ;
+       createNewDocument(user.email , userCredential ,user.name ,user.img, user.email , user.id) ;
        // put subscripe here
        FirebaseMessaging.instance.subscribeToTopic('all') ;
        Fluttertoast.showToast(
@@ -121,6 +128,9 @@ class LoginScreenState extends State<LoginScreen> {
 
        await prefs.setInt('userId', user.id);
        AppUserServices().userSetter(user);
+       setState(() {
+         isLoading1 = false ;
+       });
        Navigator.pushReplacement(
          context,
          MaterialPageRoute(builder: (context) => const TabsScreen()),
@@ -159,7 +169,8 @@ class LoginScreenState extends State<LoginScreen> {
                         child: const Image(image: AssetImage("assets/images/logo_blue.png") , width: 200.0, height: 200.0,)),
                     SizedBox(height: 10.0,),
                     Text("login_title".tr , style: TextStyle(fontSize: 25.0 , color: MyColors.primaryColor , fontWeight: FontWeight.bold),),
-                   
+                    SizedBox(height: 20.0,),
+                    isLoading1 ? CircularProgressIndicator(color: MyColors.primaryColor) : Container(),
                   ],
                 ),
               ),
@@ -184,7 +195,9 @@ class LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(width: 40.0,),
                       GestureDetector(
-                        onTap: (){_handleSignIn();},
+                        onTap: (){
+                          _handleSignIn();
+                          },
                         child: CircleAvatar(
                           backgroundColor: Colors.grey.withOpacity(.4),
                           radius: 30.0,
@@ -271,7 +284,7 @@ class LoginScreenState extends State<LoginScreen> {
     Navigator.pop(context);
     if(user!.id > 0){
       // put subscripe here
-      createNewDocument(phoneController.text , userCredential) ;
+      createNewDocument(phoneController.text , userCredential, user.img ,user.name , phoneController.text , user.id) ;
       FirebaseMessaging.instance.subscribeToTopic('all') ;
       Fluttertoast.showToast(
           msg: 'login_welcome_msg'.tr,
@@ -286,6 +299,9 @@ class LoginScreenState extends State<LoginScreen> {
 
       await prefs.setInt('userId', user.id);
       AppUserServices().userSetter(user);
+      setState(() {
+        isLoading1 = false ;
+      });
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const TabsScreen()),
