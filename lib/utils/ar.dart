@@ -174,6 +174,15 @@ const Map<String,String> ar ={
   'contact_Us_title' : 'اتصل بنا',
   'contact_Us_club_chat' : 'نحن في كلوب شات يسعدنا مساعدتك وتلبية طلباتك وجعل تجربة استخدامك للتطبيق تجربة ممتعه لذا لا تتاخر من التواصل معنا اذا واجهتك اي مشكلة , نحن دائما في خدمتك 24 ساعة طوال ايام الاسبوع ',
   'contact_Us_social_media' : 'كما سيسعدنا متابعتك لنا على منصات التواصل ',
+  'verification_title' : 'تحقق الهوية',
+  'verification_id_card' : 'يرجى إرفاق صورة من بطاقة الهوية الخاصة بك',
+  'verification_id_face' : 'صورة وجهة بطاقة الهوية',
+  'verification_id_back' : 'صورة ظهر بطاقة الهوية',
+  'verification_verify' : 'تاكيد',
+  'clear_cash_msg': 'تم حذف الكاش بنجاح',
+  'chats_update_data_msg' : 'تم التحديث بنجاح',
+  'event_message_title' : 'رسائل التنبيهات',
+  'customer_service_title' : 'خدمة العملاء',
 
 
 

@@ -33,6 +33,7 @@ dependencies:
   get: ^4.6.6
 
 
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.2
@@ -61,6 +62,7 @@ dependencies:
   firebase_messaging: ^14.7.10
   emoji_picker_flutter: ^1.6.4
   cloud_firestore: ^4.14.0
+  flutter_spinkit: ^5.2.0
 
 
 dev_dependencies:

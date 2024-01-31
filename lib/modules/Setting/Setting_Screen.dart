@@ -6,9 +6,13 @@ import 'package:clubchat/modules/EditLanguage/Edit_Language_Screen.dart';
 import 'package:clubchat/modules/NetworkDiagnosis/Network_Diagnosis_screen.dart';
 import 'package:clubchat/modules/NotificationSetting/Notification_Setting_Screen.dart';
 import 'package:clubchat/modules/PrivacyPolicy/Privacy_Policy_Screen.dart';
+import 'package:clubchat/modules/Verification/verification_screen.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+
+import '../Loading/loadig_screen.dart';
 
 
 
@@ -19,8 +23,10 @@ class SettingScreen extends StatefulWidget {
   State<SettingScreen> createState() => _SettingScreenState();
 }
 
+
 class _SettingScreenState extends State<SettingScreen> {
   @override
+
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
@@ -125,6 +131,11 @@ class _SettingScreenState extends State<SettingScreen> {
               Container(
                 color: Colors.black26,
                 padding: EdgeInsets.all(15.0) ,
+                child : GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: (){
+                    Navigator.push(context, MaterialPageRoute(builder: (ctx) => const Verification(),),);
+                  },
                 child: Row(
                   children: [
                     Text("setting_identity_verification".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
@@ -139,6 +150,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     ),
                   ],
                 ),
+              ),
               ),
               Container(
                 width: double.infinity,
@@ -229,6 +241,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 color: Colors.black45,
               ),
               Container(
+
                 color: Colors.black26,
                 padding: EdgeInsets.all(15.0) ,
                 margin: EdgeInsetsDirectional.only(bottom: 10.0),
@@ -257,6 +270,30 @@ class _SettingScreenState extends State<SettingScreen> {
                 color: Colors.black26,
                 padding: EdgeInsets.all(15.0) ,
                 margin: EdgeInsetsDirectional.only(bottom: 10.0),
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: () async{
+                    showDialog(
+                        context: context,
+                      builder: (BuildContext context){
+                          context = context;
+                          return const Loading();
+                        },
+                    );
+                    await Future.delayed(Duration(milliseconds: 3000));
+                    Navigator.pop(context);
+
+                    Fluttertoast.showToast(
+                        msg: 'clear_cash_msg'.tr,
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER,
+                        timeInSecForIosWeb: 1,
+                        backgroundColor: Colors.black26,
+                        textColor: Colors.orange,
+                        fontSize: 16.0
+                    );
+                    
+                  },
                 child: Row(
                   children: [
                     Text("setting_clear_cache".tr ,style:TextStyle(color: MyColors.unSelectedColor,fontSize: 15.0) ,),
@@ -272,8 +309,8 @@ class _SettingScreenState extends State<SettingScreen> {
                   ],
                 ),
               ),
+              ),
               GestureDetector(
-
                 behavior: HitTestBehavior.opaque,
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (ctx) => const Account_Management_Screen()));
@@ -298,11 +335,11 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
               ),
             ],
-          
-          
+
           ),
         ),
       ),
     );
+
   }
 }

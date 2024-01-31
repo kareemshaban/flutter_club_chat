@@ -23,9 +23,9 @@ class _About_ScreenState extends State<About_Screen> {
         centerTitle: true,
         backgroundColor: MyColors.darkColor,
         title: Text("about_us_title".tr , style: TextStyle(color: MyColors.unSelectedColor,fontSize: 20.0) ,),
-        actions: [
-          IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.sync))
-        ],
+        // actions: [
+        //   IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.sync))
+        // ],
       ),
       body: Container(
         color: MyColors.darkColor,

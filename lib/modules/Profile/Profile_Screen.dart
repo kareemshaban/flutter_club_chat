@@ -334,19 +334,25 @@ class ProfileScreenState extends State<ProfileScreen> {
                               image: DecorationImage(image: AssetImage('assets/images/Gold-bag.png'), fit: BoxFit.cover
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("profile_gold".tr , style: TextStyle(color: MyColors.primaryColor , fontSize: 18.0 , fontWeight: FontWeight.bold),),
-                                SizedBox(height: 10.0,),
-                                Row(
-                                  children: [
-                                    Image(image: AssetImage('assets/images/gold.png') , width: 30.0, height: 30.0,),
-                                    SizedBox(width: 5.0,),
-                                    Text(user!.gold , style: TextStyle(color: MyColors.primaryColor , fontSize: 18.0 , fontWeight: FontWeight.bold),),
-                                  ],
-                                )
-                              ],
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (ctx) => const WalletScreen()));
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("profile_gold".tr , style: TextStyle(color: MyColors.primaryColor , fontSize: 18.0 , fontWeight: FontWeight.bold),),
+                                  SizedBox(height: 10.0,),
+                                  Row(
+                                    children: [
+                                      Image(image: AssetImage('assets/images/gold.png') , width: 30.0, height: 30.0,),
+                                      SizedBox(width: 5.0,),
+                                      Text(user!.gold , style: TextStyle(color: MyColors.primaryColor , fontSize: 18.0 , fontWeight: FontWeight.bold),),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -364,19 +370,25 @@ class ProfileScreenState extends State<ProfileScreen> {
                               image: DecorationImage(image: AssetImage('assets/images/diamond-bag.png'), fit: BoxFit.cover
                               ),
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text("profile_diamond".tr , style: TextStyle(color: MyColors.blueColor.withOpacity(.9) , fontSize: 18.0 , fontWeight: FontWeight.bold),),
-                                SizedBox(height: 10.0,),
-                                Row(
-                                  children: [
-                                    Image(image: AssetImage('assets/images/diamond.png') , width: 27.0, height: 27.0,),
-                                    SizedBox(width: 5.0,),
-                                    Text(user!.diamond , style: TextStyle(color: MyColors.blueColor.withOpacity(.9) , fontSize: 18.0 , fontWeight: FontWeight.bold),),
-                                  ],
-                                )
-                              ],
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: (){
+                                Navigator.push(context, MaterialPageRoute(builder: (ctx) => const WalletScreen()));
+                              },
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("profile_diamond".tr , style: TextStyle(color: MyColors.blueColor.withOpacity(.9) , fontSize: 18.0 , fontWeight: FontWeight.bold),),
+                                  SizedBox(height: 10.0,),
+                                  Row(
+                                    children: [
+                                      Image(image: AssetImage('assets/images/diamond.png') , width: 27.0, height: 27.0,),
+                                      SizedBox(width: 5.0,),
+                                      Text(user!.diamond , style: TextStyle(color: MyColors.blueColor.withOpacity(.9) , fontSize: 18.0 , fontWeight: FontWeight.bold),),
+                                    ],
+                                  )
+                                ],
+                              ),
                             ),
                           ),
                         ],
@@ -541,6 +553,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         color: MyColors.darkColor.withAlpha(120),
                       ),
                       GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: (){
                           Navigator.push(context,MaterialPageRoute(builder: (context)=> MedalsScreen(),),);
                         },
@@ -572,6 +585,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: Column(
                     children: [
                       GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: (){
                           Navigator.push(context,MaterialPageRoute(builder: (context)=> ContactUsScreen(),),);
                         },
@@ -598,6 +612,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         color:MyColors.darkColor.withAlpha(120),
                       ),
                       GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const Agreement_Screen(),));
                         },
@@ -624,6 +639,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         color: MyColors.darkColor.withAlpha(120),
                       ),
                       GestureDetector(
+                        behavior: HitTestBehavior.opaque,
                         onTap: (){
                           Navigator.push(context, MaterialPageRoute(builder: (context) => const Privacy_Policy_Screen(),));
                         },

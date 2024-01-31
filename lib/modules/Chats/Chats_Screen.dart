@@ -1,13 +1,19 @@
 
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/modules/CustomerService/customer_service_screen.dart';
+import 'package:clubchat/modules/EventMessage/event_message_screen.dart';
+import 'package:clubchat/modules/Followers/Followers_Screen.dart';
+import 'package:clubchat/modules/SystemMessage/system_message_screen.dart';
 import 'package:clubchat/modules/chat/chat.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../models/Friends.dart';
 import '../../shared/components/Constants.dart';
 import '../../shared/styles/colors.dart';
+import '../Loading/loadig_screen.dart';
 
 class ChatsScreen extends StatefulWidget {
   const ChatsScreen({super.key});
@@ -62,7 +68,26 @@ class ChatsScreenState extends State<ChatsScreen> {
             ],
           ) ,
           actions: [
-            IconButton(onPressed: (){
+            IconButton(onPressed: () async{
+              showDialog(
+                context: context,
+                builder: (BuildContext context){
+                  context = context;
+                  return const Loading();
+                },
+              );
+              await Future.delayed(Duration(milliseconds: 3000));
+              Navigator.pop(context);
+
+              Fluttertoast.showToast(
+                  msg: 'chats_update_data_msg'.tr,
+                  toastLength: Toast.LENGTH_SHORT,
+                  gravity: ToastGravity.CENTER,
+                  timeInSecForIosWeb: 1,
+                  backgroundColor: Colors.black26,
+                  textColor: Colors.orange,
+                  fontSize: 16.0
+              );
 
             }, icon: const Icon(Icons.cleaning_services_rounded , color: Colors.white , size: 30.0,))
           ],
@@ -92,11 +117,17 @@ class ChatsScreenState extends State<ChatsScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                         Container(
-                                           padding: EdgeInsets.symmetric(horizontal: 8.0)  ,
-                                           width: (MediaQuery.of(context).size.width / 3 - 50 ),
-                                           child: Text('chats_event_message'.tr , style: TextStyle(color: Colors.white ,
-                                               fontSize: 15.0 , fontWeight: FontWeight.bold),),
+                                         GestureDetector(
+                                           behavior: HitTestBehavior.opaque,
+                                           onTap: (){
+                                             Navigator.push(context, MaterialPageRoute(builder: (ctx) => const EventMessage(),),);
+                                           },
+                                           child: Container(
+                                             padding: EdgeInsets.symmetric(horizontal: 8.0)  ,
+                                             width: (MediaQuery.of(context).size.width / 3 - 50 ),
+                                             child: Text('chats_event_message'.tr , style: TextStyle(color: Colors.white ,
+                                                 fontSize: 15.0 , fontWeight: FontWeight.bold),),
+                                           ),
                                          ),
                                       ],
                                     ),
@@ -125,11 +156,16 @@ class ChatsScreenState extends State<ChatsScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 8.0)  ,
-                                          width: (MediaQuery.of(context).size.width / 3 - 50 ),
-                                          child: Text('notification_setting_new_followers'.tr , style: TextStyle(color: Colors.white ,
-                                              fontSize: 14.0 , fontWeight: FontWeight.bold),),
+                                        GestureDetector(
+                                          onTap: (){
+                                            Navigator.push(context, MaterialPageRoute(builder: (ctx) => const FollowersScreen(),),);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 8.0)  ,
+                                            width: (MediaQuery.of(context).size.width / 3 - 50 ),
+                                            child: Text('notification_setting_new_followers'.tr , style: TextStyle(color: Colors.white ,
+                                                fontSize: 14.0 , fontWeight: FontWeight.bold),),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -158,11 +194,16 @@ class ChatsScreenState extends State<ChatsScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.start,
                                       children: [
-                                        Container(
-                                          padding: EdgeInsets.symmetric(horizontal: 8.0)  ,
-                                          width: (MediaQuery.of(context).size.width / 3 - 50 ),
-                                          child: Text('chats_club_chat_service'.tr , style: TextStyle(color: Colors.white ,
-                                              fontSize: 14.0 , fontWeight: FontWeight.bold),),
+                                        GestureDetector(
+                                          onTap: (){
+                                            Navigator.push(context, MaterialPageRoute(builder: (ctx) => const CustomerService(),),);
+                                          },
+                                          child: Container(
+                                            padding: EdgeInsets.symmetric(horizontal: 8.0)  ,
+                                            width: (MediaQuery.of(context).size.width / 3 - 50 ),
+                                            child: Text('chats_club_chat_service'.tr , style: TextStyle(color: Colors.white ,
+                                                fontSize: 14.0 , fontWeight: FontWeight.bold),),
+                                          ),
                                         ),
                                       ],
                                     ),
@@ -180,18 +221,24 @@ class ChatsScreenState extends State<ChatsScreen> {
                       ],
                     ),
                   ),
-                  Container(
-                    color: Colors.black26,
-                    padding: EdgeInsets.all(15.0) ,
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 28.0,backgroundColor: Colors.purple,
-                          child: Image(image: AssetImage('assets/images/control-system.png') , width: 35.0, height: 35.0,),
-                        ),
-                        SizedBox(width: 14.0,),
-                        Text("chats_system_massage".tr,style: TextStyle(fontSize: 17.0,color: Colors.white),)
-                      ],
+                  GestureDetector(
+                    behavior: HitTestBehavior.opaque,
+                    onTap: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => const SystemMessage()));
+                    },
+                    child: Container(
+                      color: Colors.black26,
+                      padding: EdgeInsets.all(15.0) ,
+                      child: Row(
+                        children: [
+                          CircleAvatar(
+                            radius: 28.0,backgroundColor: Colors.purple,
+                            child: Image(image: AssetImage('assets/images/control-system.png') , width: 35.0, height: 35.0,),
+                          ),
+                          SizedBox(width: 14.0,),
+                          Text("chats_system_massage".tr,style: TextStyle(fontSize: 17.0,color: Colors.white),)
+                        ],
+                      ),
                     ),
                   ),
                   SizedBox(height: 5.0),

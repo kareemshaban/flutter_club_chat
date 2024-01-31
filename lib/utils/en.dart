@@ -141,7 +141,7 @@ const Map<String,String> en ={
   'chats_friends':'Friends',
   'chats_event_message':'Event Message',
   'chats_club_chat_service':'Customer Service',
-  'chats_system_massage':'System Massage',
+  'chats_system_massage':'System Message',
   'room_members': 'Room Members',
    'log_out': "LogOut",
   "logout_msg": "Do You really want to LogOut ?",
@@ -174,7 +174,15 @@ const Map<String,String> en ={
   'contact_Us_title' : 'Contact Us',
   'contact_Us_club_chat' : 'We at Club Chat are happy to help you, fulfill your requests and make your experience of using the application a fun experience, so do not delay in contacting us if you face any problem, we are always at your service 24 hours a day, 7 days a week ',
   'contact_Us_social_media' : 'We will also be happy to follow you on social media platforms',
-
+  'verification_title' : 'Verification',
+  'verification_id_card' : 'Please attach a copy of your ID card',
+  'verification_id_face' : 'A photo of the face of the ID card',
+  'verification_id_back' : 'A photo of the back of the ID card',
+  'verification_verify' : 'Verify',
+  'clear_cash_msg': 'Cash Cleared Successfully',
+  'chats_update_data_msg' : 'Data Update Successfully',
+  'event_message_title' : 'Event Message',
+  'customer_service_title' : 'Customer Service',
 
 
 };

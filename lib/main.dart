@@ -2,7 +2,6 @@
 import 'package:clubchat/firebase_options.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
-import 'package:clubchat/modules/Home/Home_Screen.dart';
 import 'package:clubchat/modules/Login/LoginScreen.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/translation.dart';
@@ -58,7 +57,7 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
    Widget startPage  = LoginScreen();
-   String? local_lang  ;
+   String local_lang  = 'en' ;
   void initState() {
     super.initState();
     intialize();
@@ -68,11 +67,15 @@ class _MyAppState extends State<MyApp> {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     int? id = await prefs.getInt('userId');
 
-    String l = await prefs.getString('local_lang') ?? 'en';
+    String? l = await prefs.getString('local_lang') ;
+    print('lang cashed');
+    print(l);
     setState(() {
       if(l == null) l = 'en' ;
-      local_lang = l ;
+      if(l == '') l = 'en' ;
+      local_lang = l! ;
     });
+    print(local_lang);
     if(id == null){
       FlutterNativeSplash.remove();
       setState(() {
@@ -112,8 +115,7 @@ class _MyAppState extends State<MyApp> {
   
   @override
   Widget build(BuildContext context) {
-    print(local_lang);
-    return    GetMaterialApp(
+    return  GetMaterialApp(
       theme: ThemeData(
         fontFamily: 'arabFont',
           primarySwatch: Colors.orange ,
@@ -126,7 +128,7 @@ class _MyAppState extends State<MyApp> {
       debugShowCheckedModeBanner: false,
       home: startPage,
       translations:  Translation(),
-      locale: Locale(local_lang!),
+       locale:Locale(local_lang),
     );
   }
 }
