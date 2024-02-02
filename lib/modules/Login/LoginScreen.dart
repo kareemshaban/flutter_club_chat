@@ -1,12 +1,10 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/firebase_options.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/modules/Agreement/Agreement_Screen.dart';
 import 'package:clubchat/modules/PrivacyPolicy/Privacy_Policy_Screen.dart';
-import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -14,7 +12,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -111,36 +109,70 @@ class LoginScreenState extends State<LoginScreen> {
      print('user' ) ;
     print(user ) ;
      if(user!.id > 0){
-       print('go to database created') ;
-       createNewDocument(user.email , userCredential ,user.name ,user.img, user.email , user.id) ;
-       // put subscripe here
-       FirebaseMessaging.instance.subscribeToTopic('all') ;
-       Fluttertoast.showToast(
-           msg: 'login_welcome_msg'.tr,
-           toastLength: Toast.LENGTH_SHORT,
-           gravity: ToastGravity.CENTER,
-           timeInSecForIosWeb: 1,
-           backgroundColor: Colors.black26,
-           textColor: Colors.orange,
-           fontSize: 16.0
-       );
-       final SharedPreferences prefs = await SharedPreferences.getInstance();
 
-       await prefs.setInt('userId', user.id);
-       AppUserServices().userSetter(user);
        setState(() {
          isLoading1 = false ;
        });
-       Navigator.pushReplacement(
-         context,
-         MaterialPageRoute(builder: (context) => const TabsScreen()),
-       );
+       if(user.enable == 1){
+         createNewDocument(user.email , userCredential ,user.name ,user.img, user.email , user.id) ;
+         FirebaseMessaging.instance.subscribeToTopic('all') ;
+         Fluttertoast.showToast(
+             msg: 'login_welcome_msg'.tr,
+             toastLength: Toast.LENGTH_SHORT,
+             gravity: ToastGravity.CENTER,
+             timeInSecForIosWeb: 1,
+             backgroundColor: Colors.black26,
+             textColor: Colors.orange,
+             fontSize: 16.0
+         );
+         final SharedPreferences prefs = await SharedPreferences.getInstance();
+
+         await prefs.setInt('userId', user.id);
+         AppUserServices().userSetter(user);
+         Navigator.pushReplacement(
+           context,
+           MaterialPageRoute(builder: (context) => const TabsScreen()),
+         );
+       } else {
+         showAlertDialog(context);
+       }
+
      }
 
     } catch (error) {
       print(error);
     }
   }
+
+  showAlertDialog(BuildContext context) {
+
+    // set up the button
+    Widget okButton = TextButton(
+      child: Text("OK"),
+      onPressed: () {
+        SystemNavigator.pop();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      backgroundColor: MyColors.darkColor,
+      title: Text("user_app_blocked_title".tr , style: TextStyle(color: Colors.white),),
+      content: Text("user_app_blocked_msg".tr , style: TextStyle(color: Colors.white),),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
+  }
+
 
 
   @override

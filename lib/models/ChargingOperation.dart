@@ -1,7 +1,7 @@
 class ChargingOperation {
   final int id ;
   final int user_id ;
-  final String gold ;
+  final int gold ;
   final String source ;
   final int state ;
   final String charging_date;
@@ -14,7 +14,7 @@ class ChargingOperation {
       {
       'id': int id,
       'user_id': int user_id,
-      'gold': String gold,
+      'gold': int gold,
       'source': String source,
       'state': int state,
       'charging_date': String charging_date

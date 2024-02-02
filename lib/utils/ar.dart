@@ -185,4 +185,20 @@ const Map<String,String> ar ={
   'customer_service_title' : 'خدمة العملاء',
   'delete_chat': 'حذف المحادثه',
   'block_user' : 'حظر' ,
+  'user_app_blocked_title': 'لقد تم حظرك!',
+  'user_app_blocked_msg': 'عفوا لا يمكنك دخول التطبيق حيث انه تم حظرك من استخدام خدمات التطبيق يمكتك التواصل مع الادارة لمزيد من التفاصيل',
+  'recharge_gold': 'شحن رصيد الذهب',
+  "diamond_exchange": "استبدال رصيد الماس",
+  "diamond_exchange_inp_hint": "اكتب قيمة التحويل",
+  "diamond_exchange_note": "اقل قيمة للتحويل هي 100 ماسة",
+  "diamond_exchange_rules": "تعليمات تحويل الماس الي ذهب",
+  "wallet_diamond_rule1": "الهدايا التي تحصل عليها يتم تحويلها تلقائيا الي ماس بالنسب المحددة والمتفق عليها",
+  "wallet_diamond_rule2": "نسبة تحويل الماس الي ذهب هي ",
+  "exchanged_gold" : " قيمة الذهب المحول : ",
+  "exchange_btn": "تحويل الي ذعب",
+  "details": "تفاصيل",
+  "exchange_failed": "لا يمكن تحويل الماس الا اذا كانت القيمة 100 ماسة او اكثر",
+  "charging_details": "تفاصيل الشحن",
+  "exchange_failed2": "عفوا رصيدك من الماس لا يسمح"
+
  };
