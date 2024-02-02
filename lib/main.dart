@@ -1,5 +1,4 @@
 
-import 'dart:js';
 
 import 'package:clubchat/firebase_options.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
