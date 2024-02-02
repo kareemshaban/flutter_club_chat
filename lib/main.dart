@@ -1,4 +1,6 @@
 
+import 'dart:js';
+
 import 'package:clubchat/firebase_options.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
@@ -11,6 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+
+import 'modules/chat/chat.dart';
 
 Future<void> FirebaseBackgroundMessage(RemoteMessage message)async {
   print('on background message') ;

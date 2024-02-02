@@ -5,6 +5,7 @@ import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/modules/EditProfile/Edit_Profile_Screen.dart';
 import 'package:clubchat/modules/MyGifts/My_Gifts_Screen.dart';
 import 'package:clubchat/modules/Room/Room_Screen.dart';
+import 'package:clubchat/modules/chat/chat.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
@@ -752,7 +753,10 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
     Navigator.pop(context);
   }
   openChat(){
+    print('visitor');
+    print(user);
 
+    Navigator.push(context, MaterialPageRoute(builder: (context) => ChatScreen(receiverUserEmail: user!.email, receiverUserID: user!.id , receiver: user!,),));
   }
   openUserRoom() async{
 

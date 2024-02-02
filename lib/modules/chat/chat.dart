@@ -1,35 +1,54 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/message.dart';
+import 'package:clubchat/modules/chat_bubble/chat_bubble_sender.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/Notification_service.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' as foundation;
-
+import 'package:get/get.dart';
+import '../../shared/components/Constants.dart';
 import '../chat_bubble/chat_bubble_reciever.dart';
 import '../chat_service/chat_service.dart';
 
 class ChatScreen extends StatefulWidget {
   final String receiverUserEmail ;
-  final String receiverUserID ;
+  final int receiverUserID ;
+  final AppUser receiver ;
   const ChatScreen({
     super.key,
     required this.receiverUserEmail,
     required this.receiverUserID,
+    required this.receiver
   });
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
-
 class _ChatScreenState extends State<ChatScreen> {
+  AppUser? user ;
+  final NotificationService send_notification= new NotificationService();
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      user = AppUserServices().userGetter();
+      print('user');
+      print(user!.img);
+    });
+  }
   final TextEditingController _messageController = TextEditingController();
-
   final ChatService _chatService = ChatService();
-
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore= FirebaseFirestore.instance;
 
   void sendMessage() async {
+    print('inside print');
     // only send message if there is something to send
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(
@@ -38,22 +57,20 @@ class _ChatScreenState extends State<ChatScreen> {
     //clear the text controller after sending the message
     _messageController.clear();
   }
-
   bool emojiShowing = false;
+  Future<void> deleteMessage (currentUserId , receiverId) async{
 
-  _onBackspacePressed() {
-    print('clicked');
-    _messageController
-      ..text = _messageController.text.characters.toString()
-      ..selection = TextSelection.fromPosition(
-          TextPosition(offset: _messageController.text.length));
+    // List<int> ids = [currentUserId , receiverId];
+    // ids.sort() ;
+    // String chatRoomId = ids.join("_");
+    // _firestore.collection('chat_rooms').doc(chatRoomId).collection('messages'),
+    // );
   }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-          backgroundColor: Colors.grey[850],
+          backgroundColor: MyColors.solidDarkColor,
           leading: IconButton(
               onPressed: () {
                 Navigator.pop(context);
@@ -63,19 +80,34 @@ class _ChatScreenState extends State<ChatScreen> {
           title: Row(
             children: [
               CircleAvatar(
-                radius: 23.0,
+                backgroundColor: widget.receiver.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                backgroundImage: widget.receiver.img != "" ? (widget.receiver.img.startsWith('https') ? NetworkImage(widget.receiver.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${widget.receiver.img}'))  :    null,
+                radius: 22,
+                child: widget.receiver.img== "" ?
+                Text(widget.receiver.name.toUpperCase().substring(0 , 1) +
+                    (widget.receiver.name.contains(" ") ? widget.receiver.name.substring(widget.receiver.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                  style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
               ),
               SizedBox(width: 5.0,),
-              Text('Mohamed Yousri',
+              Text(widget.receiver.name,
                 style: TextStyle(color: Colors.white, fontSize: 18.0),),
               Expanded(
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    IconButton(
-                        onPressed: () {},
-                        icon: Icon(Icons.menu, color: Colors.white,)
-                    ),
+                    PopupMenuButton<int>(
+                      onSelected: (item) => {
+                      },
+                      iconColor: Colors.white,
+                      iconSize: 25.0,
+                      color: MyColors.darkColor,
+                      itemBuilder: (context) => [
+                        PopupMenuItem<int>(onTap: (){
+
+                        },value: 0, child: Text('delete_chat'.tr , style: TextStyle(color: Colors.white),)),
+                        PopupMenuItem<int>(value: 1, child: Text('block_user'.tr , style: TextStyle(color: Colors.white))),
+                      ],
+                    )
                   ],
                 ),
               )
@@ -141,7 +173,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 ),
                 Container(
                   height: 70,
-                  color: MyColors.darkColor,
+                  color: MyColors.solidDarkColor,
                   padding: EdgeInsets.symmetric(horizontal: 10.0),
                   child: Row(
                     children: [
@@ -194,7 +226,8 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                         child: MaterialButton(
                           onPressed: () {
-                            sendMessage;
+                            send_notification.send_notification(widget.receiver.token , _messageController.text , user!.name);;
+                            sendMessage();
                           }, //sendMessage
                           child: Text('Send', style: TextStyle(
                               color: MyColors.darkColor,
@@ -219,7 +252,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return StreamBuilder(
         stream: _chatService.getMessages(
             widget.receiverUserID,
-            _firebaseAuth.currentUser!.uid
+            user!.id
         ),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
@@ -229,7 +262,7 @@ class _ChatScreenState extends State<ChatScreen> {
             return const Text('loading');
           }
           return Container(
-            color: Colors.grey[600],
+            color: MyColors.darkColor,
             child: ListView(
               children: snapshot.data!.docs
                   .map((document) => _buildMessageItem(document))
@@ -252,30 +285,41 @@ class _ChatScreenState extends State<ChatScreen> {
       child: Padding(
         padding: const EdgeInsets.all(10.0),
         child: Row(
-          crossAxisAlignment: (data['senderId'] ==
-              _firebaseAuth.currentUser!.uid)
-              ? CrossAxisAlignment.end
-              : CrossAxisAlignment.start,
-          mainAxisAlignment: (data['senderId'] ==
-              _firebaseAuth.currentUser!.uid)
-              ? MainAxisAlignment.end
-              : MainAxisAlignment.start,
+          mainAxisAlignment: (data['senderId'] == widget.receiver.id)
+              ? MainAxisAlignment.start
+              : MainAxisAlignment.end,
           children: [
-            (data['senderId'] == _firebaseAuth.currentUser!.uid) ? Row(
+            (data['senderId'] == user!.id) ? Row(
               children: [
-                ChatBubble(message: data['message']),
+                ChatBubble1(
+                  message: data['message'],
+                ),
                 SizedBox(width: 5.0,),
                 CircleAvatar(
-                  radius: 23.0,
+                  backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                  backgroundImage: user!.img != "" ? (user!.img.startsWith('https') ? NetworkImage(user!.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}'))  :null,
+                  radius: 25,
+                  child: user?.img== "" ?
+                  Text(user!.name.toUpperCase().substring(0 , 1) +
+                      (user!.name.contains("") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                    style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
                 ),
               ],
             ) : Row(
               children: [
                 CircleAvatar(
-                  radius: 23.0,
+                  backgroundColor: widget.receiver.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                  backgroundImage: widget.receiver.img != "" ? (widget.receiver.img.startsWith('https') ? NetworkImage(widget.receiver.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${widget.receiver.img}'))  :    null,
+                  radius: 22,
+                  child: widget.receiver.img== "" ?
+                  Text(widget.receiver.name.toUpperCase().substring(0 , 1) +
+                      (widget.receiver.name.contains(" ") ? widget.receiver.name.substring(widget.receiver.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                    style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
                 ),
                 SizedBox(width: 5.0,),
-                ChatBubble(message: data['message']),
+                ChatBubble(
+                  message: data['message'],
+                ),
               ],
             ),
           ],

@@ -1,3 +1,4 @@
+import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +15,7 @@ class ChatBubble extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 10.0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25.0),
-        color: Colors.grey[500] ,
+        color: MyColors.unSelectedColor ,
       ),
       child: Center(
         child: Text(

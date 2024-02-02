@@ -183,6 +183,6 @@ const Map<String,String> en ={
   'chats_update_data_msg' : 'Data Update Successfully',
   'event_message_title' : 'Event Message',
   'customer_service_title' : 'Customer Service',
-
-
+  'delete_chat' : 'Delete Chat',
+  'block_user' : 'Block User',
 };

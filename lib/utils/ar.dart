@@ -55,7 +55,7 @@ const Map<String,String> ar ={
   'mall_title' : 'المتجر',
   'mall_purchase' : 'شراء',
   'mall_msg' : 'آسف ليس لديك ما يكفي من الذهب!',
-  'moments_recommend':'موصى يها',
+  'moments_recommend':'موصى بها',
   'moments_mine':'منشوراتي',
   'moments_follow':'متابعة',
   'moments_not_interested':'غير مهتم',
@@ -183,7 +183,6 @@ const Map<String,String> ar ={
   'chats_update_data_msg' : 'تم التحديث بنجاح',
   'event_message_title' : 'رسائل التنبيهات',
   'customer_service_title' : 'خدمة العملاء',
-
-
-
-};
+  'delete_chat': 'حذف المحادثه',
+  'block_user' : 'حظر' ,
+ };

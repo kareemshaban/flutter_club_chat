@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Country.dart';
 import 'package:clubchat/models/Tag.dart';
@@ -37,6 +38,22 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   File? _cover;
   final picker = ImagePicker();
   bool _isLoading = false ;
+
+  void ChangeProfilePhoto(img , userid){
+    FirebaseFirestore.instance.collection('users')
+        .where("id" , isEqualTo: userid).get()
+        .then((value) => {
+          value.docs.map((doc) => doc.reference.update({'img': img}))
+    });
+  }
+  void ChangeUserName(name , userid){
+    FirebaseFirestore.instance.collection('users')
+        .where("id" , isEqualTo: userid).get()
+        .then((value) => {
+      value.docs.map((doc) => doc.reference.update({'img': name}))
+    });
+  }
+
   @override
   void initState() {
     // TODO: implement initState
@@ -323,6 +340,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               GestureDetector(
+                                behavior: HitTestBehavior.opaque,
                                 onTap: () async {
                                   await _displayTextInputDialog(context);
                                 },
@@ -786,6 +804,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       maxLength: 20,
                       decoration: InputDecoration(
                           hintText: "edit_profile_enter_user_name".tr,
+                          hintStyle: TextStyle(color: Colors.white),
                           focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(10.0),
                               borderSide: BorderSide(color: MyColors.whiteColor)),
@@ -822,6 +841,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onPressed: () async {
                     AppUser? res = await AppUserServices()
                         .updateName(user!.id, userNameController.text);
+                    ChangeUserName(res!.name , res.id) ;
                     setState(() {
                       user = res;
                       AppUserServices().userSetter(res!);
@@ -858,6 +878,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     await AppUserServices().updateProfileImg(user!.id, _image);
     AppUser? res = await AppUserServices().getUser(user!.id);
     AppUserServices().userSetter(res!);
+    ChangeProfilePhoto(res.img , res.id) ;
     setState(() {
       user = res;
     });
@@ -875,6 +896,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       _isLoading = true ;
     });
+
     await AppUserServices().updateProfileCover(user!.id, _cover);
     AppUser? res = await AppUserServices().getUser(user!.id);
     AppUserServices().userSetter(res!);
