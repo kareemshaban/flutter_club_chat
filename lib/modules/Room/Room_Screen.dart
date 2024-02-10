@@ -1,4 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
+import 'package:clubchat/helpers/EnterRoomHelper.dart';
+import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Category.dart';
@@ -13,12 +16,16 @@ import 'package:clubchat/modules/Room/Components/menu_modal.dart';
 import 'package:clubchat/modules/Room/Components/room_close_modal.dart';
 import 'package:clubchat/modules/Room/Components/room_info_modal.dart';
 import 'package:clubchat/modules/Room/Components/room_members_modal.dart';
+import 'package:clubchat/modules/SmallProfile/Small_Profile_Screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:popover/popover.dart';
 import 'package:svgaplayer_flutter/player.dart';
 
 class RoomScreen extends StatefulWidget {
@@ -43,25 +50,77 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   List<Widget> giftViews = [] ;
   String sendGiftReceiverType = "";
   int? selectedGift  ;
+  String userRole = 'USER';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
+
     setState(() {
       sendGiftReceiverType = "select_one_ore_more";
       user = AppUserServices().userGetter();
       room = ChatRoomService().roomGetter();
+      if(user!.id == room!.userId){
+        setState(() {
+          userRole = 'OWNER';
+        });
+      } else if(room!.admins!.where((element) => element.user_id == user!.id).length > 0){
+        setState(() {
+          userRole = 'OWNER';
+        });
+      } else {
+        setState(() {
+          userRole = 'USER';
+        });
+      }
       if (room!.img == room!.admin_img) {
         room_img = '${ASSETSBASEURL}AppUsers/${room?.img}';
       } else {
         room_img = '${ASSETSBASEURL}Rooms/${room?.img}';
       }
     });
-
+    EnterRoomHelper(user!.id , room!.id);
+    enterRoomListener();
+    exitRoomListener();
+    micListener();
     geAdminDesigns();
     getRoomBasicData();
+  }
+
+  enterRoomListener(){
+    CollectionReference reference = FirebaseFirestore.instance.collection('enterRoom');
+    reference.snapshots().listen((querySnapshot) {
+      querySnapshot.docChanges.forEach((change) {
+        // Do something with change
+        refreshRoom();
+      });
+    });
+  }
+  exitRoomListener(){
+    CollectionReference reference = FirebaseFirestore.instance.collection('exitRoom');
+    reference.snapshots().listen((querySnapshot) {
+      querySnapshot.docChanges.forEach((change) {
+        // Do something with change
+        refreshRoom();
+      });
+    });
+  }
+  micListener(){
+    CollectionReference reference = FirebaseFirestore.instance.collection('mic-state');
+    reference.snapshots().listen((querySnapshot) {
+      querySnapshot.docChanges.forEach((change) {
+        // Do something with change
+        refreshRoom();
+      });
+    });
+  }
+  refreshRoom() async{
+    ChatRoom? res = await ChatRoomService().openRoomById(room!.id);
+    setState(() {
+      room = res ;
+    });
   }
 
   geAdminDesigns() async {
@@ -249,19 +308,28 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              CircleAvatar(
-                                  radius: 15.0,
-                                  backgroundImage: getUserAvatar()),
-                              Image(
-                                image: AssetImage(
-                                    'assets/images/room_user_small_border.png'),
-                                width: 50,
-                                height: 50,
-                              )
-                            ],
+                          GestureDetector(
+                            onTap: () async{
+                              AppUser? res =  await AppUserServices().getUser(room!.userId);
+                              showModalBottomSheet(
+
+                                  context: context,
+                                  builder: (ctx) => ProfileBottomSheet(res));
+                            },
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                CircleAvatar(
+                                    radius: 15.0,
+                                    backgroundImage: getUserAvatar()),
+                                Image(
+                                  image: AssetImage(
+                                      'assets/images/room_user_small_border.png'),
+                                  width: 50,
+                                  height: 50,
+                                )
+                              ],
+                            ),
                           ),
                           GestureDetector(
                             onTap: (){
@@ -398,7 +466,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       ),
     );
   }
-
+  Widget ProfileBottomSheet( user ) => SmallProfileModal(visitor: user);
   ImageProvider getUserAvatar() {
     if (room_img == '') {
       return AssetImage('assets/images/user.png');
@@ -407,21 +475,70 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     }
   }
 
-  Widget micListItem(mic) => Column(
-        children: [
-          Image(
-            image: getMicUserImg(mic),
-            width: 60.0,
-            height: 60.0,
-          ),
-          Text(
-            mic!.mic_user_name == null
-                ? mic!.order.toString()
-                : mic!.mic_user_name,
-            style: TextStyle(color: Colors.white, fontSize: 13.0),
-          )
-        ],
-      );
+  Widget micListItem(mic) => GestureDetector(
+      onTap: (){
+     //   micActionList(mic);
+      },
+    child: Stack(
+      alignment: Alignment.center,
+      children: [
+        Column(
+              children: [
+                Image(
+                  image: getMicUserImg(mic),
+                  width: 60.0,
+                  height: 60.0,
+                ),
+                Text(
+                  mic!.mic_user_name == null
+                      ? mic!.order.toString()
+                      : mic!.mic_user_name,
+                  style: TextStyle(color: Colors.white, fontSize: 13.0),
+                )
+              ],
+            ),
+        PopupMenuButton(
+          position: PopupMenuPosition.under,
+          shadowColor: MyColors.unSelectedColor,
+          elevation: 4.0,
+
+          color: MyColors.darkColor,
+          icon: null,
+          onSelected: (int result) {
+            if(result == 1){
+               //use_mic
+            }
+            else if(result == 2){
+              //lock_mic
+              MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).lockMic();
+            }
+            else if(result == 3){
+              //lock_all_mics
+              MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).lockMic();
+            }
+            else if(result == 4){
+               //unlock_mic
+              MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).unlockMic();
+            }
+            else if(result == 5){
+              //unlock_all_mic
+              MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).unlockMic();
+            }
+            else if(result == 6){
+              //remove_from_mic
+            }
+            else if(result == 7){
+              //un_use_mic
+            }
+            else if(result == 8){
+              //mute
+            }
+          },
+          itemBuilder: (BuildContext context) =>  AdminMicListItems(mic)
+        ),
+      ],
+    ),
+  );
   ImageProvider getMicUserImg(mic) {
     if (mic!.mic_user_img == null) {
       if(mic.isClosed == 0)
@@ -432,6 +549,78 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       return NetworkImage(ASSETSBASEURL + 'AppUsers/' + mic!.mic_user_img);
     }
   }
+  // micActionList(mic) async{
+  //   if(userRole == 'OWNER'  || userRole == 'ADMIN'){
+  //      //admin actions
+  //     showPopover(
+  //       context: context,
+  //       bodyBuilder: (context) =>  AdminMicListItems(mic),
+  //       onPop: () => print('Popover was popped!'),
+  //       direction: PopoverDirection.bottom,
+  //       width: 200,
+  //       height: 400,
+  //       arrowHeight: 15,
+  //       arrowWidth: 30,
+  //     );
+  //   } else {
+  //     // normal user actions
+  //     if( mic.user_id == 0){
+  //       if(mic.isClosed == 0 ){
+  //         showPopover(
+  //           context: context,
+  //           bodyBuilder: (context) =>  ListView(
+  //             children: [
+  //               TextButton(onPressed: (){}, child: Text('use_mic'.tr)) ,
+  //             ],
+  //           ),
+  //           onPop: () => print('Popover was popped!'),
+  //           direction: PopoverDirection.bottom,
+  //           width: 200,
+  //           height: 400,
+  //           arrowHeight: 15,
+  //           arrowWidth: 30,
+  //         );
+  //       } else {
+  //         Fluttertoast.showToast(
+  //             msg: 'mic_closed_msg'.tr,
+  //             toastLength: Toast.LENGTH_SHORT,
+  //             gravity: ToastGravity.CENTER,
+  //             timeInSecForIosWeb: 1,
+  //             backgroundColor: Colors.black26,
+  //             textColor: Colors.orange,
+  //             fontSize: 16.0
+  //         );
+  //       }
+  //
+  //     } else {
+  //       if(mic.user_id != user!.id){
+  //         AppUser? res =  await AppUserServices().getUser(room!.userId);
+  //         showModalBottomSheet(
+  //
+  //             context: context,
+  //             builder: (ctx) => ProfileBottomSheet(res));
+  //       } else {
+  //         showPopover(
+  //           context: context,
+  //           bodyBuilder: (context) =>  ListView(
+  //             children: [
+  //               TextButton(onPressed: (){}, child: Text('un_use_mic'.tr)),
+  //               TextButton(onPressed: (){}, child: Text('mute'.tr)),
+  //             ],
+  //           ),
+  //           onPop: () => print('Popover was popped!'),
+  //           direction: PopoverDirection.bottom,
+  //           width: 200,
+  //           height: 400,
+  //           arrowHeight: 15,
+  //           arrowWidth: 30,
+  //         );
+  //       }
+  //
+  //     }
+  //
+  //   }
+  // }
 
   Widget EmojBottomSheet( ) => EmojModal();
   Widget giftBottomSheet() => GiftModal();
@@ -439,6 +628,76 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   Widget RoomInfoBottomSheet() => RoomInfoModal();
   Widget roomCloseModal() => RoomCloseModal();
   Widget roomMembersModal() => RoomMembersModal();
+
+  List<PopupMenuEntry<int>> AdminMicListItems(mic) {
+    if(mic.user_id == 0){
+       //emptyMic => use mic , close/open mic , close/open all misc
+      if(mic.isClosed == 0){
+        print('Admin Mic Open !');
+        return
+           [
+             PopupMenuItem<int>(
+               value: 1,
+               child: Text('use_mic'.tr , style: TextStyle(color: Colors.white),),
+             ),
+             PopupMenuItem<int>(
+               value: 2,
+               child: Text('lock_mic'.tr , style: TextStyle(color: Colors.white),),
+             ),
+             PopupMenuItem<int>(
+               value: 3,
+               child: Text('lock_all_mics'.tr , style: TextStyle(color: Colors.white),),
+             ),
+          ];
+
+      } else {
+        return
+          [
+            PopupMenuItem<int>(
+              value: 4,
+              child: Text('unlock_mic'.tr , style: TextStyle(color: Colors.white),),
+            ),
+            PopupMenuItem<int>(
+              value: 5,
+              child: Text('unlock_all_mic'.tr , style: TextStyle(color: Colors.white),),
+            ),
+
+          ];
+      }
+
+    } else {
+      //MicWithUSer => delete from mic ,
+      if(mic.user_id != user!.id){
+        return
+          [
+            PopupMenuItem<int>(
+            value: 6,
+            child: Text('remove_from_mic'.tr , style: TextStyle(color: Colors.white),),
+          ),
+
+
+          ];
+
+      } else {
+        return
+          [
+            PopupMenuItem<int>(
+              value: 7,
+              child: Text('un_use_mic'.tr , style: TextStyle(color: Colors.white),),
+            ),
+            PopupMenuItem<int>(
+              value: 8,
+              child: Text('mute'.tr , style: TextStyle(color: Colors.white),),
+            ),
+
+          ];
+
+      }
+    
+    }
+  }
+
+
 
 
 

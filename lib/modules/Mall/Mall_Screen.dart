@@ -281,7 +281,7 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
                   color: MyColors.darkColor.withAlpha(100),
                   child: Center(
                     child: (design!.category_id == 3 || design!.category_id == 5) ? Image(image: NetworkImage(ASSETSBASEURL + 'Designs/' + design.icon),)
-                      : SVGASimpleImage( resUrl: ASSETSBASEURL + 'Designs/Motion/' + design.motion_icon),
+                      : SVGASimpleImage( resUrl: ASSETSBASEURL + 'Designs/Motion/' + design.motion_icon +'?raw=true'),
                   // /  SVGASimpleImage( resUrl: "https://chat.gifty-store.com/images/Designs/Motion/1703720610motion_icon.svga" ),
                   ),
                 ),
@@ -292,7 +292,7 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
                   decoration: BoxDecoration(color: Colors.black12 , borderRadius: BorderRadius.circular(10.0)),
                   child:  IconButton(onPressed: (){
                     setState(() {
-                       var img =  ASSETSBASEURL + 'Designs/Motion/' + design.motion_icon +'?raw=true' ;
+                       var img =  ASSETSBASEURL + 'Designs/Motion/' + design.motion_icon ;
                        preview(img , design);
                     });
                   },  icon: Icon(Icons.remove_red_eye_outlined , color: Colors.white,))
@@ -392,7 +392,7 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
     this.animationController!.videoItem = videoItem;
     this
         .animationController
-    !.repeat() // Try to use .forward() .reverse()
+    !.repeat()
     .whenComplete(() => this.animationController!.videoItem = null);
      await Future.delayed(Duration(seconds: 8));
     animationController!.stop();

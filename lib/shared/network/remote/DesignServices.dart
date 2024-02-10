@@ -6,6 +6,7 @@ import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Category.dart';
 import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/models/Mall.dart';
+import 'package:clubchat/models/Medal.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -159,5 +160,23 @@ class DesignServices {
     final Duration duration = dateOne.difference(dateTwo);
     print(duration.inDays );
     return duration.inDays > -1  ;
+  }
+
+  Future<List<Medal>> getAllMedals() async{
+    final response = await http.get(Uri.parse('${BASEURL}designs/medal/all'));
+    List<Medal> medals = [] ;
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      for( var i = 0 ; i < jsonData['medals'].length ; i ++ ){
+        Medal cat = Medal.fromJson(jsonData['medals'][i]);
+        medals.add(cat);
+      }
+
+      return medals ;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
   }
 }

@@ -48,6 +48,9 @@ class ChatService extends ChangeNotifier {
         .collection('messages')
         .add(newMessage.toMap()
     );
+
+    // call sendMess
+
   }
 //get messages
   Stream<QuerySnapshot> getMessages(int userId , int otherUserId){

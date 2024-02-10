@@ -32,6 +32,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   List<Tag> tags = [];
   List<UserHoppy>? hoppies = [];
   String selectedCountry = "1";
+  String selectedGender = "0";
   String selectedDate = "2000-01-01 00:00:00";
   var userNameController = TextEditingController();
   File? _image;
@@ -60,6 +61,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     setState(() {
       user = AppUserServices().userGetter();
+      selectedGender = user!.gender.toString() ;
       countries = CountryService().countryGetter();
       selectedCountry = user!.country != 0
           ? user!.country.toString()
@@ -388,22 +390,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-                                  Text(
-                                    user!.gender == 0 ? "edit_profile_male".tr : "edit_profile_female".tr,
-                                    style: TextStyle(
-                                        fontSize: 16.0, color: Colors.white),
+                                  DropdownButtonHideUnderline(
+                                    child: DropdownButton(
+                                      items: getGenders(),
+                                      onChanged: (value) async {
+                                        print(value);
+                                        setState(() {
+                                          selectedGender = value;
+                                        //  updateUserCountry(value);
+                                          updateUserGender(value);
+                                        });
+                                      },
+                                      value: selectedGender,
+                                      dropdownColor: MyColors.darkColor,
+                                      menuMaxHeight: 200.0,
+                                    ),
                                   ),
-                                  SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  IconButton(
-                                      onPressed: () {},
-                                      icon: Icon(
-                                          user!.gender == 0
-                                              ? FontAwesomeIcons.male
-                                              : FontAwesomeIcons.female,
-                                          color: Colors.white,
-                                          size: 20.0))
+
                                 ],
                               )
                             ],
@@ -626,6 +629,55 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       );
     }).toList();
   }
+
+  List<DropdownMenuItem> getGenders() {
+    return [
+    DropdownMenuItem<String>(
+      value: '0',
+      child: Container(
+        child: Row(
+          children: [
+            SizedBox(
+              width: 5.0,
+            ),
+            Icon(FontAwesomeIcons.male , size: 20.0 , color: Colors.white,),
+            SizedBox(
+              width: 5.0,
+            ),
+            Text(
+              'edit_profile_male'.tr,
+              style: TextStyle(color: Colors.white, fontSize: 15.0),
+            )
+          ],
+        ),
+      ),
+    ),
+      DropdownMenuItem<String>(
+        value: '1',
+        child: Container(
+          child: Row(
+            children: [
+              SizedBox(
+                width: 5.0,
+              ),
+              Icon(FontAwesomeIcons.female , size: 20.0 , color: Colors.white,),
+              SizedBox(
+                width: 5.0,
+              ),
+              Text(
+                'edit_profile_female'.tr,
+                style: TextStyle(color: Colors.white, fontSize: 15.0),
+              )
+            ],
+          ),
+        ),
+      ),
+
+    ].toList();
+
+
+  }
+
 
   Widget hoppyListItem(tag) => Container(
         margin: EdgeInsets.symmetric(horizontal: 10.0),
@@ -857,6 +909,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
   }
 
+
+
+
   Future getImageFromGalleryOrCamera(ImageSource _source , which) async {
     final pickedFile = await ImagePicker().pickImage(source: _source);
 
@@ -948,5 +1003,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     } else {
       return '${ASSETSBASEURL}AppUsers/${user?.img}' ;
     }
+  }
+
+  updateUserGender(gender) async {
+    AppUser? res = await AppUserServices().updateGender(user!.id, gender);
+    AppUserServices().userSetter(res!);
+    setState(() {
+      user = res;
+    });
   }
 }

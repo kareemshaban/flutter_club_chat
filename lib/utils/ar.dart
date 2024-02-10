@@ -199,6 +199,27 @@ const Map<String,String> ar ={
   "details": "تفاصيل",
   "exchange_failed": "لا يمكن تحويل الماس الا اذا كانت القيمة 100 ماسة او اكثر",
   "charging_details": "تفاصيل الشحن",
-  "exchange_failed2": "عفوا رصيدك من الماس لا يسمح"
+  "exchange_failed2": "عفوا رصيدك من الماس لا يسمح",
+  "edit_profile_user_gender": "تعديل نوع المستخدم",
+  "vip": "الأرستقراطية",
+  "vip_privileges": " أمتيازات الأرستقراطية ",
+  "Vip_package": "حزمة الأرستقراطية",
+  "car": "سيارة",
+  "medal": "شارة",
+  "special_msg":"رسائل مميزة",
+  "entering_effect": "تأثير دخول",
+  "login_time":"إخفاء تاريخ التسجيل",
+  "stop_track": "منع التتبع",
+  "no_kick": "منع الطرد",
+  "use_mic": "الصعود علي المايك",
+  "mic_closed_msg": "عفوا هذا المايك مغلق",
+  "un_use_mic": "النزول من المايك",
+  "mute": "كتم الصوت",
+  "lock_mic": "غلق المايك",
+  "lock_all_mics": "غلق كل المايكات",
+  "unlock_mic": "فتح المايك",
+  "unlock_all_mic": "فتح كل المايكات",
+  'remove_from_mic': "حذف من المايك"
+
 
  };

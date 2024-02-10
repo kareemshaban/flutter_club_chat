@@ -38,6 +38,7 @@ class WalletServices {
   Future<AppSettings?> getAppSettings() async {
     final response = await http.get(Uri.parse('${BASEURL}wallet/getSettings'));
     AppSettings settings ;
+    print(response.body);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){

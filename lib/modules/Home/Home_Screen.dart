@@ -21,6 +21,8 @@ import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 
+
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -29,7 +31,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-
+  double _xPosition = 1.0;
+  double _yPosition = 1.0;
 
   //vars
   List<BannerData> banners = [] ;
@@ -77,6 +80,7 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //PusherChannelsFlutter pusher =
     setState(() {
       user =  AppUserServices().userGetter();
       print(user!.id);
@@ -85,6 +89,13 @@ class HomeScreenState extends State<HomeScreen> {
 
     getBanners();
   }
+  connectToWs() {
+
+
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return   DefaultTabController(
@@ -173,6 +184,7 @@ class HomeScreenState extends State<HomeScreen> {
                           children: rooms.where((element) => element.country_id == selectedCountry || selectedCountry == 0).map((room ) => chatRoomListItem(room)).toList() ,
                         ),
                       ),
+
                     )
                   ],),
                 ),

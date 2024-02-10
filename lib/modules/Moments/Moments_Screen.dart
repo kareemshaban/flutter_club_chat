@@ -1,11 +1,14 @@
 import 'dart:convert';
 
+import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Post.dart';
 import 'package:clubchat/models/PostLike.dart';
 import 'package:clubchat/modules/AddPost/Add_Post_Screen.dart';
 import 'package:clubchat/modules/Notifications/Notification_Screen.dart';
 import 'package:clubchat/modules/Post/Post_Screen.dart';
+import 'package:clubchat/modules/SmallProfile/Small_Profile_Screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/PostServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -156,6 +159,38 @@ class MomentsScreenState extends State<MomentsScreen> {
     );
   }
 
+  Widget getFollowBtn(fuser){
+    AppUser? currentUser = AppUserServices().userGetter();
+    if(currentUser!.followings!.where((element) => element.follower_id == fuser).length == 0 && currentUser.id != fuser){
+      return  GestureDetector(
+        onTap: (){
+          followUser(fuser);
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0),
+          decoration: BoxDecoration(border: Border.all(color: MyColors.primaryColor , width: 1.0 ) , borderRadius: BorderRadius.circular(15.0) , color: Colors.transparent),
+          child:  Text("moments_follow".tr , style: TextStyle(color: MyColors.primaryColor),),
+        ),
+      );
+    } else {
+      return  Container();
+    }
+  }
+  followUser(fuser) async{
+    AppUser? currentUser = AppUserServices().userGetter();
+    AppUser? res = await AppUserServices().followUser(currentUser!.id, fuser);
+
+    AppUserServices().userSetter(res!);
+    Fluttertoast.showToast(
+        msg: 'inner_msg_followed'.tr,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black26,
+        textColor: Colors.orange,
+        fontSize: 16.0
+    );
+  }
   Widget postListItem(index ,List<Post> _posts) => Visibility(
     visible:_posts[index].reports != null ? _posts[index].reports!.isEmpty : true,
     child: Column(children: [
@@ -163,14 +198,23 @@ class MomentsScreenState extends State<MomentsScreen> {
          children: [
            Row(
              children: [
-               CircleAvatar(
-                 backgroundColor: _posts[index].gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                 backgroundImage: _posts[index].user_img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${_posts[index].user_img}') : null,
-                 radius: 25,
-                 child: _posts[index].user_img == "" ?
-                 Text(_posts[index].user_name.toUpperCase().substring(0 , 1) +
-                     (_posts[index].user_name.contains(" ") ? _posts[index].user_name.substring(_posts[index].user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                   style: const TextStyle(color: Colors.white , fontSize: 24.0 , fontWeight: FontWeight.bold),) : null,
+               GestureDetector(
+                 onTap: () async{
+                   AppUser? res =  await AppUserServices().getUser(_posts[index].user_id);
+                   showModalBottomSheet(
+
+                       context: context,
+                       builder: (ctx) => ProfileBottomSheet(res));
+                 },
+                 child: CircleAvatar(
+                   backgroundColor: _posts[index].gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                   backgroundImage: _posts[index].user_img != "" ?  NetworkImage('${ASSETSBASEURL}AppUsers/${_posts[index].user_img}') : null,
+                   radius: 25,
+                   child: _posts[index].user_img == "" ?
+                   Text(_posts[index].user_name.toUpperCase().substring(0 , 1) +
+                       (_posts[index].user_name.contains(" ") ? _posts[index].user_name.substring(_posts[index].user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                     style: const TextStyle(color: Colors.white , fontSize: 24.0 , fontWeight: FontWeight.bold),) : null,
+                 ),
                ),
     
              ],
@@ -206,11 +250,7 @@ class MomentsScreenState extends State<MomentsScreen> {
            ),
            GestureDetector(
              onTap: (){},
-             child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0),
-                decoration: BoxDecoration(border: Border.all(color: MyColors.primaryColor , width: 1.0 ) , borderRadius: BorderRadius.circular(15.0) , color: Colors.transparent),
-                child:  Text("moments_follow".tr , style: TextStyle(color: MyColors.primaryColor),),
-             ),
+             child: getFollowBtn(_posts[index].user_id)
            ),
            PopupMenuButton<int>(
              onSelected: (item) => {
@@ -331,3 +371,7 @@ Widget Show_image() => Column(
     Center(child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0,))
   ],
 ) ;
+
+Widget ProfileBottomSheet( user ) => SmallProfileModal(visitor: user);
+
+

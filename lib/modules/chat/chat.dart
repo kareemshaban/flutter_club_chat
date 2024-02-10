@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/message.dart';
+import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/modules/chat_bubble/chat_bubble_sender.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/Notification_service.dart';
@@ -26,11 +27,13 @@ class ChatScreen extends StatefulWidget {
     required this.receiverUserID,
     required this.receiver
   });
+
   @override
   State<ChatScreen> createState() => _ChatScreenState();
 }
 class _ChatScreenState extends State<ChatScreen> {
   AppUser? user ;
+  ScrollController _controller = ScrollController() ;
   final NotificationService send_notification= new NotificationService();
   @override
   void initState() {
@@ -38,8 +41,11 @@ class _ChatScreenState extends State<ChatScreen> {
     super.initState();
     setState(() {
       user = AppUserServices().userGetter();
-      print('user');
-      print(user!.img);
+
+    });
+    Future.delayed(Duration(milliseconds: 1000)).then((value) => {
+      _controller.animateTo(_controller.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300), curve: Curves.linear)
     });
   }
   final TextEditingController _messageController = TextEditingController();
@@ -56,6 +62,15 @@ class _ChatScreenState extends State<ChatScreen> {
     }
     //clear the text controller after sending the message
     _messageController.clear();
+    FocusScope.of(context).unfocus();
+    setState(() {
+      emojiShowing = false ;
+    });
+   await Future.delayed(Duration(milliseconds: 200));
+    _controller.animateTo(_controller.position.maxScrollExtent,
+        duration: Duration(milliseconds: 100), curve: Curves.easeIn);
+   //
+
   }
   bool emojiShowing = false;
   Future<void> deleteMessage (currentUserId , receiverId) async{
@@ -66,6 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // _firestore.collection('chat_rooms').doc(chatRoomId).collection('messages'),
     // );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -259,11 +275,12 @@ class _ChatScreenState extends State<ChatScreen> {
             return Text('Error' + snapshot.error.toString());
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text('loading');
+            return Loading();
           }
           return Container(
             color: MyColors.darkColor,
             child: ListView(
+              controller: _controller,
               children: snapshot.data!.docs
                   .map((document) => _buildMessageItem(document))
                   .toList(),
@@ -301,7 +318,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   radius: 25,
                   child: user?.img== "" ?
                   Text(user!.name.toUpperCase().substring(0 , 1) +
-                      (user!.name.contains("") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                      (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
                     style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
                 ),
               ],
