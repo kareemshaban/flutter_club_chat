@@ -266,10 +266,10 @@ class ChatsScreenState extends State<ChatsScreen> {
       stream: FirebaseFirestore.instance.collection('chat_rooms').snapshots(),
       builder: (context,snapshot){
         if(snapshot.hasError){
-          return const Text('error') ;
+          return Text('chat_error'.tr) ;
         }
         if(snapshot.connectionState == ConnectionState.waiting){
-          return const Text('loading') ;
+          return Text('chat_loading'.tr) ;
         }
         return Expanded(
           child: ListView(

@@ -139,7 +139,7 @@ class _Account_Management_ScreenState extends State<Account_Management_Screen> {
 
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK" , style: TextStyle(color: MyColors.primaryColor),),
+      child: Text("edit_ok".tr , style: TextStyle(color: MyColors.primaryColor),),
       onPressed: () async{
         final SharedPreferences prefs = await SharedPreferences.getInstance();
         await prefs.setInt('userId', 0);
@@ -175,7 +175,7 @@ class _Account_Management_ScreenState extends State<Account_Management_Screen> {
 
     // set up the button
     Widget okButton = TextButton(
-      child: Text("dit_ok".tr , style: TextStyle(color: MyColors.primaryColor),),
+      child: Text("edit_ok".tr , style: TextStyle(color: MyColors.primaryColor),),
       onPressed: () { },
     );
 

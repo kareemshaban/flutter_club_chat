@@ -26,6 +26,7 @@ class _WalletScreenState extends State<WalletScreen> {
   var diamondTxt = TextEditingController()  ;
   bool isLoading = false ;
 
+
   @override
   void initState() {
     // TODO: implement initState

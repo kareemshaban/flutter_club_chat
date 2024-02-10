@@ -14,6 +14,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../Loading/loadig_screen.dart';
+
 class AddPostScreen extends StatefulWidget {
   const AddPostScreen({super.key});
 
@@ -29,6 +31,7 @@ class AddPostScreenState extends State<AddPostScreen> {
   final picker = ImagePicker();
   var contentController = TextEditingController()  ;
   bool _isLoading = false ;
+  bool loading = false ;
 
   @override
   void initState()  {
@@ -38,6 +41,9 @@ class AddPostScreenState extends State<AddPostScreen> {
     getTags();
   }
   void getUser() async{
+    setState(() {
+      loading = true ;
+    });
     setState(() async{
       user =  AppUserServices().userGetter();
     });
@@ -47,6 +53,9 @@ class AddPostScreenState extends State<AddPostScreen> {
     setState(() {
       tags = res ;
       selectedTag = tags[0].id ;
+      setState(() {
+        loading = false ;
+      });
     });
   }
   @override
@@ -103,7 +112,7 @@ class AddPostScreenState extends State<AddPostScreen> {
       body: Container(
         color: MyColors.darkColor,
         height: double.infinity ,
-        child: SingleChildScrollView(
+        child: loading ? Loading(): SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [

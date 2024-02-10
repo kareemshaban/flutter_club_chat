@@ -148,7 +148,7 @@ class LoginScreenState extends State<LoginScreen> {
 
     // set up the button
     Widget okButton = TextButton(
-      child: Text("OK"),
+      child: Text("edit_ok".tr),
       onPressed: () {
         SystemNavigator.pop();
       },
@@ -278,7 +278,7 @@ class LoginScreenState extends State<LoginScreen> {
       verificationFailed: (FirebaseAuthException e) {
         _isLoading = false;
         Fluttertoast.showToast(
-            msg: "sorry we can not verify phone right now !",
+            msg: "login_verify_phone".tr,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,
@@ -291,7 +291,7 @@ class LoginScreenState extends State<LoginScreen> {
         Navigator.pop(context);
 
         Fluttertoast.showToast(
-            msg: "code sent successfully",
+            msg: "login_code_msg".tr,
             toastLength: Toast.LENGTH_SHORT,
             gravity: ToastGravity.CENTER,
             timeInSecForIosWeb: 1,

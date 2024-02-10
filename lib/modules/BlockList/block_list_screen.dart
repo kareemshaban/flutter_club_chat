@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import '../../models/Follower.dart';
 import '../../shared/components/Constants.dart';
 import '../../shared/styles/colors.dart';
+import '../Loading/loadig_screen.dart';
 
 class BlockListScreen extends StatefulWidget {
   const BlockListScreen({super.key});
@@ -19,6 +20,7 @@ class BlockListScreen extends StatefulWidget {
 class _BlockListScreenState extends State<BlockListScreen> {
   List<Block>? blocks = [];
   AppUser? user ;
+  bool loading = false ;
 
   @override
   void initState() {
@@ -32,11 +34,17 @@ class _BlockListScreenState extends State<BlockListScreen> {
   }
 
   loadData() async {
+    setState(() {
+      loading = true ;
+    });
     AppUser? res = await AppUserServices().getUser(user!.id);
     setState(() {
       user = res;
       blocks = user!.blocks ;
       AppUserServices().userSetter(user!);
+    });
+    setState(() {
+      loading = false ;
     });
   }
 
@@ -59,7 +67,7 @@ class _BlockListScreenState extends State<BlockListScreen> {
           width: double.infinity,
           height: double.infinity,
           padding: EdgeInsets.all(10.0),
-          child: Column(
+          child: loading ? Loading() :  Column(
             children: [
               Expanded(
                 child: RefreshIndicator(

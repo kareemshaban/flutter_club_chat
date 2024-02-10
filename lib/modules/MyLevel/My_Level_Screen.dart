@@ -27,7 +27,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
     getData();
   }
 
-  getData() {
+  getData()  {
     setState(() {
       user = AppUserServices().userGetter();
     });

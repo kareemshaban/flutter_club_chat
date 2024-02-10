@@ -8,6 +8,8 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
+import '../Loading/loadig_screen.dart';
+
 class MyPostsScreen extends StatefulWidget {
   const MyPostsScreen({super.key});
 
@@ -18,6 +20,7 @@ class MyPostsScreen extends StatefulWidget {
 class _MyPostsScreenState extends State<MyPostsScreen> {
   AppUser? user ;
   List<Post> posts = [] ;
+  bool loading = false ;
   @override
   void initState() {
     // TODO: implement initState
@@ -26,12 +29,17 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
   }
   getData() async{
     setState(() {
+      loading = true ;
+    });
+    setState(() {
       user = AppUserServices().userGetter();
     });
     List<Post> res = await PostServices().getMyPosts(user!.id);
     setState(() {
       posts = res ;
+      loading = false ;
     });
+
   }
   @override
   Widget build(BuildContext context) {
@@ -95,7 +103,7 @@ class _MyPostsScreenState extends State<MyPostsScreen> {
         height: double.infinity ,
         width: double.infinity,
         padding: EdgeInsets.all(10.0),
-        child:        Column(
+        child: loading ? Loading() : Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: [
             Expanded(

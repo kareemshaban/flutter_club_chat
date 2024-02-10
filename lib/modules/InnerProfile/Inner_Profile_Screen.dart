@@ -19,6 +19,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:svgaplayer_flutter/player.dart';
 
+import '../Loading/loadig_screen.dart';
+
 class InnerProfileScreen extends StatefulWidget {
   final int visitor_id ;
   const InnerProfileScreen({super.key , required this.visitor_id });
@@ -232,7 +234,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                   Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.charging_level_icon}') , width: 30,),
                                 ],
                               ),
-                              Text(user!.status !="" ? user!.status  : (isVisitor ? "Nothing here" : "Nothing here , update your bio")  , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+                              Text(user!.status !="" ? user!.status  : (isVisitor ? "inner_nothing".tr : "inner_nothing_update".tr)  , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
                             ],
                           ),
                         ),
@@ -341,7 +343,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Text(user!.gender == 0 ? "Male" : "Female" , style: TextStyle(fontSize: 16.0 , color: Colors.white),),
+                                        Text(user!.gender == 0 ? "edit_profile_male".tr : "edit_profile_female".tr , style: TextStyle(fontSize: 16.0 , color: Colors.white),),
                                         SizedBox(width: 5.0,),
                                         IconButton(onPressed: (){}, icon: Icon(user!.gender == 0 ?  FontAwesomeIcons.male : FontAwesomeIcons.female , color: Colors.white , size: 20.0))
                                       ],
@@ -615,14 +617,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
           ],
         ),
       ),
-    ) : Container(
-      child: Center(
-        child:  CircularProgressIndicator(
-          value: null  ,
-          color: MyColors.primaryColor,
-        ),
-      ),
-    );
+    ) : Loading();
   }
 
 
@@ -668,7 +663,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
       ),
       SizedBox(height: 5.0,),
       Text(gifts[i].name , style: TextStyle(fontSize: 13.0 , color: MyColors.unSelectedColor),),
-      Text('X ' +  gifts[i].count.toString() , style: TextStyle(fontSize: 12.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+      Text('X' +  gifts[i].count.toString() , style: TextStyle(fontSize: 12.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
     ],
   ) :  Column(
     children: [

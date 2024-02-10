@@ -1,5 +1,6 @@
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -45,7 +46,7 @@ class _SplashScreenState extends State<SplashScreen> {
             )),
             SizedBox(height: 20.0),
             Text(
-              "Party whenever you can ",
+              "splash_party".tr,
               style: TextStyle(color: MyColors.primaryColor, fontSize: 20.0),
               textAlign: TextAlign.center,
             )

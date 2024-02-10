@@ -16,7 +16,7 @@ class AppSettings {
       } =>
           AppSettings(
             id: id,
-            diamond_to_gold_ratio: gift_sender_diamond_back,
+            diamond_to_gold_ratio: diamond_to_gold_ratio,
             gift_sender_diamond_back: gift_sender_diamond_back,
             gift_room_owner_diamond_back: gift_room_owner_diamond_back,
           ),

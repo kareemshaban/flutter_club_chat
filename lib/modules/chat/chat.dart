@@ -229,7 +229,7 @@ class _ChatScreenState extends State<ChatScreen> {
                             send_notification.send_notification(widget.receiver.token , _messageController.text , user!.name);;
                             sendMessage();
                           }, //sendMessage
-                          child: Text('Send', style: TextStyle(
+                          child: Text('gift_send'.tr, style: TextStyle(
                               color: MyColors.darkColor,
                               fontSize: 15.0,
                               fontWeight: FontWeight.bold),),
@@ -256,10 +256,10 @@ class _ChatScreenState extends State<ChatScreen> {
         ),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            return Text('Error' + snapshot.error.toString());
+            return Text('chat_error'.tr + snapshot.error.toString());
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Text('loading');
+            return Text('chat_loading'.tr);
           }
           return Container(
             color: MyColors.darkColor,

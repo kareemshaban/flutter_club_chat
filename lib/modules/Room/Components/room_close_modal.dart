@@ -1,3 +1,9 @@
+import 'package:clubchat/helpers/ExitRoomHelper.dart';
+import 'package:clubchat/layout/tabs_screen.dart';
+import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/ChatRoom.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -10,6 +16,17 @@ class RoomCloseModal extends StatefulWidget {
 }
 
 class _RoomCloseModalState extends State<RoomCloseModal> {
+  AppUser? user ;
+  ChatRoom? room ;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      user = AppUserServices().userGetter();
+      room = ChatRoomService().roomGetter();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return  Container(
@@ -65,6 +82,8 @@ class _RoomCloseModalState extends State<RoomCloseModal> {
 
   }
   exitRoom(){
-
+    ExitRoomHelper(user!.id , room!.id);
+    Navigator.pop(context);
+    Navigator.push(context, MaterialPageRoute(builder: (context) => const TabsScreen(),));
   }
 }

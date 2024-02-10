@@ -31,6 +31,7 @@ import 'package:shimmer_animation/shimmer_animation.dart';
 import 'package:svgaplayer_flutter/player.dart';
 
 import '../ContactUs/contact_us_screen.dart';
+import '../Loading/loadig_screen.dart';
 import '../modols/medals_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -45,6 +46,7 @@ class ProfileScreenState extends State<ProfileScreen> {
   List<Design> designs = [] ;
   String frame = "" ;
   List<ChargingOperation> operatins = [] ;
+  bool loading = false ;
   @override
   void initState() {
     // TODO: implement initState
@@ -62,9 +64,13 @@ class ProfileScreenState extends State<ProfileScreen> {
    await getMyOperations();
   }
   getMyOperations() async{
+    setState(() {
+      loading = true ;
+    });
     List<ChargingOperation> res = await WalletServices().getUserChargingOperations(user!.id);
     setState(() {
       operatins = res ;
+      loading = false ;
     });
   }
   Future<void> _refresh()async{
@@ -78,6 +84,9 @@ class ProfileScreenState extends State<ProfileScreen> {
     });
   }
   getMyDesigns() async{
+    setState(() {
+      loading = true ;
+    });
     DesignGiftHelper _helper =  await AppUserServices().getMyDesigns(user!.id);
     setState(() {
       designs = _helper.designs! ;
@@ -90,6 +99,9 @@ class ProfileScreenState extends State<ProfileScreen> {
         print(frame);
        });
     }
+    setState(() {
+      loading = false ;
+    });
   }
   @override
   Widget build(BuildContext context) {
@@ -201,7 +213,7 @@ class ProfileScreenState extends State<ProfileScreen> {
         height: double.infinity,
         color: MyColors.darkColor,
         padding: EdgeInsets.all(10.0),
-        child: RefreshIndicator(
+        child: loading ? Loading() : RefreshIndicator(
           onRefresh: _refresh ,
           color: MyColors.primaryColor,
           child: SingleChildScrollView(

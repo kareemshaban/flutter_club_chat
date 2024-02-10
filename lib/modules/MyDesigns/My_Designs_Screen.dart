@@ -10,6 +10,8 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../Loading/loadig_screen.dart';
+
 class MyDesignScreen extends StatefulWidget {
   const MyDesignScreen({super.key});
 
@@ -26,6 +28,7 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
   TabController? _tabController ;
   List<Widget> tabs = [] ;
   List<Widget> views = [] ;
+  bool loading = false ;
 
   @override
   void initState() {
@@ -33,18 +36,23 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
     super.initState();
 
   }
-  getData(){
+  getData() async{
     setState(() {
       user = AppUserServices().userGetter();
       helper = DesignServices().helperGetter();
       categories = helper!.categories! ;
       tabsCount = helper!.categories!.length ;
       _tabController = new TabController(vsync: this, length: tabsCount);
-      getCats();
 
-      getMyDesigns();
+      setState(() {
+        loading = true ;
+      });
     });
-    
+    await getCats();
+    await getMyDesigns();
+     setState(() {
+        loading = false ;
+     });
   }
   getMyDesigns() async {
     DesignGiftHelper _helper =  await AppUserServices().getMyDesigns(user!.id);
@@ -120,7 +128,7 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
         height: double.infinity,
         color: MyColors.darkColor,
         padding: EdgeInsets.all(10.0),
-        child: tabsCount > 0 ? Column(
+        child:  tabsCount > 0 ?  loading ? Loading() : Column(
           children: [
             SizedBox(height: 10.0,),
             Container(

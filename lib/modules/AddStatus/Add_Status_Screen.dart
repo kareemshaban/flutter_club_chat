@@ -108,14 +108,14 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
                   ),
                   icon: _isLoading
                       ? Container(
-                    width: 20,
-                    height: 20,
-                    padding: const EdgeInsets.all(2.0),
-                    child: const CircularProgressIndicator(
-                      color: Colors.white,
-                      strokeWidth: 3,
-                    ),
-                  )
+                       width: 20,
+                       height: 20,
+                      padding: const EdgeInsets.all(2.0),
+                        child: const CircularProgressIndicator(
+                       color: Colors.white,
+                       strokeWidth: 3,
+                       ),
+                     )
                       :  Icon(Icons.publish , color: MyColors.darkColor , size: 20.0,),
                   label:  Text('add_status_share'.tr , style: TextStyle(color: MyColors.darkColor , fontSize: 18.0), ),
                 ),

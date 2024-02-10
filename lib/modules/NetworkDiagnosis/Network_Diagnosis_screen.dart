@@ -59,7 +59,7 @@ class _Network_Diagnosis_ScreenState extends State<Network_Diagnosis_Screen> {
       isLoading = false ;
     });
     Fluttertoast.showToast(
-        msg: 'All Network Services is working as expected ',
+        msg: 'network_msg'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,

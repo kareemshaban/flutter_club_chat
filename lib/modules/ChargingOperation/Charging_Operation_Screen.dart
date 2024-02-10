@@ -7,6 +7,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../Loading/loadig_screen.dart';
+
 class ChargingOperationScreen extends StatefulWidget {
   const ChargingOperationScreen({super.key});
 
@@ -17,6 +19,7 @@ class ChargingOperationScreen extends StatefulWidget {
 class _ChargingOperationScreenState extends State<ChargingOperationScreen> {
   List<ChargingOperation> operatins = [] ;
   AppUser? user ;
+  bool loading = false ;
   @override
   void initState() {
     // TODO: implement initState
@@ -27,12 +30,17 @@ class _ChargingOperationScreenState extends State<ChargingOperationScreen> {
     getMyOperations();
   }
   getMyOperations() async{
+    setState(() {
+      loading = true ;
+    });
     List<ChargingOperation> res = await WalletServices().getUserChargingOperations(user!.id);
     setState(() {
       operatins = res ;
+      loading = false ;
     });
 
   }
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -49,7 +57,7 @@ class _ChargingOperationScreenState extends State<ChargingOperationScreen> {
         width: double.infinity,
         height: double.infinity,
         padding: EdgeInsets.all(15.0),
-        child: ListView.separated(itemBuilder: (context, index) => itemBuilder(index),  separatorBuilder: (context, index) => seperatorBuilder() , itemCount: operatins.length),
+        child: loading ? Loading() : ListView.separated(itemBuilder: (context, index) => itemBuilder(index),  separatorBuilder: (context, index) => seperatorBuilder() , itemCount: operatins.length),
       ),
     );
   }

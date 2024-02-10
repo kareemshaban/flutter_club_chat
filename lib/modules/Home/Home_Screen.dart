@@ -7,6 +7,7 @@ import 'package:clubchat/models/Banner.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Country.dart';
 import 'package:clubchat/models/FestivalBanner.dart';
+import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/modules/Search_Screen/SearchScreen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
@@ -20,6 +21,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+
+
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -40,11 +43,15 @@ class HomeScreenState extends State<HomeScreen> {
   int selectedCountry = 0 ;
   String selectedChatRoomCategory = 'CHAT' ;
   bool loaded = false ;
+  bool loading = false ;
   HomeScreenState()  {
 
   }
 
    getBanners() async {
+    setState(() {
+      loading = true ;
+     });
     List<BannerData> res = await BannerServices().getAllBanners();
     setState(() {
       banners = res ;
@@ -65,6 +72,9 @@ class HomeScreenState extends State<HomeScreen> {
       festivalBanners = res4 ;
       print(FestivalBanner);
     });
+    setState(() {
+      loading = false ;
+    });
   }
   //var
   AppUser? user ;
@@ -77,6 +87,7 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //PusherChannelsFlutter pusher =
     setState(() {
       user =  AppUserServices().userGetter();
       print(user!.id);
@@ -85,6 +96,13 @@ class HomeScreenState extends State<HomeScreen> {
 
     getBanners();
   }
+  connectToWs() {
+
+
+
+
+  }
+
   @override
   Widget build(BuildContext context) {
     return   DefaultTabController(
@@ -137,7 +155,7 @@ class HomeScreenState extends State<HomeScreen> {
         body: Container(
           color: MyColors.darkColor,
           width: double.infinity,
-          child:  TabBarView(
+          child: loading ? Loading() : TabBarView(
             children: [
               // home
               Skeletonizer(

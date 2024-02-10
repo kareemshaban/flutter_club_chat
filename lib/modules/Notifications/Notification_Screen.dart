@@ -8,6 +8,8 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:clubchat/models/Notification.dart';
 
+import '../Loading/loadig_screen.dart';
+
 class NotificationScreen extends StatefulWidget {
 
   const NotificationScreen({super.key});
@@ -19,6 +21,7 @@ class NotificationScreen extends StatefulWidget {
 class NotificationScreenState extends State<NotificationScreen> {
   List<UserNotification> notifications = [] ;
   List<Announcement> announcements = [] ;
+  bool loading = false ;
   @override
   void initState() {
     // TODO: implement initState
@@ -26,6 +29,9 @@ class NotificationScreenState extends State<NotificationScreen> {
     getAllNotifications();
   }
   getAllNotifications() async {
+    setState(() {
+      loading = true ;
+    });
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     int id = await prefs.getInt('userId') ?? 0;
     NotificationHelper  res = await NotificationServices().getAllNotifications(id);
@@ -34,7 +40,9 @@ class NotificationScreenState extends State<NotificationScreen> {
      announcements = res.announcements! ;
      print(notifications[0].id);
    });
-
+setState(() {
+  loading = false ;
+});
   }
   @override
   Widget build(BuildContext context) {
@@ -68,7 +76,7 @@ class NotificationScreenState extends State<NotificationScreen> {
           color: MyColors.darkColor,
           width: double.infinity,
           padding: const EdgeInsets.all(20.0),
-         child: TabBarView(
+         child: loading ? Loading() : TabBarView(
              children:[
                Column(
                  children: [

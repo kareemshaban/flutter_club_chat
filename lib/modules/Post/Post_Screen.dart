@@ -14,6 +14,7 @@ class PostScreen extends StatefulWidget {
   final Post post;
   const PostScreen({super.key, required this.post});
 
+
   @override
   State<PostScreen> createState() => _PostScreenState();
 }
@@ -23,6 +24,9 @@ class _PostScreenState extends State<PostScreen> {
   var contentTxt = TextEditingController()  ;
 
   getInitdata() async {
+    setState(() {
+
+    });
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     int id = await prefs.getInt('userId') ?? 0;
 
@@ -215,7 +219,7 @@ class _PostScreenState extends State<PostScreen> {
                                   widget.post.likes!.length > 0 ?
                                   ListView.separated( itemBuilder: (ctx , index) => likesListItem(index), separatorBuilder: (ctx , index) => separatorBuilder(), itemCount: widget.post.likes!.length)
                                       : const Center(
-                                    child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0, ),
+                                        child: Image(image: AssetImage('assets/images/empty.png'), width: 200.0, ),
                                   ),
                                 ],
                               ),

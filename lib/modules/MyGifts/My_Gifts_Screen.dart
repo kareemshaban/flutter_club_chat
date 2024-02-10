@@ -6,6 +6,8 @@ import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 
+import '../Loading/loadig_screen.dart';
+
 class MyGiftsScreen extends StatefulWidget {
   const MyGiftsScreen({super.key});
 
@@ -17,6 +19,7 @@ class _MyGiftsScreenState extends State<MyGiftsScreen> {
 
   AppUser? user ;
   List<Design> gifts = [] ;
+  bool loading = false ;
   @override
   void initState() {
     // TODO: implement initState
@@ -25,12 +28,16 @@ class _MyGiftsScreenState extends State<MyGiftsScreen> {
   }
   getData() async{
     setState(() {
+      loading = true ;
+    });
+    setState(() {
       user = AppUserServices().userGetter();
     });
     DesignGiftHelper helper = await AppUserServices().getMyDesigns(user!.id);
 
     setState(() {
       gifts = helper.gifts! ;
+      loading = false ;
     });
 
   }
@@ -96,7 +103,7 @@ class _MyGiftsScreenState extends State<MyGiftsScreen> {
         height: double.infinity,
         color: MyColors.darkColor,
         padding: EdgeInsets.all(10.0),
-        child: Column(
+        child: loading ? Loading():   Column(
           children: [
             Expanded(
               child: GridView.count(

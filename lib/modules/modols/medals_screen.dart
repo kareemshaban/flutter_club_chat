@@ -1,3 +1,5 @@
+import 'package:clubchat/models/Medal.dart';
+import 'package:clubchat/shared/network/remote/DesignServices.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../models/Design.dart';
@@ -15,8 +17,26 @@ class MedalsScreen extends StatefulWidget {
 class _MedalsScreenState extends State<MedalsScreen> {
   @override
 
-  List<Design> gifts = [] ;
-
+  List<Medal> medals = [] ;
+  bool loading = false ;
+ @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    getMedals();
+  }
+  getMedals() async {
+   setState(() {
+     loading = true ;
+   });
+   List<Medal> res = await DesignServices().getAllMedals();
+   setState(() {
+     medals = res ;
+   });
+   setState(() {
+     loading = false ;
+   });
+  }
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(
@@ -37,9 +57,9 @@ class _MedalsScreenState extends State<MedalsScreen> {
             Expanded(
               child: GridView.count(
                 scrollDirection: Axis.vertical,
-                childAspectRatio: .7,
-                crossAxisCount: 3,
-                children: gifts.map((gift ) => giftItemBuilder(gift)).toList() ,
+                childAspectRatio: 1,
+                crossAxisCount: 2,
+                children: medals.map((gift ) => giftItemBuilder(gift)).toList() ,
               ),
             )
           ],
@@ -51,17 +71,17 @@ class _MedalsScreenState extends State<MedalsScreen> {
   Widget giftItemBuilder(gift) =>  GestureDetector(
     onTap: (){} ,
     child: Container(
-      width: MediaQuery.of(context).size.width / 3 ,
+      width: MediaQuery.of(context).size.width / 2 ,
       margin: const EdgeInsets.all(5.0),
       child: Container(
-          width: MediaQuery.of(context).size.width / 3 ,
+          width: MediaQuery.of(context).size.width / 2 ,
 
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(25.5), color: Colors.black12),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Image(image: NetworkImage(ASSETSBASEURL + 'Designs/' + gift.icon) , width: 100.0, height: 100.0,),
-              Text(gift.name , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
-              Text("X" + gift.count.toString() , style: TextStyle(color: Colors.white , fontSize: 15.0),)
+              Image(image: NetworkImage(ASSETSBASEURL + 'Badges/' + gift.icon) , width: 100.0, height: 100.0,),
+              Text(gift.name , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
             ],
           )
       ),
