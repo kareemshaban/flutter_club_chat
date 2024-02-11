@@ -94,16 +94,11 @@ class HomeScreenState extends State<HomeScreen> {
       print(user!.id);
     });
 
-
     getBanners();
   }
   connectToWs() {
 
-
-
-
   }
-
   @override
   Widget build(BuildContext context) {
     return   DefaultTabController(
@@ -156,25 +151,29 @@ class HomeScreenState extends State<HomeScreen> {
         body: Container(
           color: MyColors.darkColor,
           width: double.infinity,
+<<<<<<< HEAD
           child: loading ? Loading() : TabBarView(
+=======
+          child: TabBarView(
+>>>>>>> 966a9191301b65af6c5c6b02e56e38b5ce12b054
             children: [
               // home
               Skeletonizer(
-                 enabled: !loaded,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                enabled: !loaded,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 5.0 , vertical: 10.0),
 
                       child: CarouselSlider(items:
-                        banners.map((banner) => Container(
+                      banners.map((banner) => Container(
 
-                          decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ),
-                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                          child: Image.network('${ASSETSBASEURL}Banners/${banner.img}' , fit: BoxFit.cover, ),
-                        )).toList()
-                       , options: CarouselOptions( aspectRatio: 3 , autoPlay: true , viewportFraction: 1.0)),
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ),
+                        clipBehavior: Clip.antiAliasWithSaveLayer,
+                        child: Image.network('${ASSETSBASEURL}Banners/${banner.img}' , fit: BoxFit.cover, ),
+                      )).toList()
+                          , options: CarouselOptions( aspectRatio: 3 , autoPlay: true , viewportFraction: 1.0)),
                     ),
                     Container(
                       padding: const EdgeInsets.symmetric(horizontal: 15.0),
@@ -192,43 +191,43 @@ class HomeScreenState extends State<HomeScreen> {
                           children: rooms.where((element) => element.country_id == selectedCountry || selectedCountry == 0).map((room ) => chatRoomListItem(room)).toList() ,
                         ),
                       ),
-
-                    )
-                  ],),
+                    ),
+                  ],
                 ),
+              ),
               //discover
-               Column(
-                 children: [
-                   Container(
-                     padding: const EdgeInsets.symmetric(horizontal: 5.0 , vertical: 10.0),
+              Column(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 5.0 , vertical: 10.0),
 
-                     child: CarouselSlider(items:
-                     festivalBanners.map((banner) => Container(
+                    child: CarouselSlider(items:
+                    festivalBanners.map((banner) => Container(
 
-                       decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ),
-                       clipBehavior: Clip.antiAliasWithSaveLayer,
-                       child: Image.network('${ASSETSBASEURL}FestivalBanner/${banner.img}' , fit: BoxFit.cover, ),
-                     )).toList()
-                         , options: CarouselOptions( aspectRatio: 3 , autoPlay: true , viewportFraction: 1.0)),
-                   ),
-                   Container(
-                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                     height:40.0,
-                     child: ListView.separated(itemBuilder: (ctx , index) => chatRoomCategoryListItem(index)  , separatorBuilder: (ctx , index) => countryListSpacer(), itemCount: chatRoomCats.length , scrollDirection: Axis.horizontal,),
+                      decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ),
+                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                      child: Image.network('${ASSETSBASEURL}FestivalBanner/${banner.img}' , fit: BoxFit.cover, ),
+                    )).toList()
+                        , options: CarouselOptions( aspectRatio: 3 , autoPlay: true , viewportFraction: 1.0)),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 15.0),
+                    height:40.0,
+                    child: ListView.separated(itemBuilder: (ctx , index) => chatRoomCategoryListItem(index)  , separatorBuilder: (ctx , index) => countryListSpacer(), itemCount: chatRoomCats.length , scrollDirection: Axis.horizontal,),
 
-                   ),
-                   const SizedBox(height: 10.0,),
-                   Expanded(
-                     child: RefreshIndicator(
-                       color: MyColors.primaryColor,
-                       onRefresh: _refresh,
-                       child: GridView.count(
-                         crossAxisCount: 2,
-                         children: rooms.where((element) => element.subject == selectedChatRoomCategory).map((room ) => chatRoomListItem(room)).toList() ,
-                       ),
-                     ),
-                   )
-                 ],
+                  ),
+                  const SizedBox(height: 10.0,),
+                  Expanded(
+                    child: RefreshIndicator(
+                      color: MyColors.primaryColor,
+                      onRefresh: _refresh,
+                      child: GridView.count(
+                        crossAxisCount: 2,
+                        children: rooms.where((element) => element.subject == selectedChatRoomCategory).map((room ) => chatRoomListItem(room)).toList() ,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
