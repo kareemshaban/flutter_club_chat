@@ -4,6 +4,7 @@ import 'package:clubchat/models/message.dart';
 import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/modules/chat_bubble/chat_bubble_sender.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/ChatServic.dart';
 import 'package:clubchat/shared/network/remote/Notification_service.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
@@ -34,14 +35,14 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   AppUser? user ;
   ScrollController _controller = ScrollController() ;
-  final NotificationService send_notification= new NotificationService();
+  final NotificationService send_notification=  NotificationService();
+  final ChatApiService send_Message=  ChatApiService();
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     setState(() {
       user = AppUserServices().userGetter();
-
     });
     Future.delayed(Duration(milliseconds: 1000)).then((value) => {
       _controller.animateTo(_controller.position.maxScrollExtent,
@@ -244,6 +245,8 @@ class _ChatScreenState extends State<ChatScreen> {
                           onPressed: () {
                             send_notification.send_notification(widget.receiver.token , _messageController.text , user!.name);;
                             sendMessage();
+                            send_Message.send_Message(user!.id, widget.receiver.id, _messageController.text)
+                            ;
                           }, //sendMessage
                           child: Text('Send', style: TextStyle(
                               color: MyColors.darkColor,

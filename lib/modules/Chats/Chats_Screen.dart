@@ -60,6 +60,7 @@ class ChatsScreenState extends State<ChatsScreen> {
        isloading = false ;
      });
   }
+
   Future<void> _refresh()async{
     await loadData() ;
   }
@@ -358,7 +359,7 @@ class ChatsScreenState extends State<ChatsScreen> {
       AppUser? rec = await AppUserServices().getUser(article.reciver_id);
       Navigator.push(context, MaterialPageRoute(builder: (ctx) =>  ChatScreen(
         receiverUserEmail:  rec!.email ,
-        receiverUserID: article.reciver_id,
+        receiverUserID: rec.id,
         receiver: rec,
       )
       )

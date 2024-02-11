@@ -28,16 +28,26 @@ Future<List<Chat>> getuserChats(user_id)async{
   }
 }
 
-// Future<void> sendMessage()async{
-//   var response = await http.post(
-//      Uri.parse(),
-//     headers: <String,String>{
-//       'Content-Type': 'application/json; charset=UTF-8',
-//     },
-//     body: jsonEncode(<String, dynamic>{
-//
-//       }
-//   )
-//   );
-// }
+Future<void> send_Message(user_id,reciver_id,message)async{
+  var response = await http.post(
+     Uri.parse('${BASEURL}chats/sendMsg'),
+    headers: <String,String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(<String, dynamic>{
+      "user_id": user_id.toString(),
+      "reciver_id": reciver_id.toString(),
+      "message": message.toString(),
+      }
+  )
+  );
+  print('response.body') ;
+  print(response.body) ;
+  if (response.statusCode == 200) {
+
+  } else {
+    throw Exception('Failed to load album');
+  }
+
+}
 }

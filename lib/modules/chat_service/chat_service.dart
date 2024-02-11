@@ -40,7 +40,6 @@ class ChatService extends ChangeNotifier {
     await _firestore.collection('chat_rooms').doc(chatRoomId).set({
        'sender' : sender_fb.id ,
        'reciver': reciever_fb.id,
-
     });
     await _firestore
         .collection('chat_rooms')
@@ -57,7 +56,7 @@ class ChatService extends ChangeNotifier {
     // construct chat room id from user id (sorted to ensure it matches the id used when sending message
     List<int> ids = [userId , otherUserId] ;
     ids.sort() ;
-    String chatRoomId = ids .join("_");
+    String chatRoomId = ids.join("_");
     return _firestore
         .collection('chat_rooms')
         .doc(chatRoomId)
