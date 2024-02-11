@@ -311,7 +311,7 @@ class _ChatScreenState extends State<ChatScreen> {
                   radius: 25,
                   child: user?.img== "" ?
                   Text(user!.name.toUpperCase().substring(0 , 1) +
-                      (user!.name.contains("") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                      (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
                     style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
                 ),
               ],

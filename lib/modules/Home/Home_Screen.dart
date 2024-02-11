@@ -151,11 +151,7 @@ class HomeScreenState extends State<HomeScreen> {
         body: Container(
           color: MyColors.darkColor,
           width: double.infinity,
-<<<<<<< HEAD
           child: loading ? Loading() : TabBarView(
-=======
-          child: TabBarView(
->>>>>>> 966a9191301b65af6c5c6b02e56e38b5ce12b054
             children: [
               // home
               Skeletonizer(

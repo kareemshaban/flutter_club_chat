@@ -356,7 +356,12 @@ class ChatsScreenState extends State<ChatsScreen> {
   Widget build_list_chats(Chat article) =>  GestureDetector(
     behavior: HitTestBehavior.opaque,
     onTap: () async{
-      AppUser? rec = await AppUserServices().getUser(article.reciver_id);
+      int id = 0 ;
+      if(user!.id == article.sender_id) id = article.reciver_id ;
+      else id = article.sender_id ;
+      AppUser? rec = await AppUserServices().getUser(id);
+      print(rec!.id);
+      print(user!.id);
       Navigator.push(context, MaterialPageRoute(builder: (ctx) =>  ChatScreen(
         receiverUserEmail:  rec!.email ,
         receiverUserID: rec.id,
