@@ -19,6 +19,7 @@ class _MedalsScreenState extends State<MedalsScreen> {
 
   List<Medal> medals = [] ;
   bool loading = false ;
+
  @override
   void initState() {
     // TODO: implement initState
@@ -29,6 +30,7 @@ class _MedalsScreenState extends State<MedalsScreen> {
    setState(() {
      loading = true ;
    });
+
    List<Medal> res = await DesignServices().getAllMedals();
    setState(() {
      medals = res ;
@@ -36,6 +38,7 @@ class _MedalsScreenState extends State<MedalsScreen> {
    setState(() {
      loading = false ;
    });
+
   }
   Widget build(BuildContext context) {
     return  Scaffold(

@@ -173,6 +173,7 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
                         children: [
                           Text("followers_title".tr, style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
 
+
                           Icon(Icons.people_outlined , color: MyColors.whiteColor , size: 20.0,),
 
                           Text(user!.followers!.length.toString(), style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
@@ -184,7 +185,9 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
                     ],
                   ),
                   const SizedBox(height: 5.0,),
-                  Text(user!.status !="" ? user!.status  : "inner_nothing".tr , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+
+                  Text(user!.status !="" ? user!.status  : "Nothing here" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+
         
                   const SizedBox(height: 10.0,),
                   Row(

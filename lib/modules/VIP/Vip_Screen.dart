@@ -19,6 +19,7 @@ class _VipScreenState extends State<VipScreen> {
   List<Mall> designs = [] ;
   List<Vip> vips = [] ;
   bool loading = false ;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -26,9 +27,11 @@ class _VipScreenState extends State<VipScreen> {
     getVipData();
   }
   getVipData() async{
+
     setState(() {
       loading = true ;
     });
+
     List<Vip> res0 = await VipServices().getAllVipTags();
     setState(() {
       vips = res0 ;
@@ -37,9 +40,11 @@ class _VipScreenState extends State<VipScreen> {
     setState(() {
       designs = res ;
     });
+
     setState(() {
       loading = false ;
     });
+
    }
   @override
   Widget build(BuildContext context) {
@@ -60,6 +65,7 @@ class _VipScreenState extends State<VipScreen> {
           height: double.infinity,
           color: Colors.black,
           child:  designs.length > 0 ? loading ? Loading() : Column(
+
             children: [
               TabBar(
                 dividerColor: Colors.transparent,
@@ -1115,6 +1121,7 @@ class _VipScreenState extends State<VipScreen> {
                     height: 40.0,
                     decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(15.0)),
                     child: Center(child: Text('mall_purchase'.tr)),
+
                   ),
                 ],
               ),

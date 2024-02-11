@@ -40,7 +40,6 @@ class ChatService extends ChangeNotifier {
     await _firestore.collection('chat_rooms').doc(chatRoomId).set({
        'sender' : sender_fb.id ,
        'reciver': reciever_fb.id,
-
     });
     await _firestore
         .collection('chat_rooms')
@@ -48,6 +47,9 @@ class ChatService extends ChangeNotifier {
         .collection('messages')
         .add(newMessage.toMap()
     );
+
+    // call sendMess
+
   }
 //get messages
   Stream<QuerySnapshot> getMessages(int userId , int otherUserId){

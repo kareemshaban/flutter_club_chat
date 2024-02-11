@@ -201,14 +201,14 @@ const Map<String, String> ar = {
   "charging_details": "تفاصيل الشحن",
   "exchange_failed2": "عفوا رصيدك من الماس لا يسمح",
   "edit_profile_user_gender": "تعديل نوع المستخدم",
-  "vip": "الأستقراطية",
-  "vip_privileges": " إمتيازات الأرستقراطية ",
-  "Vip_package": "حزمة الأستقراطية",
+  "vip": "الأرستقراطية",
+  "vip_privileges": " أمتيازات الأرستقراطية ",
+  "Vip_package": "حزمة الأرستقراطية",
   "car": "سيارة",
   "medal": "شارة",
-  "special_msg": "رسائل مميزة",
+  "special_msg":"رسائل مميزة",
   "entering_effect": "تأثير دخول",
-  "login_time": "إخفاء تاريخ التسجيل",
+  "login_time":"إخفاء تاريخ التسجيل",
   "stop_track": "منع التتبع",
   "no_kick": "منع الطرد",
   "use_mic": "الصعود علي المايك",
@@ -228,5 +228,6 @@ const Map<String, String> ar = {
   'login_code_msg': 'تم إرسال رمز التحقق بنجاح',
   'network_msg': 'كافة خدمات الشبكة تعمل كما هو متوقع',
   'splash_party':'احتفل كلما استطعت',
+
 
 };

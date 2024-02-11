@@ -32,7 +32,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-
+  double _xPosition = 1.0;
+  double _yPosition = 1.0;
 
   //vars
   List<BannerData> banners = [] ;
@@ -191,6 +192,7 @@ class HomeScreenState extends State<HomeScreen> {
                           children: rooms.where((element) => element.country_id == selectedCountry || selectedCountry == 0).map((room ) => chatRoomListItem(room)).toList() ,
                         ),
                       ),
+
                     )
                   ],),
                 ),

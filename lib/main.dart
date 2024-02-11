@@ -20,6 +20,7 @@ Future<void> FirebaseBackgroundMessage(RemoteMessage message)async {
   print(message.data.toString()) ;
 }
 
+
 Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);

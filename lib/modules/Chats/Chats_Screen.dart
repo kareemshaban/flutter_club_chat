@@ -1,16 +1,21 @@
 
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/Chat.dart';
 import 'package:clubchat/modules/CustomerService/customer_service_screen.dart';
 import 'package:clubchat/modules/EventMessage/event_message_screen.dart';
 import 'package:clubchat/modules/Followers/Followers_Screen.dart';
 import 'package:clubchat/modules/SystemMessage/system_message_screen.dart';
 import 'package:clubchat/modules/chat/chat.dart';
+import 'package:clubchat/modules/chat_service/chat_service.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/ChatServic.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import '../../models/Friends.dart';
 import '../../shared/components/Constants.dart';
@@ -25,8 +30,10 @@ class ChatsScreen extends StatefulWidget {
 }
 
 class ChatsScreenState extends State<ChatsScreen> {
+  bool isloading = false ;
   var userTxt = TextEditingController()  ;
   List<Friends>? friends = [];
+  List<Chat> chats = [] ;
   AppUser? user;
   AppUser? reciver ;
   final FirebaseAuth _auth = FirebaseAuth.instance ;
@@ -38,13 +45,27 @@ class ChatsScreenState extends State<ChatsScreen> {
       user = AppUserServices().userGetter();
       friends = user!.friends ;
     });
+    getUserChats();
   }
-
+  getUserChats() async {
+     setState(() {
+       isloading = true ;
+     });
+     List<Chat> res = await ChatApiService().getuserChats(user!.id);
+     print(res);
+     setState(() {
+       chats = res ;
+     });
+     setState(() {
+       isloading = false ;
+     });
+  }
   Future<void> _refresh()async{
     await loadData() ;
   }
   loadData() async {
     AppUser? res = await AppUserServices().getUser(user!.id);
+    await getUserChats();
     setState(() {
       user = res;
       friends = user!.friends ;
@@ -228,7 +249,7 @@ class ChatsScreenState extends State<ChatsScreen> {
                   GestureDetector(
                     behavior: HitTestBehavior.opaque,
                     onTap: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (ctx) => const SystemMessage()));
+                      Navigator.push(context, MaterialPageRoute(builder: (context)=> SystemMessage())) ;
                     },
                     child: Container(
                       color: Colors.black26,
@@ -246,7 +267,21 @@ class ChatsScreenState extends State<ChatsScreen> {
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  _buildUserList(),
+                  isloading ? Loading() : Container() ,
+                  Expanded(
+                    child: ListView.separated(
+                        itemBuilder: (context,index) =>build_list_chats(chats[index]),
+                        separatorBuilder: (context,index) =>Padding(
+                          padding: const EdgeInsetsDirectional.only(start: 10.0),
+                          child: Container(
+                            color: Colors.grey,
+                            height: 1,
+                            width: double.infinity,
+                          ),
+                        ),
+                        itemCount: chats.length
+                    ),
+                  ),
                 ],
               ),
               Column(
@@ -316,6 +351,96 @@ class ChatsScreenState extends State<ChatsScreen> {
       );
 
   }
+
+  Widget build_list_chats(Chat article) =>  GestureDetector(
+    behavior: HitTestBehavior.opaque,
+    onTap: () async{
+      AppUser? rec = await AppUserServices().getUser(article.reciver_id);
+      Navigator.push(context, MaterialPageRoute(builder: (ctx) =>  ChatScreen(
+        receiverUserEmail:  rec!.email ,
+        receiverUserID: article.reciver_id,
+        receiver: rec,
+      )
+      )
+      );
+    },
+    child: Container(
+      color: Colors.black26,
+      padding: EdgeInsets.all(15.0) ,
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor:  MyColors.primaryColor,
+            backgroundImage: getChatItemImg(article),
+            radius: 30,
+            child: getUserIntial(article),
+          ),
+          SizedBox(width: 14.0,),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(getUserName(article),style: TextStyle(fontSize: 17.0,color: Colors.white),),
+              SizedBox(height: 5.0,),
+              Container( width: 80.0, child: Text((article.last_message ),style: TextStyle(fontSize: 15.0,color: Colors.white), overflow: TextOverflow.ellipsis,)),
+            ],
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(formattedDate(article.last_action_date) ,style: TextStyle(color: Colors.white),),
+                    SizedBox(width: 5.0,),
+                    Text(formattedTime(article.last_action_date) ,style: TextStyle(color: Colors.white),),
+
+
+                  ],
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
+    ),
+  );
+
+  ImageProvider getChatItemImg(chat){
+     if(chat.sender_id == user!.id){
+       return NetworkImage('${ASSETSBASEURL}AppUsers/${chat.receiver_img}') ;
+     } else {
+       return NetworkImage('${ASSETSBASEURL}AppUsers/${chat.sender_img}') ;
+     }
+
+  }
+  Widget getUserIntial(chat){
+    String user_img = chat.sender_id == user!.id ? chat.receiver_img : chat.sender_img ;
+    String user_name = chat.sender_id == user!.id ? chat.receiver_name : chat.sender_name ;
+
+    return user_img== "" ?
+    Text(user_name.toUpperCase().substring(0 , 1) +
+        (user_name.contains(" ") ? user_name.substring(user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+      style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : Container();
+  }
+  String getUserName(chat){
+    String user_name = chat.sender_id == user!.id ? chat.receiver_name : chat.sender_name ;
+     return user_name ;
+  }
+
+  String formattedDate(dateTime) {
+    const DATE_FORMAT = 'dd/MM/yyyy';
+    print('dateTime ($dateTime)');
+    return DateFormat(DATE_FORMAT).format(DateTime.parse(dateTime) );
+  }
+
+  String formattedTime(dateTime) {
+    const DATE_FORMAT = 'hh:mm';
+    print('dateTime ($dateTime)');
+    return DateFormat(DATE_FORMAT).format(DateTime.parse(dateTime) );
+  }
+
 }
 
 

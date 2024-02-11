@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/message.dart';
+import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/modules/chat_bubble/chat_bubble_sender.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/Notification_service.dart';
@@ -259,7 +260,7 @@ class _ChatScreenState extends State<ChatScreen> {
             return Text('chat_error'.tr + snapshot.error.toString());
           }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Text('chat_loading'.tr);
+            return Loading() ;
           }
           return Container(
             color: MyColors.darkColor,
