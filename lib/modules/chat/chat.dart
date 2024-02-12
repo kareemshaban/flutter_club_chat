@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/Chat.dart';
 import 'package:clubchat/models/message.dart';
 import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/modules/chat_bubble/chat_bubble_sender.dart';
@@ -32,10 +33,12 @@ class ChatScreen extends StatefulWidget {
   State<ChatScreen> createState() => _ChatScreenState();
 }
 class _ChatScreenState extends State<ChatScreen> {
+  bool _isLoading = false ;
   AppUser? user ;
   final NotificationService send_notification= new NotificationService();
   ScrollController _controller = ScrollController() ;
   final ChatApiService send_Message=  ChatApiService();
+  int prevSender = 0 ;
   @override
   void initState() {
     // TODO: implement initState
@@ -54,7 +57,6 @@ class _ChatScreenState extends State<ChatScreen> {
   final ChatService _chatService = ChatService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore= FirebaseFirestore.instance;
-
   void sendMessage() async {
     print('inside print');
     // only send message if there is something to send
@@ -74,6 +76,7 @@ class _ChatScreenState extends State<ChatScreen> {
     // _firestore.collection('chat_rooms').doc(chatRoomId).collection('messages'),
     // );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -226,12 +229,12 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                       SizedBox(width: 15.0,),
                       Container(
-                        height: 40.0,
-                        width: 67,
                         decoration: BoxDecoration(
                           color: MyColors.primaryColor,
-                          borderRadius: BorderRadius.circular(10.0),
+                          borderRadius: BorderRadius.circular(10.0)
                         ),
+                        height: 45.0,
+                        width: 65.0,
                         child: MaterialButton(
                           onPressed: () {
                             send_notification.send_notification(widget.receiver.token , _messageController.text , user!.name);;
@@ -244,8 +247,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               fontSize: 15.0,
                               fontWeight: FontWeight.bold),),
                         ),
-                      ),
-
+                      )
                     ],
                   ),
                 ),
@@ -273,10 +275,14 @@ class _ChatScreenState extends State<ChatScreen> {
           }
           return Container(
             color: MyColors.darkColor,
-            child: ListView(
-              children: snapshot.data!.docs
-                  .map((document) => _buildMessageItem(document))
-                  .toList(),
+            // child: ListView(
+            //   children: snapshot.data!.docs
+            //       .map((document) => _buildMessageItem(document))
+            //       .toList(),
+            // ),
+            child:  Padding(
+              padding: const EdgeInsets.only(top:8.0),
+              child: ListView.builder(itemBuilder: (context, index) => _buildMessageItem(snapshot.data!.docs , index) , itemCount: snapshot.data!.docs.length, ),
             ),
           );
         }
@@ -284,8 +290,29 @@ class _ChatScreenState extends State<ChatScreen> {
   }
 
 // build message item
-  Widget _buildMessageItem(DocumentSnapshot document) {
+  Widget _buildMessageItem( List<DocumentSnapshot> documents , index) {
+    DocumentSnapshot document = documents[index];
     Map<String, dynamic> data = document.data() as Map<String, dynamic>;
+    bool showImg = true ;
+    bool showImg2 = true ;
+    if(index == 0){
+      showImg = true ;
+      showImg2 = true ;
+    } else {
+      DocumentSnapshot prev_document = documents[index - 1];
+      Map<String, dynamic> prev_data = prev_document.data() as Map<String, dynamic>;
+        if(data['senderId'] == prev_data['senderId']){
+          showImg = false ;
+        } else {
+          showImg = true ;
+        }
+      if(data['receiverId'] == prev_data['receiverId']){
+        showImg2 = false ;
+      } else {
+        showImg2 = true ;
+      }
+    }
+
     // allign the message to the right if the sender is the current user, otherwise to the left
     var alignment = (data['senderId'] == _firebaseAuth.currentUser!.uid)
         ? Alignment.centerLeft
@@ -293,7 +320,7 @@ class _ChatScreenState extends State<ChatScreen> {
     return Container(
       alignment: alignment,
       child: Padding(
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(5.0),
         child: Row(
           mainAxisAlignment: (data['senderId'] == widget.receiver.id)
               ? MainAxisAlignment.start
@@ -305,27 +332,27 @@ class _ChatScreenState extends State<ChatScreen> {
                   message: data['message'],
                 ),
                 SizedBox(width: 5.0,),
-                CircleAvatar(
+                showImg ?   CircleAvatar(
                   backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
                   backgroundImage: user!.img != "" ? (user!.img.startsWith('https') ? NetworkImage(user!.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}'))  :null,
-                  radius: 25,
+                  radius: 15.0,
                   child: user?.img== "" ?
-                  Text(user!.name.toUpperCase().substring(0 , 1) +
+                  Text(user!.name.toUpperCase().substring(0,1)+
                       (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                    style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
-                ),
+                    style: const TextStyle(color: Colors.white , fontSize: 13.0 , fontWeight: FontWeight.bold),) : null,
+                ) : SizedBox(width: 30.0,),
               ],
             ) : Row(
               children: [
-                CircleAvatar(
-                  backgroundColor: widget.receiver.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                  backgroundImage: widget.receiver.img != "" ? (widget.receiver.img.startsWith('https') ? NetworkImage(widget.receiver.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${widget.receiver.img}'))  :    null,
-                  radius: 22,
-                  child: widget.receiver.img== "" ?
-                  Text(widget.receiver.name.toUpperCase().substring(0 , 1) +
-                      (widget.receiver.name.contains(" ") ? widget.receiver.name.substring(widget.receiver.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                    style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
-                ),
+                showImg2 ?  CircleAvatar(
+                    backgroundColor: widget.receiver.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                    backgroundImage: widget.receiver.img != "" ? (widget.receiver.img.startsWith('https') ? NetworkImage(widget.receiver.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${widget.receiver.img}'))  :    null,
+                    radius: 15.0,
+                    child: widget.receiver.img== "" ?
+                    Text(widget.receiver.name.toUpperCase().substring(0 , 1) +
+                        (widget.receiver.name.contains(" ") ? widget.receiver.name.substring(widget.receiver.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                      style: const TextStyle(color: Colors.white , fontSize: 13.0 , fontWeight: FontWeight.bold),) : null,
+                  ) : SizedBox(width: 30.0,),
                 SizedBox(width: 5.0,),
                 ChatBubble(
                   message: data['message'],

@@ -48,6 +48,7 @@ class ChatsScreenState extends State<ChatsScreen> {
     getUserChats();
   }
   getUserChats() async {
+     chats = [] ;
      setState(() {
        isloading = true ;
      });
@@ -61,7 +62,7 @@ class ChatsScreenState extends State<ChatsScreen> {
      });
   }
 
-  Future<void> _refresh()async{
+  Future<void> refresh()async{
     await loadData() ;
   }
   loadData() async {
@@ -268,19 +269,25 @@ class ChatsScreenState extends State<ChatsScreen> {
                     ),
                   ),
                   SizedBox(height: 10.0),
-                  isloading ? Loading() : Container() ,
+                  isloading ? Loading(
+
+                  ) : Container() ,
                   Expanded(
-                    child: ListView.separated(
-                        itemBuilder: (context,index) =>build_list_chats(chats[index]),
-                        separatorBuilder: (context,index) =>Padding(
-                          padding: const EdgeInsetsDirectional.only(start: 10.0),
-                          child: Container(
-                            color: Colors.grey,
-                            height: 1,
-                            width: double.infinity,
+                    child: RefreshIndicator(
+                      color: MyColors.primaryColor,
+                      onRefresh: refresh,
+                      child: ListView.separated(
+                          itemBuilder: (context,index) =>build_list_chats(chats[index]),
+                          separatorBuilder: (context,index) =>Padding(
+                            padding: const EdgeInsetsDirectional.only(start: 10.0),
+                            child: Container(
+                              color: Colors.grey,
+                              height: 1,
+                              width: double.infinity,
+                            ),
                           ),
-                        ),
-                        itemCount: chats.length
+                          itemCount: chats.length
+                      ),
                     ),
                   ),
                 ],
@@ -366,6 +373,7 @@ class ChatsScreenState extends State<ChatsScreen> {
         receiverUserEmail:  rec!.email ,
         receiverUserID: rec.id,
         receiver: rec,
+
       )
       )
       );
@@ -387,7 +395,7 @@ class ChatsScreenState extends State<ChatsScreen> {
             children: [
               Text(getUserName(article),style: TextStyle(fontSize: 17.0,color: Colors.white),),
               SizedBox(height: 5.0,),
-              Container( width: 80.0, child: Text((article.last_message ),style: TextStyle(fontSize: 15.0,color: Colors.white), overflow: TextOverflow.ellipsis,)),
+              Container( width: 90.0, child: Text((article.last_message),style: TextStyle(fontSize: 15.0,color: Colors.white), overflow: TextOverflow.ellipsis,)),
             ],
           ),
           Expanded(
@@ -401,8 +409,6 @@ class ChatsScreenState extends State<ChatsScreen> {
                     Text(formattedDate(article.last_action_date) ,style: TextStyle(color: Colors.white),),
                     SizedBox(width: 5.0,),
                     Text(formattedTime(article.last_action_date) ,style: TextStyle(color: Colors.white),),
-
-
                   ],
                 ),
               ],

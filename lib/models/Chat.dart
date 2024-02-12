@@ -61,6 +61,4 @@ class Chat {
       _ => throw const FormatException('Failed to load Chat.'),
     };
   }
-
-
 }

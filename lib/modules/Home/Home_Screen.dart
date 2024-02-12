@@ -80,9 +80,7 @@ class HomeScreenState extends State<HomeScreen> {
   //var
   AppUser? user ;
   Future<void> _refresh ()async{
-
     await getBanners() ;
-
   }
   @override
   void initState() {
