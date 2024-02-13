@@ -228,6 +228,7 @@ const Map<String, String> ar = {
   'login_code_msg': 'تم إرسال رمز التحقق بنجاح',
   'network_msg': 'كافة خدمات الشبكة تعمل كما هو متوقع',
   'splash_party':'احتفل كلما استطعت',
-
+  'musics2_model_add_music': 'إضافه موسيقي',
+  'musics_model_my_music':'الموسيقي'
 
 };

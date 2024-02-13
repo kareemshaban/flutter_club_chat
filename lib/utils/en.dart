@@ -228,5 +228,7 @@ const Map<String,String> en ={
   'login_code_msg': 'code sent successfully',
   'network_msg': 'All Network Services is working as expected',
   'splash_party':'Party whenever you can',
+  'musics2_model_add_music': 'Add Music',
+  'musics_model_my_music':'My Music'
 
 };
