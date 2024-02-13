@@ -25,4 +25,24 @@ class MicHelper {
       'state': 1
     });
   }
+
+  useMic() async{
+    await ChatRoomService().useMic(user_id, room_id, mic);
+    await FirebaseFirestore.instance.collection("mic-usage").add({
+      'room_id': room_id,
+      'user_id': user_id,
+      'mic': mic,
+      'using': 1
+    });
+  }
+  leaveMic() async{
+    await ChatRoomService().leaveMic(user_id, room_id, mic);
+    await FirebaseFirestore.instance.collection("mic-usage").add({
+      'room_id': room_id,
+      'user_id': user_id,
+      'mic': mic,
+      'using': 0
+    });
+  }
+
 }

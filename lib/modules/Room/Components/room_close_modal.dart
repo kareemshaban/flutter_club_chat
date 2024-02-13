@@ -1,7 +1,9 @@
 import 'package:clubchat/helpers/ExitRoomHelper.dart';
+import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
+import 'package:clubchat/modules/Home/Home_Screen.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
@@ -82,8 +84,9 @@ class _RoomCloseModalState extends State<RoomCloseModal> {
 
   }
   exitRoom(){
+    MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).leaveMic();
     ExitRoomHelper(user!.id , room!.id);
     Navigator.pop(context);
-    Navigator.push(context, MaterialPageRoute(builder: (context) => const TabsScreen(),));
+    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen(),));
   }
 }
