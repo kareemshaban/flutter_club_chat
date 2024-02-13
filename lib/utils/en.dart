@@ -228,5 +228,22 @@ const Map<String,String> en ={
   'login_code_msg': 'code sent successfully',
   'network_msg': 'All Network Services is working as expected',
   'splash_party':'Party whenever you can',
+  'agency_charge_title':'Agency Charge',
+  'agency_charge_operation_title' : 'Agency Charge Operation',
+  'agency_charge_search' : 'Search',
+  'agency_charge_charge' : 'Charge',
+  'agency_charge_user_data' : 'User Data',
+  'join_host_title' : 'Request to join the Agency',
+  'join_host_request' : 'Send Join Request',
+  'join_host_data' : 'Agency Data',
+  'agency_income_title' : 'Agency Income',
+  'agency_income_target' : 'Target',
+  'agency_income_work_hour' : 'Number of work hour',
+  'agency_income_hour' : 'Hour : ',
+  'agency_income_day' : 'Day : ',
+  'agency_income_work_points' : 'Number of current points',
+  'agency_income_next_target' : 'Remain To Achieve Next Target',
+  'agency_income_next_achieve_target' : 'Remain To Achieve Next Target',
+
 
 };

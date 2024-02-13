@@ -228,6 +228,26 @@ const Map<String, String> ar = {
   'login_code_msg': 'تم إرسال رمز التحقق بنجاح',
   'network_msg': 'كافة خدمات الشبكة تعمل كما هو متوقع',
   'splash_party':'احتفل كلما استطعت',
+  'agency_charge_title':'شحن رصيد العضو',
+  'agency_charge_operation_title' : 'عمليات الشحن',
+  'agency_charge_search' : 'بحث',
+  'agency_charge_charge' : 'شحن',
+  'agency_charge_user_data' : 'بيانات المستخدم',
+  'join_host_title' : 'طلب الانضمام للوكالة',
+  'join_host_request' : 'إرسال طلب الانضمام',
+  'join_host_data' : 'بيانات الوكالة',
+  'agency_income_title' : 'دخل المضيف ',
+  'agency_income_target' : 'الهدف',
+  'agency_income_work_hour' : 'عدد ساعات العمل',
+  'agency_income_hour' : 'ساعة : ',
+  'agency_income_day' : 'يوم : ',
+  'agency_income_work_points' : 'عدد النقاط الحالية',
+  'agency_income_next_target' : 'متبقى على تحقيق الهدف التالي.',
+  'agency_income_next_achieve_target' : 'متبقى لتحقيق الهدف التالي',
+
+
+
+
 
 
 };

@@ -6,9 +6,11 @@ import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Category.dart';
 import 'package:clubchat/models/ChatRoom.dart';
+import 'package:clubchat/models/ChatRoomMessage.dart';
 import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/models/Emossion.dart';
 import 'package:clubchat/models/Gift.dart';
+import 'package:clubchat/models/RoomMember.dart';
 import 'package:clubchat/models/RoomTheme.dart';
 import 'package:clubchat/modules/Room/Components/emoj_modal.dart';
 import 'package:clubchat/modules/Room/Components/gift_modal.dart';
@@ -51,6 +53,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   String sendGiftReceiverType = "";
   int? selectedGift  ;
   String userRole = 'USER';
+  List<ChatRoomMessage> messages = [] ;
+
 
   @override
   void initState() {
@@ -85,17 +89,25 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     enterRoomListener();
     exitRoomListener();
     micListener();
+    micUsageListener();
+    themesListener();
     geAdminDesigns();
     getRoomBasicData();
+
   }
 
   enterRoomListener(){
     CollectionReference reference = FirebaseFirestore.instance.collection('enterRoom');
     reference.snapshots().listen((querySnapshot) {
-      querySnapshot.docChanges.forEach((change) {
-        // Do something with change
-        refreshRoom();
-      });
+
+      //change =    querySnapshot.docChanges.forEach((change) {
+        DocumentChange change =   querySnapshot.docChanges[0] ;
+        Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
+        int joiner_id = data['user_id'] ;
+        print(joiner_id);
+        refreshRoom(joiner_id);
+        
+     // });
     });
   }
   exitRoomListener(){
@@ -103,7 +115,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     reference.snapshots().listen((querySnapshot) {
       querySnapshot.docChanges.forEach((change) {
         // Do something with change
-        refreshRoom();
+        refreshRoom(0);
       });
     });
   }
@@ -112,16 +124,53 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     reference.snapshots().listen((querySnapshot) {
       querySnapshot.docChanges.forEach((change) {
         // Do something with change
-        refreshRoom();
+        refreshRoom(0);
       });
     });
   }
-  refreshRoom() async{
-    ChatRoom? res = await ChatRoomService().openRoomById(room!.id);
-    setState(() {
-      room = res ;
+  micUsageListener(){
+    CollectionReference reference = FirebaseFirestore.instance.collection('mic-usage');
+    reference.snapshots().listen((querySnapshot) {
+      querySnapshot.docChanges.forEach((change) {
+        // Do something with change
+        refreshRoom(0);
+      });
     });
   }
+  themesListener(){
+    CollectionReference reference = FirebaseFirestore.instance.collection('themes');
+    reference.snapshots().listen((querySnapshot) {
+      querySnapshot.docChanges.forEach((change) {
+        // Do something with change
+        refreshRoom(0);
+      });
+    });
+  }
+
+  refreshRoom(joiner_id) async{
+    ChatRoom? res = await ChatRoomService().openRoomById(room!.id);
+
+    setState(() {
+      room = res ;
+
+    });
+    if(joiner_id > 0){
+      userJoinRoomWelcome(joiner_id);
+    }
+  }
+   userJoinRoomWelcome(joiner_id){
+    List<ChatRoomMessage> ms = [] ;
+     RoomMember joiner = room!.members!.where((element) => element.user_id == joiner_id).toList()[0] ;
+     ChatRoomMessage message = ChatRoomMessage(message: 'room_msg'.tr, user_name: 'APP', user_share_level_img: '', user_img: '', user_id: 0);
+     ms.add(message);
+     message = ChatRoomMessage(message: 'Welcome..'.tr, user_name: joiner.mic_user_name.toString(),
+         user_share_level_img: joiner.mic_user_share_level.toString(), user_img: joiner.mic_user_img.toString(), user_id: joiner.user_id);
+     ms.add(message);
+     setState(() {
+       messages = ms ;
+     });
+     print(messages);
+   }
 
   geAdminDesigns() async {
     DesignGiftHelper _helper =
@@ -484,10 +533,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       children: [
         Column(
               children: [
-                Image(
-                  image: getMicUserImg(mic),
-                  width: 60.0,
-                  height: 60.0,
+                CircleAvatar(
+                  backgroundColor: Colors.transparent,
+                  radius: 30,
+                  backgroundImage: getMicUserImg(mic),
                 ),
                 Text(
                   mic!.mic_user_name == null
@@ -507,6 +556,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           onSelected: (int result) {
             if(result == 1){
                //use_mic
+              MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).useMic();
             }
             else if(result == 2){
               //lock_mic
@@ -529,6 +579,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
             }
             else if(result == 7){
               //un_use_mic
+              MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).leaveMic();
+
             }
             else if(result == 8){
               //mute
@@ -549,78 +601,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       return NetworkImage(ASSETSBASEURL + 'AppUsers/' + mic!.mic_user_img);
     }
   }
-  // micActionList(mic) async{
-  //   if(userRole == 'OWNER'  || userRole == 'ADMIN'){
-  //      //admin actions
-  //     showPopover(
-  //       context: context,
-  //       bodyBuilder: (context) =>  AdminMicListItems(mic),
-  //       onPop: () => print('Popover was popped!'),
-  //       direction: PopoverDirection.bottom,
-  //       width: 200,
-  //       height: 400,
-  //       arrowHeight: 15,
-  //       arrowWidth: 30,
-  //     );
-  //   } else {
-  //     // normal user actions
-  //     if( mic.user_id == 0){
-  //       if(mic.isClosed == 0 ){
-  //         showPopover(
-  //           context: context,
-  //           bodyBuilder: (context) =>  ListView(
-  //             children: [
-  //               TextButton(onPressed: (){}, child: Text('use_mic'.tr)) ,
-  //             ],
-  //           ),
-  //           onPop: () => print('Popover was popped!'),
-  //           direction: PopoverDirection.bottom,
-  //           width: 200,
-  //           height: 400,
-  //           arrowHeight: 15,
-  //           arrowWidth: 30,
-  //         );
-  //       } else {
-  //         Fluttertoast.showToast(
-  //             msg: 'mic_closed_msg'.tr,
-  //             toastLength: Toast.LENGTH_SHORT,
-  //             gravity: ToastGravity.CENTER,
-  //             timeInSecForIosWeb: 1,
-  //             backgroundColor: Colors.black26,
-  //             textColor: Colors.orange,
-  //             fontSize: 16.0
-  //         );
-  //       }
-  //
-  //     } else {
-  //       if(mic.user_id != user!.id){
-  //         AppUser? res =  await AppUserServices().getUser(room!.userId);
-  //         showModalBottomSheet(
-  //
-  //             context: context,
-  //             builder: (ctx) => ProfileBottomSheet(res));
-  //       } else {
-  //         showPopover(
-  //           context: context,
-  //           bodyBuilder: (context) =>  ListView(
-  //             children: [
-  //               TextButton(onPressed: (){}, child: Text('un_use_mic'.tr)),
-  //               TextButton(onPressed: (){}, child: Text('mute'.tr)),
-  //             ],
-  //           ),
-  //           onPop: () => print('Popover was popped!'),
-  //           direction: PopoverDirection.bottom,
-  //           width: 200,
-  //           height: 400,
-  //           arrowHeight: 15,
-  //           arrowWidth: 30,
-  //         );
-  //       }
-  //
-  //     }
-  //
-  //   }
-  // }
+
 
   Widget EmojBottomSheet( ) => EmojModal();
   Widget giftBottomSheet() => GiftModal();
@@ -630,71 +611,114 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   Widget roomMembersModal() => RoomMembersModal();
 
   List<PopupMenuEntry<int>> AdminMicListItems(mic) {
-    if(mic.user_id == 0){
-       //emptyMic => use mic , close/open mic , close/open all misc
-      if(mic.isClosed == 0){
-        print('Admin Mic Open !');
-        return
-           [
-             PopupMenuItem<int>(
-               value: 1,
-               child: Text('use_mic'.tr , style: TextStyle(color: Colors.white),),
-             ),
-             PopupMenuItem<int>(
-               value: 2,
-               child: Text('lock_mic'.tr , style: TextStyle(color: Colors.white),),
-             ),
-             PopupMenuItem<int>(
-               value: 3,
-               child: Text('lock_all_mics'.tr , style: TextStyle(color: Colors.white),),
-             ),
-          ];
+    if(userRole == 'OWNER'  || userRole == 'ADMIN'){
+      if(mic.user_id == 0){
+        if(mic.isClosed == 0){
+          return
+            [
+              PopupMenuItem<int>(
+                value: 1,
+                child: Text('use_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
+              PopupMenuItem<int>(
+                value: 2,
+                child: Text('lock_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
+              PopupMenuItem<int>(
+                value: 3,
+                child: Text('lock_all_mics'.tr , style: TextStyle(color: Colors.white),),
+              ),
+            ];
 
+        } else {
+          return
+            [
+              PopupMenuItem<int>(
+                value: 4,
+                child: Text('unlock_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
+              PopupMenuItem<int>(
+                value: 5,
+                child: Text('unlock_all_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
+
+            ];
+        }
       } else {
-        return
-          [
-            PopupMenuItem<int>(
-              value: 4,
-              child: Text('unlock_mic'.tr , style: TextStyle(color: Colors.white),),
-            ),
-            PopupMenuItem<int>(
-              value: 5,
-              child: Text('unlock_all_mic'.tr , style: TextStyle(color: Colors.white),),
-            ),
+        if(mic.user_id != user!.id){
+          return
+            [
+              PopupMenuItem<int>(
+                value: 6,
+                child: Text('remove_from_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
 
-          ];
+
+            ];
+        } else {
+          return
+            [
+              PopupMenuItem<int>(
+                value: 7,
+                child: Text('un_use_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
+              PopupMenuItem<int>(
+                value: 8,
+                child: Text('mute'.tr , style: TextStyle(color: Colors.white),),
+              ),
+
+            ];
+
+        }
       }
-
     } else {
-      //MicWithUSer => delete from mic ,
-      if(mic.user_id != user!.id){
-        return
-          [
-            PopupMenuItem<int>(
-            value: 6,
-            child: Text('remove_from_mic'.tr , style: TextStyle(color: Colors.white),),
-          ),
+      // not admin
+      if(mic.user_id == 0){
+        if(mic.isClosed == 0){
+          if(mic.order > 1){
+            return [
+              PopupMenuItem<int>(
+                value: 1,
+                child: Text('use_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
+            ];
+          } else {
+            Fluttertoast.showToast(
+                msg: 'sorry this mic is close',
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.CENTER,
+                timeInSecForIosWeb: 1,
+                backgroundColor: Colors.black26,
+                textColor: Colors.orange,
+                fontSize: 16.0);
+            return [];
+          }
 
-
-          ];
-
+        } else {
+          Fluttertoast.showToast(
+              msg: 'sorry this mic is close',
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.black26,
+              textColor: Colors.orange,
+              fontSize: 16.0);
+          return [];
+        }
       } else {
+        // open small profile
         return
           [
             PopupMenuItem<int>(
-              value: 7,
-              child: Text('un_use_mic'.tr , style: TextStyle(color: Colors.white),),
+              value: 9,
+              child: Text('show_user'.tr , style: TextStyle(color: Colors.white),),
             ),
-            PopupMenuItem<int>(
-              value: 8,
-              child: Text('mute'.tr , style: TextStyle(color: Colors.white),),
-            ),
+
 
           ];
-
       }
-    
     }
+
   }
 
 

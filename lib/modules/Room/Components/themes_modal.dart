@@ -1,4 +1,5 @@
 import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
+import 'package:clubchat/helpers/RoomHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/RoomTheme.dart';
@@ -7,6 +8,7 @@ import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ThemesModal extends StatefulWidget {
   const ThemesModal({super.key});
@@ -56,11 +58,21 @@ class _ThemesModalState extends State<ThemesModal> {
       children: [
         Column(
           children: [
-            Image(image: NetworkImage(ASSETSBASEURL + 'Themes/' + theme.img) , width: 100.0,)
+            GestureDetector(
+                onTap: () {
+                   changeTheme(theme.id);
+
+                },
+                child: Image(image: NetworkImage(ASSETSBASEURL + 'Themes/' + theme.img) , width: 100.0,))
           ],
         ),
         theme.id == room!.themeId ? Icon(Icons.check_circle , color: MyColors.primaryColor , size: 30,) : SizedBox(height: 1,)
       ],
     ),
   );
+
+  changeTheme(theme_id) async{
+    await RoomHelper(room_id: room!.id , bg: theme_id).changeTheme();
+
+  }
 }
