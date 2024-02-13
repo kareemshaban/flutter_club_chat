@@ -11,17 +11,35 @@ class ChatBubble extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 37,
-      padding: const EdgeInsets.symmetric(horizontal: 10.0),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(25.0),
-        color: MyColors.unSelectedColor ,
-      ),
-      child: Center(
-        child: Text(
-          message,
-          style:const TextStyle(fontSize: 16.0 , color: Colors.white),
-        ),
+      width:  MediaQuery.of(context).size.width * 0.5,
+      child: Stack(
+        alignment: Alignment.topLeft,
+        children: [
+          Container(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadiusDirectional.only(
+                  topStart: Radius.circular(10.0),
+                  topEnd: Radius.circular(10.0),
+                  bottomEnd: Radius.circular(10.0),
+                ),
+                color: Colors.grey[700] ,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  Text(
+                    message,
+                    style:const TextStyle(fontSize: 16.0 , color: Colors.white),
+                    maxLines: 20,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

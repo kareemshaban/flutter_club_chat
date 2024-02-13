@@ -3,6 +3,8 @@ import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'musics_modal.dart';
+
 class MenuModal extends StatefulWidget {
   const MenuModal({super.key});
 
@@ -28,7 +30,6 @@ class _MenuModalState extends State<MenuModal> {
                 child: GestureDetector(
                   onTap: (){
                     showModalBottomSheet(
-
                         context: context,
                         builder: (ctx) => ThemesBottomSheet());
                   },
@@ -42,12 +43,21 @@ class _MenuModalState extends State<MenuModal> {
                 ),
               ),
               Expanded(
-                child: Column(
-                  children: [
-                    Image(image: AssetImage('assets/images/music.png') , width: 40.0,),
-                    SizedBox(height: 8.0,),
-                    Text('menu_music'.tr , style: TextStyle(color: Colors.white , fontSize: 12.0),)
-                  ],
+                child: GestureDetector(
+                  behavior: HitTestBehavior.opaque,
+                  onTap: (){
+                    Navigator.pop(context);
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (ctx) => MusicBottomSheet());
+                  },
+                  child: Column(
+                    children: [
+                      Image(image: AssetImage('assets/images/music.png') , width: 40.0,),
+                      SizedBox(height: 8.0,),
+                      Text('menu_music'.tr , style: TextStyle(color: Colors.white , fontSize: 12.0),)
+                    ],
+                  ),
                 ),
               ),
               Expanded(
@@ -115,4 +125,5 @@ class _MenuModalState extends State<MenuModal> {
     );
   }
   Widget ThemesBottomSheet() => ThemesModal();
+  Widget MusicBottomSheet() => MusicsModal();
 }

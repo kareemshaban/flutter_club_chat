@@ -39,7 +39,7 @@ class _ThemesModalState extends State<ThemesModal> {
       decoration: BoxDecoration(color: Colors.black.withAlpha(180),
           borderRadius: BorderRadius.only(topRight: Radius.circular(20.0) , topLeft: Radius.circular(15.0)) ,
           border: Border(top: BorderSide(width: 3.0, color: MyColors.primaryColor),) ),
-      child:      GridView.count(
+      child:  GridView.count(
         shrinkWrap: true,
         crossAxisCount: 3,
         childAspectRatio: .7,
@@ -75,4 +75,7 @@ class _ThemesModalState extends State<ThemesModal> {
     await RoomHelper(room_id: room!.id , bg: theme_id).changeTheme();
 
   }
+  Widget musicListItem(theme) => Container(
+    child: Text('mmmmmm')
+  );
 }
