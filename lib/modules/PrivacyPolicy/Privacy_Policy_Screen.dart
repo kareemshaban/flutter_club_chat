@@ -205,7 +205,7 @@ class _Privacy_Policy_ScreenState extends State<Privacy_Policy_Screen> {
           Contact Us
           If you have any questions about this Privacy Policy, You can contact us:
           
-          By email: support@clubchat.live ''' , style: TextStyle(color: Colors.white),)
+          By email: support@enterchat.live ''' , style: TextStyle(color: Colors.white),)
             ],
           ),
         ),

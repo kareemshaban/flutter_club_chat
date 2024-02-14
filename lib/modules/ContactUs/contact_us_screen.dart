@@ -39,7 +39,7 @@ class _ContactUsScreenState extends State<ContactUsScreen> {
                       child: Image(image: AssetImage('assets/images/gmail.png') , width: 35.0, height: 35.0,),
                     ),
                     SizedBox(width: 14.0,),
-                    Text("Support@clubchat.live",style: TextStyle(fontSize: 17.0,color: Colors.white),)
+                    Text("Support@enterchat.live",style: TextStyle(fontSize: 17.0,color: Colors.white),)
                   ],
                 ),
                 SizedBox(height: 20.0,),
