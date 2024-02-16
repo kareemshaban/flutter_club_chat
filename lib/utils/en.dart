@@ -228,6 +228,8 @@ const Map<String,String> en ={
   'login_code_msg': 'code sent successfully',
   'network_msg': 'All Network Services is working as expected',
   'splash_party':'Party whenever you can',
+  'musics2_model_add_music': 'Add Music',
+  'musics_model_my_music':'My Music',
   'agency_charge_title':'Agency Charge',
   'agency_charge_operation_title' : 'Agency Charge Operation',
   'agency_charge_search' : 'Search',
@@ -244,6 +246,5 @@ const Map<String,String> en ={
   'agency_income_work_points' : 'Number of current points',
   'agency_income_next_target' : 'Remain To Achieve Next Target',
   'agency_income_next_achieve_target' : 'Remain To Achieve Next Target',
-
 
 };

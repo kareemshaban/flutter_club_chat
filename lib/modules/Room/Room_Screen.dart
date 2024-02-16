@@ -3,6 +3,7 @@ import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/helpers/EnterRoomHelper.dart';
 import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
+import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Category.dart';
 import 'package:clubchat/models/ChatRoom.dart';
@@ -12,6 +13,7 @@ import 'package:clubchat/models/Emossion.dart';
 import 'package:clubchat/models/Gift.dart';
 import 'package:clubchat/models/RoomMember.dart';
 import 'package:clubchat/models/RoomTheme.dart';
+import 'package:clubchat/modules/Home/Home_Screen.dart';
 import 'package:clubchat/modules/Room/Components/emoj_modal.dart';
 import 'package:clubchat/modules/Room/Components/gift_modal.dart';
 import 'package:clubchat/modules/Room/Components/menu_modal.dart';
@@ -92,6 +94,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     micUsageListener();
     themesListener();
     geAdminDesigns();
+    micEmossionListener();
     getRoomBasicData();
 
   }
@@ -113,37 +116,57 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   exitRoomListener(){
     CollectionReference reference = FirebaseFirestore.instance.collection('exitRoom');
     reference.snapshots().listen((querySnapshot) {
-      querySnapshot.docChanges.forEach((change) {
+    //  querySnapshot.docChanges.forEach((change) {
         // Do something with change
         refreshRoom(0);
-      });
+    //  });
     });
   }
   micListener(){
     CollectionReference reference = FirebaseFirestore.instance.collection('mic-state');
     reference.snapshots().listen((querySnapshot) {
-      querySnapshot.docChanges.forEach((change) {
+   //   querySnapshot.docChanges.forEach((change) {
         // Do something with change
         refreshRoom(0);
-      });
+   //   });
     });
   }
   micUsageListener(){
     CollectionReference reference = FirebaseFirestore.instance.collection('mic-usage');
     reference.snapshots().listen((querySnapshot) {
-      querySnapshot.docChanges.forEach((change) {
+    //  querySnapshot.docChanges.forEach((change) {
         // Do something with change
         refreshRoom(0);
-      });
+   //   });
     });
   }
   themesListener(){
     CollectionReference reference = FirebaseFirestore.instance.collection('themes');
     reference.snapshots().listen((querySnapshot) {
-      querySnapshot.docChanges.forEach((change) {
+   //   querySnapshot.docChanges.forEach((change) {
         // Do something with change
         refreshRoom(0);
-      });
+    //  });
+    });
+  }
+
+  micEmossionListener(){
+    CollectionReference reference = FirebaseFirestore.instance.collection('emossions');
+    reference.snapshots().listen((querySnapshot) {
+        querySnapshot.docChanges.forEach((change) {
+      // Do something with change
+          DocumentChange change =   querySnapshot.docChanges[0] ;
+          Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
+          int room_id = data['room_id'] ;
+          int mic = data['mic'] ;
+          int user = data['user'] ;
+          String emoj = data['emoj'] ;
+          if(room_id == room!.id){
+            print('emossion');
+            print(emoj);
+          }
+
+       });
     });
   }
 
@@ -152,6 +175,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
 
     setState(() {
       room = res ;
+      ChatRoomService().roomSetter(room!);
 
     });
     if(joiner_id > 0){
@@ -339,7 +363,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                         isScrollControlled: true ,
                                         context: context,
                                         builder: (ctx) => roomCloseModal());
-                                  },
+                                                                  },
                                     child: Container(
                                       margin:
                                       EdgeInsets.symmetric(horizontal: 10.0),
@@ -607,7 +631,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   Widget giftBottomSheet() => GiftModal();
   Widget MenuBottomSheet() => MenuModal();
   Widget RoomInfoBottomSheet() => RoomInfoModal();
-  Widget roomCloseModal() => RoomCloseModal();
+  Widget roomCloseModal() => RoomCloseModal(pcontext: context,);
   Widget roomMembersModal() => RoomMembersModal();
 
   List<PopupMenuEntry<int>> AdminMicListItems(mic) {

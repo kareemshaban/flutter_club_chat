@@ -228,6 +228,8 @@ const Map<String, String> ar = {
   'login_code_msg': 'تم إرسال رمز التحقق بنجاح',
   'network_msg': 'كافة خدمات الشبكة تعمل كما هو متوقع',
   'splash_party':'احتفل كلما استطعت',
+  'musics2_model_add_music': 'إضافه موسيقي',
+  'musics_model_my_music':'الموسيقي',
   'agency_charge_title':'شحن رصيد العضو',
   'agency_charge_operation_title' : 'عمليات الشحن',
   'agency_charge_search' : 'بحث',
@@ -244,10 +246,4 @@ const Map<String, String> ar = {
   'agency_income_work_points' : 'عدد النقاط الحالية',
   'agency_income_next_target' : 'متبقى على تحقيق الهدف التالي.',
   'agency_income_next_achieve_target' : 'متبقى لتحقيق الهدف التالي',
-
-
-
-
-
-
 };
