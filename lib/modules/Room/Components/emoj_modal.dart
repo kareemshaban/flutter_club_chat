@@ -1,3 +1,4 @@
+import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
@@ -7,6 +8,7 @@ import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 class EmojModal extends StatefulWidget {
   const EmojModal({super.key});
@@ -47,10 +49,30 @@ class _EmojModalState extends State<EmojModal> {
   }
 
   Widget emojListItem(emoj) => Container(
-    child: Column(
-      children: [
-        Image(image: NetworkImage(ASSETSBASEURL + 'Emossions/' + emoj.icon) , width: 60.0,)
-      ],
+    child: GestureDetector(
+        onTap: (){
+          useEmoj(ASSETSBASEURL + 'Emossions/' + emoj.icon);
+        },
+      child: Column(
+        children: [
+          Image(image: NetworkImage(ASSETSBASEURL + 'Emossions/' + emoj.icon) , width: 60.0,)
+        ],
+      ),
     ),
   );
+
+  useEmoj(emoj) async {
+    if(room!.mics!.where((element) => element.user_id == user!.id).length > 0){
+      await MicHelper(user_id: user!.id , room_id: room!.id , mic: room!.mics!.where((element) => element.user_id == user!.id).toList()[0].id ).showEmoj(emoj);
+    } else {
+      Fluttertoast.showToast(
+          msg: 'you should be on mic !',
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0);
+    }
+  }
 }

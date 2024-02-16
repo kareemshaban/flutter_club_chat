@@ -45,4 +45,13 @@ class MicHelper {
     });
   }
 
+  showEmoj(emoj) async {
+    await FirebaseFirestore.instance.collection("emossions").add({
+      'room_id': room_id,
+      'mic': mic,
+      'user': user_id,
+      'emoj':emoj
+    });
+  }
+
 }
