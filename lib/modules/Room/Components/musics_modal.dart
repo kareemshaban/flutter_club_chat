@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 import '../../../shared/styles/colors.dart';
 import 'music2_modal.dart';
@@ -29,7 +30,7 @@ class _MusicsModalState extends State<MusicsModal> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                  Text('My Music',style: TextStyle(color: Colors.white,fontSize: 20.0),),
+                  Text('musics_model_my_music'.tr,style: TextStyle(color: Colors.white,fontSize: 18.0),),
                   ],
                 ),
               ),
