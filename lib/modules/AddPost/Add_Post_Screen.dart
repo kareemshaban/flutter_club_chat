@@ -123,7 +123,7 @@ class AddPostScreenState extends State<AddPostScreen> {
                   keyboardType: TextInputType.multiline,
                   maxLines: 5,
                   cursorColor: MyColors.primaryColor,
-                  decoration: InputDecoration(border: InputBorder.none , labelText: "#add_post_label".tr , labelStyle: TextStyle(color: Colors.grey , fontSize: 18.0)),
+                  decoration: InputDecoration(border: InputBorder.none , labelText: "add_post_label".tr , labelStyle: TextStyle(color: Colors.grey , fontSize: 18.0)),
                   style: TextStyle(color: MyColors.whiteColor),
                 ),
               ),

@@ -149,7 +149,7 @@ class _BlockListScreenState extends State<BlockListScreen> {
      AppUserServices().userSetter(user!);
    });
     Fluttertoast.showToast(
-        msg: 'You have unblocked this user !',
+        msg: 'block_msg_unblocked'.tr,
         toastLength: Toast.LENGTH_SHORT,
         gravity: ToastGravity.CENTER,
         timeInSecForIosWeb: 1,

@@ -167,8 +167,8 @@ class _ChatScreenState extends State<ChatScreen> {
                               recentTabBehavior: RecentTabBehavior.RECENT,
                               recentsLimit: 28,
                               replaceEmojiOnLimitExceed: false,
-                              noRecents: const Text(
-                                'No Recents',
+                              noRecents: Text(
+                                'chat_no_resents'.tr ,
                                 style: TextStyle(fontSize: 20,
                                     color: Colors.black26),
                                 textAlign: TextAlign.center,
@@ -200,7 +200,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                 cursorColor: Colors.grey,
                                 style: TextStyle(color: Colors.white),
                                 decoration: InputDecoration(
-                                    hintText: 'Enter Something...',
+                                    hintText: 'chat_hint_text_form'.tr,
                                     hintStyle: TextStyle(
                                         color: Colors.white, fontSize: 14),
                                     border: OutlineInputBorder(

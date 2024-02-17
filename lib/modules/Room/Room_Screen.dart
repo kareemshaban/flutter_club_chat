@@ -1,3 +1,4 @@
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/helpers/EnterRoomHelper.dart';
@@ -30,6 +31,10 @@ import 'package:get/get.dart';
 import 'package:popover/popover.dart';
 import 'package:svgaplayer_flutter/player.dart';
 
+const appId = "<-- Insert App Id -->";
+const token = "<-- Insert Token -->";
+const channel = "<-- Insert Channel Name -->";
+
 class RoomScreen extends StatefulWidget {
   const RoomScreen({super.key});
 
@@ -54,6 +59,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   int? selectedGift  ;
   String userRole = 'USER';
   List<ChatRoomMessage> messages = [] ;
+  late RtcEngine _engine;
 
 
   @override
@@ -207,6 +213,55 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       categories = helper.categories;
       _tabController = new TabController(vsync: this, length: categories.length);
     });
+  }
+
+  Future<void> initAgora() async {
+
+    //create the engine
+    _engine = createAgoraRtcEngine();
+    await _engine.initialize(const RtcEngineContext(
+      appId: appId,
+      channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
+    ));
+
+    _engine.registerEventHandler(
+      RtcEngineEventHandler(
+        onJoinChannelSuccess: (RtcConnection connection, int elapsed) {
+          debugPrint("local user ${connection.localUid} joined");
+          setState(() {
+           // _localUserJoined = true;
+          });
+        },
+        onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
+          debugPrint("remote user $remoteUid joined");
+          setState(() {
+         //   _remoteUid = remoteUid;
+          });
+        },
+        onUserOffline: (RtcConnection connection, int remoteUid,
+            UserOfflineReasonType reason) {
+          debugPrint("remote user $remoteUid left channel");
+          setState(() {
+           // _remoteUid = null;
+          });
+        },
+        onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
+          debugPrint(
+              '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
+        },
+      ),
+    );
+
+    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+    await _engine.enableVideo();
+    await _engine.startPreview();
+
+    await _engine.joinChannel(
+      token: 'token',
+      channelId: 'channel',
+      uid: 0,
+      options: const ChannelMediaOptions(),
+    );
   }
   @override
   void dispose() {
@@ -552,7 +607,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           elevation: 4.0,
 
           color: MyColors.darkColor,
-          icon: null,
+          icon: Container(),
           onSelected: (int result) {
             if(result == 1){
                //use_mic
@@ -684,7 +739,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
             ];
           } else {
             Fluttertoast.showToast(
-                msg: 'sorry this mic is close',
+                msg: 'room_close_mic'.tr,
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.CENTER,
                 timeInSecForIosWeb: 1,
@@ -696,7 +751,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
 
         } else {
           Fluttertoast.showToast(
-              msg: 'sorry this mic is close',
+              msg: 'room_close_mic'.tr,
               toastLength: Toast.LENGTH_SHORT,
               gravity: ToastGravity.CENTER,
               timeInSecForIosWeb: 1,

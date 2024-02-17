@@ -162,8 +162,6 @@ class AppUserServices {
     }
 
   }
-
-
   Future<AppUser?> getUser(id) async {
     final response = await http.get(Uri.parse('${BASEURL}Account/GetUser/${id}'));
     if (response.statusCode == 200) {
@@ -223,8 +221,6 @@ class AppUserServices {
     }
 
   }
-
-
   Future<List<Tag>> getAllHoppies() async {
     final response = await http.get(Uri.parse('${BASEURL}Account/hoppies'));
     List<Tag> tags  = [];
@@ -313,7 +309,6 @@ class AppUserServices {
     }
 
   }
-
   Future<AppUser?> updateName(user_id , name  ) async {
     AppUser? user = null ;
     var response = await http.post(
@@ -662,9 +657,6 @@ class AppUserServices {
     }
 
   }
-
-
-
   Future<AppUser?> updateProfileImg(user_id , File? imageFile   ) async {
 
     var stream = new http.ByteStream(DelegatingStream.typed(imageFile!.openRead()));
@@ -711,7 +703,6 @@ class AppUserServices {
     });
 
   }
-
   Future<DesignGiftHelper> getMyDesigns(id) async {
       final response = await http.get(Uri.parse('${BASEURL}Account/designs/all/${id}'));
     List<Design> designs  = [];
@@ -739,7 +730,6 @@ class AppUserServices {
       throw Exception('Failed to load tags');
     }
   }
-
   bool getRemainDays(design){
 
     final DateTime dateOne = DateTime.parse(design.available_until);
@@ -749,8 +739,6 @@ class AppUserServices {
       print(duration.inDays );
      return duration.inDays > -1  ;
   }
-
-
   Future<void> reportUser(user_id , reported_user)async {
     var response = await http.post(
       Uri.parse('${BASEURL}Account/reportUser'),
@@ -787,7 +775,6 @@ class AppUserServices {
       );
     }
   }
-
   Future<void> blockUser(user_id , blocke_user)async {
     var response = await http.post(
       Uri.parse('${BASEURL}Account/blockUser'),
@@ -821,7 +808,6 @@ class AppUserServices {
       );
     }
   }
-
   Future<AppUser?> unblockUser(user_id , blocke_user)async {
     var response = await http.post(
       Uri.parse('${BASEURL}Account/unblockUser'),
@@ -891,7 +877,6 @@ class AppUserServices {
       throw Exception('Failed to load album');
     }
   }
-
   Future<AppUser?> followUser(user_id , follower_id)async {
     var response = await http.post(
       Uri.parse('${BASEURL}Account/followUser'),
@@ -1030,7 +1015,6 @@ class AppUserServices {
       throw Exception('Failed to load album');
     }
   }
-
   Future<AppUser?> updateUserToken(user_id , token)async {
     var response = await http.post(
       Uri.parse('${BASEURL}Account/updateToken'),
@@ -1099,6 +1083,23 @@ class AppUserServices {
       // then throw an exception.
       throw Exception('Failed to load album');
     }
+  }
+
+  Future<AppUser> getUserByTag(tag) async {
+    final response = await http.get(Uri.parse('${BASEURL}Account/getUSerByTag/${tag}'));
+
+    if (response.statusCode == 200) {
+      List<dynamic>  jsonData = json.decode(response.body);
+
+        AppUser user = AppUser.fromJson(jsonData[0]);
+
+      return user ;
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
   }
 
 }

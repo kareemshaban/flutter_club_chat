@@ -21,6 +21,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 
 
@@ -91,8 +92,11 @@ class HomeScreenState extends State<HomeScreen> {
       user =  AppUserServices().userGetter();
       print(user!.id);
     });
-
+    getMicPermission();
     getBanners();
+  }
+  getMicPermission() async{
+    await [Permission.microphone].request();
   }
   connectToWs() {
 

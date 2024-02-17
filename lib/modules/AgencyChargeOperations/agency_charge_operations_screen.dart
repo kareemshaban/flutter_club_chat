@@ -1,3 +1,8 @@
+import 'package:clubchat/models/AgencyOperations.dart';
+import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/ChargingAgency.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/ChargingAgencyServices.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -14,9 +19,32 @@ class AgencyChargeOperations extends StatefulWidget {
 
 class _AgencyChargeOperationsState extends State<AgencyChargeOperations> {
 
-  List<ChargingOperation> operatins = [] ;
-  bool loading = false ;
+  List<AgencyOperations> operatins = [] ;
+  AppUser? agent ;
+  ChargingAgency? agency ;
+  bool loading = true ;
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      agent = AppUserServices().userGetter();
+    });
+    getAgency();
+  }
+  getAgency() async{
+    ChargingAgency res = await ChargingAgencyServices().getAgency(agent!.id);
+    setState(() {
+      agency = res ;
+    });
+   List<AgencyOperations>  res2 = await ChargingAgencyServices().getAgencyChargingOperations(agency!.id);
+   setState(() {
+     operatins = res2 ;
+     loading = false ;
+   });
+
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +65,19 @@ class _AgencyChargeOperationsState extends State<AgencyChargeOperations> {
         width: double.infinity,
         height: double.infinity,
         padding: EdgeInsets.all(15.0),
-        child: loading ? Loading() : ListView.separated(itemBuilder: (context, index) => itemBuilder(index),  separatorBuilder: (context, index) => seperatorBuilder() , itemCount: operatins.length),
+        child: loading ? Loading() : Column(
+          children: [
+            Row(
+              children: [
+                Text('Current Balance: '  , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 20.0),),
+                Text( agency!.wallet!.balance.toString() , style: TextStyle(color: MyColors.primaryColor , fontSize: 20.0),),
+
+              ],
+            ),
+            SizedBox(height: 15.0,),
+            Expanded(child: ListView.separated(itemBuilder: (context, index) => itemBuilder(index),  separatorBuilder: (context, index) => seperatorBuilder() , itemCount: operatins.length)),
+          ],
+        ),
       ),
     );
   }
@@ -61,7 +101,14 @@ class _AgencyChargeOperationsState extends State<AgencyChargeOperations> {
                 ],
               ),
               SizedBox(height: 15.0,),
-              Text(operatins[index].source , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(operatins[index].type , style: TextStyle(color: operatins[index].type == "IN" ? Colors.green : Colors.red , fontSize: 15.0),),
+                  SizedBox(width: 15.0,),
+                  Text(operatins[index].source , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
+                ],
+              ),
               SizedBox(height: 15.0,),
               Text(operatins[index].charging_date , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),)
 

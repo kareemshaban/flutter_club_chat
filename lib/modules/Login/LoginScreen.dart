@@ -413,7 +413,7 @@ class LoginScreenState extends State<LoginScreen> {
                   width: 20,
                   height: 20,
                   padding: const EdgeInsets.all(2.0),
-                  child:  CircularProgressIndicator(
+                       child:  CircularProgressIndicator(
                     color: MyColors.darkColor,
                     strokeWidth: 3,
                   ),
@@ -498,10 +498,10 @@ class LoginScreenState extends State<LoginScreen> {
                 ),
                 icon: _isLoading
                     ? Container(
-                  width: 20,
-                  height: 20,
-                  padding: const EdgeInsets.all(2.0),
-                  child:  CircularProgressIndicator(
+                        width: 20,
+                        height: 20,
+                        padding: const EdgeInsets.all(2.0),
+                      child:  CircularProgressIndicator(
                     color: MyColors.darkColor,
                     strokeWidth: 3,
                   ),

@@ -244,6 +244,10 @@ const Map<String, String> ar = {
   'agency_income_work_points' : 'عدد النقاط الحالية',
   'agency_income_next_target' : 'متبقى على تحقيق الهدف التالي.',
   'agency_income_next_achieve_target' : 'متبقى لتحقيق الهدف التالي',
+  'block_msg_unblocked' : 'لقد قمت بإلغاء حظر هذا المستخدم!',
+  'chat_hint_text_form' : 'اكتب شيئاً ...',
+  'chat_no_resents' : 'لا يوجد حالياً',
+  'room_close_mic' : 'آسف هذا الميكروفون مغلق',
 
 
 

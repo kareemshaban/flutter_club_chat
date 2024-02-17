@@ -59,7 +59,7 @@ class _CustomerServiceState extends State<CustomerService> {
                             cursorColor: Colors.grey,
                             style: TextStyle(color: Colors.white),
                             decoration: InputDecoration(
-                                hintText: 'Enter Something...',
+                                hintText: 'chat_hint_text_form'.tr,
                                 hintStyle: TextStyle(
                                     color: Colors.white, fontSize: 14),
                                 border: OutlineInputBorder(

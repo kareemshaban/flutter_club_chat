@@ -244,6 +244,10 @@ const Map<String,String> en ={
   'agency_income_work_points' : 'Number of current points',
   'agency_income_next_target' : 'Remain To Achieve Next Target',
   'agency_income_next_achieve_target' : 'Remain To Achieve Next Target',
+  'block_msg_unblocked' : 'You have unblocked this user !',
+  'chat_hint_text_form' : 'Enter Something...',
+  'chat_no_resents' : 'No Resents',
+  'room_close_mic' : 'sorry this mic is close',
 
 
 };

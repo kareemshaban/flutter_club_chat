@@ -1,9 +1,13 @@
+import 'package:clubchat/models/ChargingAgency.dart';
 import 'package:clubchat/modules/AgencyChargeOperations/agency_charge_operations_screen.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/ChargingAgencyServices.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 
 import '../../models/AppUser.dart';
+import '../../shared/components/Constants.dart';
 import '../../shared/styles/colors.dart';
 
 class AgencyCharge extends StatefulWidget {
@@ -16,7 +20,36 @@ class AgencyCharge extends StatefulWidget {
 class _AgencyChargeState extends State<AgencyCharge> {
 
    bool ShowUser = false;
+   AppUser? agent ;
+   AppUser? user ;
+   ChargingAgency? agency ;
+   final TextEditingController userTagController = TextEditingController();
+   final TextEditingController chargingValueController = TextEditingController();
 
+    @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      agent = AppUserServices().userGetter();
+    });
+
+    getAgency();
+
+  }
+  getAgency() async{
+    ChargingAgency? res = await ChargingAgencyServices().getAgency(agent!.id);
+    setState(() {
+      agency = res ;
+    });
+  }
+  getTargetUser() async{
+      AppUser? res = await AppUserServices().getUserByTag(userTagController.text);
+      setState(() {
+        user = res ;
+        ShowUser = true ;
+      });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,7 +64,7 @@ class _AgencyChargeState extends State<AgencyCharge> {
           style: TextStyle(color: MyColors.unSelectedColor, fontSize: 20.0),
         ),
         actions: [
-          IconButton(icon: Icon(FontAwesomeIcons.circleQuestion , color: Colors.white,) , onPressed: (){
+          IconButton(icon: Icon(FontAwesomeIcons.circleInfo , color: Colors.white,) , onPressed: (){
             Navigator.push(context, MaterialPageRoute(builder: (ctx) => AgencyChargeOperations()));
           },
           )
@@ -53,6 +86,7 @@ class _AgencyChargeState extends State<AgencyCharge> {
                     width: 220.0,
                     height: 45.0,
                     child: TextFormField(
+                      controller: userTagController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                       ),
@@ -69,9 +103,7 @@ class _AgencyChargeState extends State<AgencyCharge> {
                     ),
                     child: MaterialButton(onPressed: ()
                     {
-                      setState(() {
-                        ShowUser = true ;
-                      });
+                      getTargetUser();
                     } ,
                       child: Text("agency_charge_search".tr , style: TextStyle(color: Colors.white , fontSize: 14.0),),
                     ),
@@ -79,7 +111,7 @@ class _AgencyChargeState extends State<AgencyCharge> {
                 ],
               ),
               SizedBox(height: 20.0,),
-             ShowUser ? Column(
+              user != null ? Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -94,7 +126,13 @@ class _AgencyChargeState extends State<AgencyCharge> {
                       Column(
                         children: [
                           CircleAvatar(
-                            radius: 28.0,
+                            backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                            backgroundImage: user?.img != "" ? (user!.img.startsWith('https') ? NetworkImage(user!.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}'))  :    null,
+                            radius: 30,
+                            child: user?.img== "" ?
+                            Text(user!.name.toUpperCase().substring(0 , 1) +
+                                (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                              style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
                           ),
                         ],
                       ),
@@ -102,8 +140,8 @@ class _AgencyChargeState extends State<AgencyCharge> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text('name',style: TextStyle(color: Colors.white , fontSize: 18.0)),
-                          Text('ID : ',style: TextStyle(color: Colors.white , fontSize: 18.0)),
+                          Text( user!.name ,style: TextStyle(color: Colors.white , fontSize: 18.0)),
+                          Text( 'ID:' + user!.tag ,style: TextStyle(color: Colors.white , fontSize: 18.0)),
                         ],
                       )
                     ],
@@ -119,6 +157,7 @@ class _AgencyChargeState extends State<AgencyCharge> {
                           width: 100.0,
                           height: 40.0,
                           child: TextFormField(
+                            controller: chargingValueController,
                             decoration: InputDecoration(
                               border: OutlineInputBorder(),
                             ),
@@ -139,7 +178,9 @@ class _AgencyChargeState extends State<AgencyCharge> {
                           color: MyColors.primaryColor,
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        child: MaterialButton(onPressed: (){} ,
+                        child: MaterialButton(onPressed: (){
+                          chargeAction();
+                        } ,
                           child: Text("agency_charge_charge".tr , style: TextStyle(color: Colors.white , fontSize: 18.0),),
                         ),
                       )
@@ -154,5 +195,8 @@ class _AgencyChargeState extends State<AgencyCharge> {
         ),
       ),
     );
+  }
+  chargeAction() async {
+      await ChargingAgencyServices().addBalanceToUser(agency!.id, user!.id, chargingValueController.text);
   }
 }
