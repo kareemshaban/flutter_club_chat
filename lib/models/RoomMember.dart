@@ -10,11 +10,12 @@ class RoomMember {
   final String? mic_user_share_level ;
   final String? mic_user_karizma_level ;
   final String? mic_user_charging_level ;
+  final String? entery ;
 
 
   RoomMember({required this.id , required this.room_id , required this.user_id ,
     this.mic_user_tag , this.mic_user_name , this.mic_user_img , this.mic_user_gender , this.mic_user_birth_date ,
-    this.mic_user_share_level , this.mic_user_karizma_level , this.mic_user_charging_level});
+    this.mic_user_share_level , this.mic_user_karizma_level , this.mic_user_charging_level , this.entery});
 
 
   factory RoomMember.fromJson(Map<String, dynamic> json) {
@@ -31,6 +32,7 @@ class RoomMember {
       'mic_user_share_level': String mic_user_share_level,
       'mic_user_karizma_level': String mic_user_karizma_level,
       'mic_user_charging_level': String mic_user_charging_level,
+      'entery': String? entery
       } =>
           RoomMember(
             id: id,
@@ -44,6 +46,7 @@ class RoomMember {
             mic_user_share_level: mic_user_share_level,
             mic_user_karizma_level: mic_user_karizma_level,
             mic_user_charging_level: mic_user_charging_level,
+            entery: entery
           ),
       _ => throw const FormatException('Failed to load album.'),
     };

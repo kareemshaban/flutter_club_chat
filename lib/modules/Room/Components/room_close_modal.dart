@@ -1,3 +1,4 @@
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 import 'package:clubchat/helpers/ExitRoomHelper.dart';
 import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
@@ -12,7 +13,8 @@ import 'package:get/get.dart';
 
 class RoomCloseModal extends StatefulWidget {
   final BuildContext pcontext ;
-  const RoomCloseModal({super.key , required this.pcontext});
+  final RtcEngine engine ;
+  const RoomCloseModal({super.key , required this.pcontext , required this.engine});
 
   @override
   State<RoomCloseModal> createState() => _RoomCloseModalState();
@@ -84,9 +86,11 @@ class _RoomCloseModalState extends State<RoomCloseModal> {
   keepRoom(){
 
   }
-  exitRoom(){
+  exitRoom() async {
     MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).leaveMic();
     ExitRoomHelper(user!.id , room!.id);
+    await widget.engine.leaveChannel();
+    await widget.engine.release();
     Navigator.pushAndRemoveUntil(
         context ,
         MaterialPageRoute(builder: (context) => const TabsScreen()) ,   (route) => false

@@ -1,4 +1,11 @@
+import 'dart:math';
+
+import 'package:clubchat/helpers/ChatRoomMessagesHelper.dart';
+import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/modules/Room/Components/themes_modal.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -13,6 +20,17 @@ class MenuModal extends StatefulWidget {
 }
 
 class _MenuModalState extends State<MenuModal> {
+  ChatRoom? room ;
+  AppUser? user ;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      room = ChatRoomService().roomGetter();
+      user = AppUserServices().userGetter();
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return  Container(
@@ -61,21 +79,31 @@ class _MenuModalState extends State<MenuModal> {
                 ),
               ),
               Expanded(
-                child: Column(
-                  children: [
-                    Image(image: AssetImage('assets/images/numbers.png') , width: 40.0,),
-                    SizedBox(height: 8.0,),
-                    Text('menu_lucky_number'.tr , style: TextStyle(color: Colors.white , fontSize: 12.0),)
-                  ],
+                child: GestureDetector(
+                  onTap: (){
+                    numberGame();
+                  },
+                  child: Column(
+                    children: [
+                      Image(image: AssetImage('assets/images/numbers.png') , width: 40.0,),
+                      SizedBox(height: 8.0,),
+                      Text('menu_lucky_number'.tr , style: TextStyle(color: Colors.white , fontSize: 12.0),)
+                    ],
+                  ),
                 ),
               ),
               Expanded(
-                child: Column(
-                  children: [
-                    Image(image: AssetImage('assets/images/3d-dice.png') , width: 40.0,),
-                    SizedBox(height: 8.0,),
-                    Text('menu_dice'.tr , style: TextStyle(color: Colors.white , fontSize: 12.0),)
-                  ],
+                child: GestureDetector(
+                  onTap: (){
+                      nurdGame();
+                  },
+                  child: Column(
+                    children: [
+                      Image(image: AssetImage('assets/images/3d-dice.png') , width: 40.0,),
+                      SizedBox(height: 8.0,),
+                      Text('menu_dice'.tr , style: TextStyle(color: Colors.white , fontSize: 12.0),)
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -126,4 +154,20 @@ class _MenuModalState extends State<MenuModal> {
   }
   Widget ThemesBottomSheet() => ThemesModal();
   Widget MusicBottomSheet() => MusicsModal();
+
+  nurdGame() async {
+    var rng = Random();
+    int rand = rng.nextInt(5);
+    await ChatRoomMessagesHelper(room_id: room!.id , user_id: user!.id , message: (rand + 1).toString() , type: 'NURD').handleSendRoomMessage();
+    Navigator.pop(context);
+  }
+  numberGame() async {
+    var rng = Random();
+    int num1 = rng.nextInt(9);
+    int num2 = rng.nextInt(9);
+    int num3 = rng.nextInt(9);
+    String val = num1.toString() + num2.toString() + num3.toString() ;
+    await ChatRoomMessagesHelper(room_id: room!.id , user_id: user!.id , message: val , type: 'LUCKY').handleSendRoomMessage();
+    Navigator.pop(context);
+  }
 }

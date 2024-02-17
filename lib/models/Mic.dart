@@ -1,3 +1,5 @@
+import 'package:clubchat/models/Design.dart';
+
 class Mic {
   final int id ;
   final int room_id ;
@@ -13,12 +15,12 @@ class Mic {
   final String? mic_user_share_level ;
   final String? mic_user_karizma_level ;
   final String? mic_user_charging_level ;
-
+  String? frame ;
 
   Mic({required this.id , required this.room_id , required this.order, required this.user_id , required this.isClosed ,
     required this.isMute ,
   this.mic_user_tag , this.mic_user_name , this.mic_user_img , this.mic_user_gender , this.mic_user_birth_date ,
-  this.mic_user_share_level , this.mic_user_karizma_level , this.mic_user_charging_level});
+  this.mic_user_share_level , this.mic_user_karizma_level , this.mic_user_charging_level , this.frame});
 
 
   factory Mic.fromJson(Map<String, dynamic> json) {
@@ -38,6 +40,7 @@ class Mic {
       'mic_user_share_level': String? mic_user_share_level,
       'mic_user_karizma_level': String? mic_user_karizma_level,
       'mic_user_charging_level': String? mic_user_charging_level,
+      'frame': String? frame ,
       } =>
           Mic(
             id: id,
@@ -54,6 +57,7 @@ class Mic {
             mic_user_share_level: mic_user_share_level,
             mic_user_karizma_level: mic_user_karizma_level,
             mic_user_charging_level: mic_user_charging_level,
+            frame:  frame ,
           ),
       _ => throw const FormatException('Failed to load album.'),
     };

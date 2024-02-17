@@ -12,7 +12,7 @@ const Map<String, String> ar = {
   'add_status_share': 'مشاركة',
   'add_status_msg': 'تم تحديث الحالة بنجاح',
   'agreement_title': 'إتفاقية الأستخدام',
-  'agreement_user_agreement': 'إتفاقية إستخدام إنتر شات',
+  'agreement_user_agreement': 'إتفاقية إستخدام كلوب شات',
   'edit_language': 'اللغة',
   'edit_arabic': 'العربية',
   'edit_profile_title': 'تعديل الملف الشخصي',
@@ -46,12 +46,12 @@ const Map<String, String> ar = {
   'inner_room_gifts': 'غرفة الهدايا',
   'inner_my_frames': 'إطاراتي',
   'inner_cars_(Entries)': 'السيارات (المدخلات)',
-  'login_welcome_msg': 'مرحبا بكم في إنتر شات !',
+  'login_welcome_msg': 'مرحبا بكم في كلوب شات !',
   'login_title': 'الأمر يتعلق بالمرح !',
-  'login_privacy': 'بتسجيلك في إنتر شات فانك توافق على ذلك',
-  'login_policy': 'سياسة إنتر شات',
+  'login_privacy': 'بتسجيلك في كلوب شات فانك توافق على ذلك',
+  'login_policy': 'سياسة كلوب شات',
   'login_and': 'و',
-  'login_services': 'شروط استخدام إنتر شات',
+  'login_services': 'شروط استخدام كلوب شات',
   'mall_title': 'المتجر',
   'mall_purchase': 'شراء',
   'mall_msg': 'آسف ليس لديك ما يكفي من الذهب!',
@@ -88,7 +88,7 @@ const Map<String, String> ar = {
   'post_label': 'يرجى أن تكون ودية !',
   'post_msg': 'تم إرسال تعليقك بنجاح!',
   'privacy_policy_title': 'سياسة الخصوصية',
-  'privacy_policy': 'سياسة خصوصية إنتر شات',
+  'privacy_policy': 'سياسة خصوصية كلوب شات',
   'profile_msg_copied': ' تم نسخ رقم ID!',
   'profile_visitors': 'الزوار',
   'profile_gold': 'ذهب',
@@ -159,7 +159,7 @@ const Map<String, String> ar = {
   "room_close_exit": "خروج",
   'edit_ok': 'موافق',
   'add_status_label_text': '#شارك سيرتك الذاتية مع الأصدقاء!',
-  'invite_invite_friends': 'قم بدعوة أصدقائك إلى إنتر شات والاحتفال معا!',
+  'invite_invite_friends': 'قم بدعوة أصدقائك إلى كلوب شات والاحتفال معا!',
   'invite_copy': 'نسخ رابط الدعوة ',
   'inner_msg_followed': 'لقد تابعت هذا المستخدم',
   'inner_msg_unfollowed': 'لقد قمت بإلغاء متابعة هذا المستخدم',
@@ -172,7 +172,7 @@ const Map<String, String> ar = {
   'remote_chat_msg_failed': 'فشل فتح الغرفة ، يرجى الاتصال بالدعم',
   'remote_design_msg_design': 'تعيين التصميم إلى الوضع الافتراضي',
   'contact_Us_title': 'اتصل بنا',
-  'contact_Us_club_chat': 'نحن في إنتر شات يسعدنا مساعدتك وتلبية طلباتك وجعل تجربة إستخدامك للتطبيق تجربة ممتعة لذا لا تتاخر من التواصل معنا إذا واجهتك أي مشكلة , نحن دائما في خدمتك 24 ساعة طوال ايام الاسبوع ',
+  'contact_Us_club_chat': 'نحن في كلوب شات يسعدنا مساعدتك وتلبية طلباتك وجعل تجربة إستخدامك للتطبيق تجربة ممتعة لذا لا تتاخر من التواصل معنا إذا واجهتك أي مشكلة , نحن دائما في خدمتك 24 ساعة طوال ايام الاسبوع ',
   'contact_Us_social_media': 'كما سيسعدنا متابعتك لنا على منصات التواصل ',
   'verification_title': 'تحقق الهوية',
   'verification_id_card': 'يرجى إرفاق صورة من بطاقة الهوية الخاصة بك',
@@ -213,7 +213,7 @@ const Map<String, String> ar = {
   "no_kick": "منع الطرد",
   "use_mic": "الصعود علي المايك",
   "mic_closed_msg": "عفوا هذا المايك مغلق",
-  "un_use_mic": "النزول من المايك",
+  "un_use_mic": "مغادرة من المايك",
   "mute": "كتم الصوت",
   "lock_mic": "غلق المايك",
   "lock_all_mics": "غلق كل المايكات",
@@ -246,17 +246,12 @@ const Map<String, String> ar = {
   'agency_income_work_points' : 'عدد النقاط الحالية',
   'agency_income_next_target' : 'متبقى على تحقيق الهدف التالي.',
   'agency_income_next_achieve_target' : 'متبقى لتحقيق الهدف التالي',
-<<<<<<< HEAD
-  'block_msg_unblocked' : 'لقد قمت بإلغاء حظر هذا المستخدم!',
+'block_msg_unblocked' : 'لقد قمت بإلغاء حظر هذا المستخدم!',
   'chat_hint_text_form' : 'اكتب شيئاً ...',
   'chat_no_resents' : 'لا يوجد حالياً',
   'room_close_mic' : 'آسف هذا الميكروفون مغلق',
+  'room_msg': "إدارة كلوب شات تتمني لكم تقضية أوقات ممتعة داخل منصتها وتؤكد علي أهمية الحفاظ علي أداب وضوابط التواصل المحترم بين جميع الأعضاء وتجنب المضايقات كما يحذر المواضيع الجنسية والعرقية والدينية ",
+  "notice" : "ملاحظة : ",
+  "user_enter_message" : "مرحبا ..."
 
-
-
-
-
-
-=======
->>>>>>> 890b2d73002590d3aa6e6c4100cf77bd820a98e4
 };

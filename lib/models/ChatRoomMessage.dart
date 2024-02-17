@@ -4,6 +4,7 @@ class ChatRoomMessage {
   final String user_share_level_img ;
   final String user_img ;
   final int user_id ;
+  final String type ;
   ChatRoomMessage({required this.message , required this.user_name , required this.user_share_level_img ,
-    required this.user_img , required this.user_id});
+    required this.user_img , required this.user_id , required this.type});
 }
