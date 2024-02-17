@@ -51,7 +51,7 @@ class _EmojModalState extends State<EmojModal> {
   Widget emojListItem(emoj) => Container(
     child: GestureDetector(
         onTap: (){
-          useEmoj(ASSETSBASEURL + 'Emossions/' + emoj.icon);
+          useEmoj(ASSETSBASEURL + 'Emossions/' + emoj.img);
         },
       child: Column(
         children: [
@@ -63,7 +63,7 @@ class _EmojModalState extends State<EmojModal> {
 
   useEmoj(emoj) async {
     if(room!.mics!.where((element) => element.user_id == user!.id).length > 0){
-      await MicHelper(user_id: user!.id , room_id: room!.id , mic: room!.mics!.where((element) => element.user_id == user!.id).toList()[0].id ).showEmoj(emoj);
+      await MicHelper(user_id: user!.id , room_id: room!.id , mic: room!.mics!.where((element) => element.user_id == user!.id).toList()[0].order ).showEmoj(emoj);
     } else {
       Fluttertoast.showToast(
           msg: 'you should be on mic !',

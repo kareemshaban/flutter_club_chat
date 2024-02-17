@@ -71,6 +71,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   String channel = "";
   bool emojiShowing = false;
   String entery = "";
+  List<String> micEmojs = ["" , "" , "" , "" , "" , "" , "" , "" , "" , "" , "" , ""  ];
   @override
   void initState() {
     // TODO: implement initState
@@ -194,11 +195,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     });
   }
 
-  micEmossionListener(){
+  micEmossionListener() async {
     CollectionReference reference = FirebaseFirestore.instance.collection('emossions');
-    reference.snapshots().listen((querySnapshot) {
-        // querySnapshot.docChanges.forEach((change) {
-      // Do something with change
+    reference.snapshots().listen((querySnapshot) async{
+
           DocumentChange change =   querySnapshot.docChanges[0] ;
           Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
           int room_id = data['room_id'] ;
@@ -206,8 +206,15 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           int user = data['user'] ;
           String emoj = data['emoj'] ;
           if(room_id == room!.id){
-            print('emossion');
-            print(emoj);
+            setState(() {
+              micEmojs[mic -1] = emoj ;
+            });
+
+            await Future.delayed(Duration(seconds: 5));
+            setState(() {
+              micEmojs[mic -1] = "" ;
+            });
+
           }
 
        // });
@@ -873,13 +880,20 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
               Stack(
                 alignment: Alignment.center,
                 children: [
-                  CircleAvatar(
-                    backgroundColor: Colors.transparent,
-                    radius: 25,
-                    backgroundImage: getMicUserImg(mic),
+                  Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      CircleAvatar(
+                        backgroundColor: Colors.transparent,
+                        radius: 25,
+                        backgroundImage: getMicUserImg(mic),
+                      ),
+                      Container(height: 70.0, width: 70.0, child: mic!.frame != "" ? SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Designs/Motion/' + mic!.frame +'?raw=true') : null),
+                      //frame
+                    ],
                   ),
-                  Container(height: 70.0, width: 70.0, child: mic!.frame != "" ? SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Designs/Motion/' + mic!.frame +'?raw=true') : null),
-                  //frame
+                  micEmojs[mic.order -1] != "" ?    Container(height: 70.0, width: 70.0, child: SVGASimpleImage(   resUrl: micEmojs[mic.order -1] +'?raw=true') ) : Container()
+
                 ],
               ),
               Text(
