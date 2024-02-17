@@ -11,7 +11,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class RoomCloseModal extends StatefulWidget {
-  const RoomCloseModal({super.key});
+  final BuildContext pcontext ;
+  const RoomCloseModal({super.key , required this.pcontext});
 
   @override
   State<RoomCloseModal> createState() => _RoomCloseModalState();
@@ -86,7 +87,9 @@ class _RoomCloseModalState extends State<RoomCloseModal> {
   exitRoom(){
     MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).leaveMic();
     ExitRoomHelper(user!.id , room!.id);
-    Navigator.pop(context);
-    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => const HomeScreen(),));
+    Navigator.pushAndRemoveUntil(
+        context ,
+        MaterialPageRoute(builder: (context) => const TabsScreen()) ,   (route) => false
+    );
   }
 }

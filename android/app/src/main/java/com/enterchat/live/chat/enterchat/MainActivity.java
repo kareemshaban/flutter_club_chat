@@ -1,4 +1,4 @@
-package com.clubchat.live.chat.clubchat;
+package com.enterchat.live.chat.enterchat;
 
 import io.flutter.embedding.android.FlutterActivity;
 

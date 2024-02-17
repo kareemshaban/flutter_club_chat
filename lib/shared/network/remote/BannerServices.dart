@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 class BannerServices {
   Future<List<BannerData>> getAllBanners() async {
     final response = await http.get(Uri.parse('${BASEURL}Banners/getAll'));
+    print(response.body);
     List<BannerData> banners  = [];
     if (response.statusCode == 200) {
       List<dynamic>  jsonData = json.decode(response.body);

@@ -207,7 +207,7 @@ class _Agreement_ScreenState extends State<Agreement_Screen> {
           Contact Us
           If you have any questions about this Privacy Policy, You can contact us:
           
-          By email: support@clubchat.live''')
+          By email: support@enterchat.live''')
                 ],
               )
           

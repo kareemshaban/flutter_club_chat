@@ -46,7 +46,7 @@ class _About_ScreenState extends State<About_Screen> {
                       clipBehavior: Clip.antiAliasWithSaveLayer,
                       child: Image(image: AssetImage('assets/images/logo_blue.png') , width: 100.0, height: 100.0,)),
                   SizedBox(height: 5.0,),
-                  Text("Club chat",style: TextStyle(color: MyColors.whiteColor,fontSize: 18.0)),
+                  Text("Enter Chat",style: TextStyle(color: MyColors.whiteColor,fontSize: 18.0)),
                   SizedBox(height: 3.0,),
                   Text("about_us_version".tr + "1.0.0",style: TextStyle(color: MyColors.unSelectedColor,fontSize: 14.0)),
 
