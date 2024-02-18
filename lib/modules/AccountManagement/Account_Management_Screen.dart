@@ -1,4 +1,5 @@
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/HostAgency.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -26,6 +27,7 @@ class Account_Management_Screen extends StatefulWidget {
 
 class _Account_Management_ScreenState extends State<Account_Management_Screen> {
   AppUser? user ;
+
   @override
   void initState() {
     // TODO: implement initState
@@ -34,6 +36,7 @@ class _Account_Management_ScreenState extends State<Account_Management_Screen> {
       user = AppUserServices().userGetter();
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(

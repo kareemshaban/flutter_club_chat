@@ -1,3 +1,7 @@
+import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/HostAgency.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/HostAgencyService.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -11,6 +15,32 @@ class JoinHostAgency extends StatefulWidget {
 }
 
 class _JoinHostAgencyState extends State<JoinHostAgency> {
+  AppUser? user ;
+  HostAgency? agency ;
+  bool showAgency = false ;
+  final TextEditingController agencyTagController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    setState(() {
+      user = AppUserServices().userGetter();
+    });
+  }
+  getAgency() async {
+    HostAgency? res = await HostAgencyService().getAgencyByTag(agencyTagController.text);
+    if(res != null){
+      setState(() {
+        agency = res ;
+        if(agency!.id > 0){
+          setState(() {
+            showAgency = true ;
+          });
+        }
+      });
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -41,6 +71,7 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
                     width: 220.0,
                     height: 45.0,
                     child: TextFormField(
+                      controller: agencyTagController,
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                       ),
@@ -65,7 +96,7 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
                 ],
               ),
               SizedBox(height: 20.0,),
-              Column(
+           showAgency ?   Column(
                 children: [
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -94,7 +125,6 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
                       )
                     ],
                   ),
-                  SizedBox(height: 20.0,),
                   SizedBox(height: 30.0,),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -113,7 +143,8 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
                     ],
                   ),
                 ],
-              )
+              ) : Container(),
+
 
             ],
           ),

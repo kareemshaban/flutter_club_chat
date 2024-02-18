@@ -8,6 +8,7 @@ import 'package:clubchat/models/Friends.dart';
 import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
+import 'package:clubchat/models/HostAgency.dart';
 import 'package:clubchat/models/Tag.dart';
 import 'package:clubchat/models/UserHoppy.dart';
 import 'package:clubchat/models/Visitor.dart';
@@ -1101,5 +1102,26 @@ class AppUserServices {
     }
 
   }
+
+  Future<HostAgency?> checkUserISAgencyMember(user_id) async {
+    final response = await http.get(Uri.parse('${BASEURL}Account/checkUserISAgencyMember/${user_id}'));
+    HostAgency agency ;
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+       if( jsonData['agency'] != null){
+         agency = HostAgency.fromJson(jsonData['agency'] );
+         return agency ;
+       } else {
+         return null ;
+       }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
+
 
 }

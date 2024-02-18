@@ -1,3 +1,4 @@
+import 'package:clubchat/models/HostAgency.dart';
 import 'package:clubchat/modules/About/About_Screen.dart';
 import 'package:clubchat/modules/AccountManagement/Account_Management_Screen.dart';
 import 'package:clubchat/modules/AgencyCharge/agency_charge_screen.dart';
@@ -32,12 +33,25 @@ class SettingScreen extends StatefulWidget {
 class _SettingScreenState extends State<SettingScreen> {
 
   AppUser? user ;
-
+  bool isHostAgencyMember = false ;
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     user = AppUserServices().userGetter();
+    checkIsHostAgencyMember();
+  }
+  checkIsHostAgencyMember() async {
+    HostAgency? res = await AppUserServices().checkUserISAgencyMember(user!.id);
+    if(res == null){
+      setState(() {
+        isHostAgencyMember = false ;
+      });
+    } else {
+      setState(() {
+        isHostAgencyMember = true ;
+      });
+    }
   }
   @override
 
@@ -374,7 +388,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   ),
                 ),
               ): Container(),
-          GestureDetector(
+              !isHostAgencyMember ?   GestureDetector(
             behavior: HitTestBehavior.opaque,
             onTap: (){
               Navigator.push(context, MaterialPageRoute(builder: (ctx) => const JoinHostAgency()));
@@ -397,10 +411,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 ],
               ),
             ),
-          ),
-              SizedBox(height: 10.0,),
-
-              GestureDetector(
+          ) : GestureDetector(
                 behavior: HitTestBehavior.opaque,
                 onTap: (){
                   Navigator.push(context, MaterialPageRoute(builder: (ctx) => const AgencyIncome()));
@@ -423,7 +434,9 @@ class _SettingScreenState extends State<SettingScreen> {
                     ],
                   ),
                 ),
-              )
+              ),
+              SizedBox(height: 10.0,),
+
             ],
           ),
         ),
