@@ -252,6 +252,8 @@ const Map<String,String> en ={
   'room_close_mic' : 'sorry this mic is close',
   'room_msg': 'Club Chat wishes you to spend enjoyable times and stresses the importance of respectful communication between all members. It also warns against sexual, racial and religious topics. ',
   "notice": "Notice: ",
-  "user_enter_message": "Welcome ..."
+  "user_enter_message": "Welcome ...",
+  "host_agency_search": "Search By Agency ID",
+  "request_process":"your request is being processed"
 
 };

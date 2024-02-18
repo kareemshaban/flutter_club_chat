@@ -30,6 +30,7 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
   }
   getAgency() async {
     HostAgency? res = await HostAgencyService().getAgencyByTag(agencyTagController.text);
+    agencyTagController.clear();
     if(res != null){
       setState(() {
         agency = res ;
@@ -63,38 +64,20 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
           padding: const EdgeInsets.all(15.0),
           child: Column(
             children: [
-              Row(
-                children: [
-                  Text('ID',style: TextStyle(fontSize: 25.0 , color: Colors.white),),
-                  SizedBox(width: 10.0,),
-                  Container(
-                    width: 220.0,
-                    height: 45.0,
-                    child: TextFormField(
-                      controller: agencyTagController,
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                  ),
+              Container(
+                width: double.infinity,
+                height: 45.0,
+                child: TextField(controller: agencyTagController,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: "host_agency_search".tr ,
+                    suffixIcon: IconButton(icon: const Icon(Icons.search , color: Colors.white, size: 25.0,),
+                  onPressed: (){getAgency();},) , fillColor: MyColors.primaryColor, focusColor: MyColors.primaryColor, focusedBorder: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ,
+                    borderSide: BorderSide(color: MyColors.whiteColor) ) ,  border: OutlineInputBorder( borderRadius: BorderRadius.circular(25.0) ) , labelStyle: const TextStyle(color: Colors.white , fontSize: 13.0) ),
+                  style: const TextStyle(color: Colors.white), cursorColor: MyColors.primaryColor,)
 
-                  SizedBox(width: 10.0,),
-                  Container(
-                    height: 45.0,
-                    width: 80,
-                    decoration: BoxDecoration(
-                      color: MyColors.primaryColor,
-                      borderRadius: BorderRadius.circular(15.0),
-                    ),
-                    child: MaterialButton(onPressed: ()
-                    {
-
-                    } ,
-                      child: Text("agency_charge_search".tr , style: TextStyle(color: Colors.white , fontSize: 14.0),),
-                    ),
-                  ),
-                ],
               ),
+
+              SizedBox(width: 10.0,),
               SizedBox(height: 20.0,),
            showAgency ?   Column(
                 children: [
@@ -111,7 +94,12 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
                       Column(
                         children: [
                           CircleAvatar(
-                            radius: 28.0,
+                            backgroundColor:MyColors.blueColor,
+                            radius: 28,
+                           child:
+                            Text(agency!.name.toUpperCase().substring(0 , 1) +
+                                (agency!.name.contains(" ") ? agency!.name.substring(agency!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                              style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) ,
                           ),
                         ],
                       ),
@@ -119,8 +107,8 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          Text('name',style: TextStyle(color: Colors.white , fontSize: 18.0)),
-                          Text('ID : ',style: TextStyle(color: Colors.white , fontSize: 18.0)),
+                          Text(agency!.name,style: TextStyle(color: Colors.white , fontSize: 18.0)),
+                          Text(agency!.tag ,style: TextStyle(color: Colors.white , fontSize: 18.0)),
                         ],
                       )
                     ],
@@ -136,7 +124,9 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
                           color: MyColors.primaryColor,
                           borderRadius: BorderRadius.circular(15.0),
                         ),
-                        child: MaterialButton(onPressed: (){} ,
+                        child: MaterialButton(onPressed: (){
+                          JoinAgencyRequest();
+                        } ,
                           child: Text("join_host_request".tr , style: TextStyle(color: Colors.white , fontSize: 18.0),),
                         ),
                       )
@@ -151,5 +141,13 @@ class _JoinHostAgencyState extends State<JoinHostAgency> {
         ),
       ),
     );
+  }
+
+  JoinAgencyRequest() async{
+    if(agency != null){
+      await HostAgencyService().JoinAgencyRequest(agency!.id , user!.id);
+      await AppUserServices().getUser(user!.id);
+      Navigator.pop(context);
+    }
   }
 }

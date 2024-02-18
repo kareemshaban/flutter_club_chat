@@ -17,6 +17,7 @@ import 'package:clubchat/models/RoomMember.dart';
 import 'package:clubchat/models/RoomTheme.dart';
 import 'package:clubchat/models/message.dart';
 import 'package:clubchat/modules/Home/Home_Screen.dart';
+import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/modules/Room/Components/emoj_modal.dart';
 import 'package:clubchat/modules/Room/Components/gift_modal.dart';
 import 'package:clubchat/modules/Room/Components/menu_modal.dart';
@@ -72,6 +73,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   bool emojiShowing = false;
   String entery = "";
   List<String> micEmojs = ["" , "" , "" , "" , "" , "" , "" , "" , "" , "" , "" , ""  ];
+  bool _localUserJoined = false;
   @override
   void initState() {
     // TODO: implement initState
@@ -351,7 +353,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           await refreshRoom(connection.localUid);
           userJoinRoomWelcome(connection.localUid);
           setState(() {
-           // _localUserJoined = true;
+            _localUserJoined = true;
           });
         },
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
@@ -440,423 +442,431 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
             child: Stack(
               alignment: Alignment.center,
               children: [
-                Column(
+                Stack(
+                  alignment: Alignment.center,
                   children: [
-                    Expanded(
-                      flex: 55,
-                      child: Column(
-                        children: [
-                          Row(
-                            children: [
-                              GestureDetector(
-                                onTap: (){
-                                  showModalBottomSheet(
-                                      context: context,
-                                      builder: (ctx) => RoomInfoBottomSheet());
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 10.0, vertical: 5.0),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black26,
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          child: SizedBox(),
-                                          clipBehavior: Clip.antiAliasWithSaveLayer,
-                                          decoration: BoxDecoration(
-                                              color: Colors.red,
-                                              borderRadius:
-                                                  BorderRadius.circular(10.0),
-                                              image: room!.img == ""
-                                                  ? DecorationImage(
-                                                      image: AssetImage(
-                                                          'assets/images/user.png'),
-                                                      fit: BoxFit.cover)
-                                                  : DecorationImage(
-                                                      image: NetworkImage(room_img),
-                                                      fit: BoxFit.cover))),
-                                      SizedBox(
-                                        width: 10.0,
+                    Column(
+                      children: [
+                        Expanded(
+                          flex: 55,
+                          child: SingleChildScrollView(
+                            child: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    GestureDetector(
+                                      onTap: (){
+                                        showModalBottomSheet(
+                                            context: context,
+                                            builder: (ctx) => RoomInfoBottomSheet());
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 10.0, vertical: 5.0),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black26,
+                                          borderRadius: BorderRadius.circular(10.0),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Container(
+                                                width: 50.0,
+                                                height: 50.0,
+                                                child: SizedBox(),
+                                                clipBehavior: Clip.antiAliasWithSaveLayer,
+                                                decoration: BoxDecoration(
+                                                    color: Colors.red,
+                                                    borderRadius:
+                                                        BorderRadius.circular(10.0),
+                                                    image: room!.img == ""
+                                                        ? DecorationImage(
+                                                            image: AssetImage(
+                                                                'assets/images/user.png'),
+                                                            fit: BoxFit.cover)
+                                                        : DecorationImage(
+                                                            image: NetworkImage(room_img),
+                                                            fit: BoxFit.cover))),
+                                            SizedBox(
+                                              width: 10.0,
+                                            ),
+                                            Column(
+                                              children: [
+                                                Text(
+                                                  room!.name,
+                                                  style: TextStyle(
+                                                      color: Colors.white, fontSize: 16.0),
+                                                ),
+                                                SizedBox(
+                                                  height: 5.0,
+                                                ),
+                                                Text(
+                                                  'ID:' + room!.tag,
+                                                  style: TextStyle(
+                                                      color: MyColors.unSelectedColor,
+                                                      fontSize: 11.0),
+                                                ),
+                                              ],
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                      Column(
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          Text(
-                                            room!.name,
-                                            style: TextStyle(
-                                                color: Colors.white, fontSize: 16.0),
+                                          Container(
+                                            padding: EdgeInsets.all(5.0),
+                                            decoration: BoxDecoration(
+                                                color: Colors.black26,
+                                                borderRadius:
+                                                    BorderRadius.circular(10.0)),
+                                            child: Row(
+                                              children: [
+                                                Image(
+                                                  image: AssetImage(
+                                                      'assets/images/chatroom_rank_ic.png'),
+                                                  height: 18.0,
+                                                  width: 18.0,
+                                                ),
+                                                SizedBox(
+                                                  width: 5.0,
+                                                ),
+                                                Text(
+                                                  "0",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 13.0),
+                                                )
+                                              ],
+                                            ),
                                           ),
                                           SizedBox(
-                                            height: 5.0,
+                                            width: 7.0,
                                           ),
-                                          Text(
-                                            'ID:' + room!.tag,
-                                            style: TextStyle(
-                                                color: MyColors.unSelectedColor,
-                                                fontSize: 11.0),
-                                          ),
+                                          GestureDetector(
+                                              child: Container(
+                                                  margin: EdgeInsets.symmetric(
+                                                      horizontal: 10.0),
+                                                  child: Icon(
+                                                    FontAwesomeIcons.shareFromSquare,
+                                                    color: Colors.white,
+                                                    size: 20.0,
+                                                  ))),
+                                          GestureDetector(
+                                            onTap: (){
+                                              showModalBottomSheet(
+                                                  isScrollControlled: true ,
+                                                  context: context,
+                                                  builder: (ctx) => roomCloseModal());
+                                                                            },
+                                              child: Container(
+                                                margin:
+                                                EdgeInsets.symmetric(horizontal: 10.0),
+                                                 child: Icon(
+                                              FontAwesomeIcons.powerOff,
+                                              color: Colors.white,
+                                              size: 20.0,
+                                            ),
+                                          )),
                                         ],
-                                      )
-                                    ],
-                                  ),
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ),
-                              Expanded(
-                                child: Row(
+                                Row(
                                   mainAxisAlignment: MainAxisAlignment.end,
                                   children: [
-                                    Container(
-                                      padding: EdgeInsets.all(5.0),
-                                      decoration: BoxDecoration(
-                                          color: Colors.black26,
-                                          borderRadius:
-                                              BorderRadius.circular(10.0)),
-                                      child: Row(
+                                    GestureDetector(
+                                      onTap: () async{
+                                        AppUser? res =  await AppUserServices().getUser(room!.userId);
+                                        showModalBottomSheet(
+
+                                            context: context,
+                                            builder: (ctx) => ProfileBottomSheet(res));
+                                      },
+                                      child: Stack(
+                                        alignment: Alignment.center,
                                         children: [
+                                          CircleAvatar(
+                                              radius: 15.0,
+                                              backgroundImage: getUserAvatar()),
                                           Image(
                                             image: AssetImage(
-                                                'assets/images/chatroom_rank_ic.png'),
-                                            height: 18.0,
-                                            width: 18.0,
-                                          ),
-                                          SizedBox(
-                                            width: 5.0,
-                                          ),
-                                          Text(
-                                            "0",
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 13.0),
+                                                'assets/images/room_user_small_border.png'),
+                                            width: 50,
+                                            height: 50,
                                           )
                                         ],
                                       ),
                                     ),
-                                    SizedBox(
-                                      width: 7.0,
-                                    ),
-                                    GestureDetector(
-                                        child: Container(
-                                            margin: EdgeInsets.symmetric(
-                                                horizontal: 10.0),
-                                            child: Icon(
-                                              FontAwesomeIcons.shareFromSquare,
-                                              color: Colors.white,
-                                              size: 20.0,
-                                            ))),
                                     GestureDetector(
                                       onTap: (){
                                         showModalBottomSheet(
                                             isScrollControlled: true ,
                                             context: context,
-                                            builder: (ctx) => roomCloseModal());
-                                                                      },
-                                        child: Container(
-                                          margin:
-                                          EdgeInsets.symmetric(horizontal: 10.0),
-                                           child: Icon(
-                                        FontAwesomeIcons.powerOff,
-                                        color: Colors.white,
-                                        size: 20.0,
+                                            builder: (ctx) => roomMembersModal());
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(5.0),
+                                        decoration: BoxDecoration(
+                                            color: Colors.black26,
+                                            borderRadius: BorderRadius.circular(10.0)),
+                                        child: Row(
+                                          children: [
+                                            Icon(
+                                              Icons.people_alt,
+                                              color: MyColors.primaryColor,
+                                              size: 20.0,
+                                            ),
+                                            SizedBox(
+                                              width: 5.0,
+                                            ),
+                                            Text(
+                                              room!.members!.length.toString(),
+                                              style: TextStyle(
+                                                  color: MyColors.primaryColor,
+                                                  fontSize: 13.0),
+                                            )
+                                          ],
+                                        ),
                                       ),
-                                    )),
+                                    ),
                                   ],
                                 ),
-                              ),
+                                SizedBox(
+                                  height: 5.0,
+                                ),
+                                GridView.count(
+                                  shrinkWrap: true,
+                                  crossAxisCount: 4,
+                                  children:
+                                      room!.mics!.map((mic) => micListItem(mic)).toList(),
+                                  mainAxisSpacing: 0.0,
+                                ),
+
+
+                              ],
+                            ),
+                          ),
+                        ),
+
+                          Expanded(
+                            flex: 45,
+                          child: Row(
+                            children: [
+                              Container(
+                                  padding: EdgeInsetsDirectional.only(start: 10.0),
+                                  width: MediaQuery.sizeOf(context).width * .7 ,
+
+
+                                  child: ListView.separated(  itemBuilder:(context, index) => roomMessageBuilder(index), separatorBuilder: (context, index) => roomMessageSeperator(), itemCount: messages.length)),
                             ],
                           ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+                        ),
+                         Container(
+                          padding: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 10.0),
+                          child: !showMsgInput ? Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: [
-                              GestureDetector(
-                                onTap: () async{
-                                  AppUser? res =  await AppUserServices().getUser(room!.userId);
-                                  showModalBottomSheet(
-
-                                      context: context,
-                                      builder: (ctx) => ProfileBottomSheet(res));
-                                },
-                                child: Stack(
-                                  alignment: Alignment.center,
-                                  children: [
-                                    CircleAvatar(
-                                        radius: 15.0,
-                                        backgroundImage: getUserAvatar()),
-                                    Image(
-                                      image: AssetImage(
-                                          'assets/images/room_user_small_border.png'),
-                                      width: 50,
-                                      height: 50,
-                                    )
-                                  ],
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: (){
-                                  showModalBottomSheet(
-                                      isScrollControlled: true ,
-                                      context: context,
-                                      builder: (ctx) => roomMembersModal());
-                                },
-                                child: Container(
-                                  padding: EdgeInsets.all(5.0),
-                                  decoration: BoxDecoration(
-                                      color: Colors.black26,
-                                      borderRadius: BorderRadius.circular(10.0)),
-                                  child: Row(
+                              Column(
+                                children: [
+                                  Row(
                                     children: [
-                                      Icon(
-                                        Icons.people_alt,
-                                        color: MyColors.primaryColor,
-                                        size: 20.0,
+                                      GestureDetector(
+                                        onTap: (){
+                                          toggleMessageInput();
+                                        },
+                                        child: Image(
+                                          image: AssetImage('assets/images/messages.png'),
+                                          width: 40.0,
+                                        ),
                                       ),
                                       SizedBox(
                                         width: 5.0,
                                       ),
-                                      Text(
-                                        room!.members!.length.toString(),
-                                        style: TextStyle(
-                                            color: MyColors.primaryColor,
-                                            fontSize: 13.0),
-                                      )
+                                      Image(
+                                        image: AssetImage('assets/images/chats.png'),
+                                        width: 40.0,
+                                      ),
+                                      SizedBox(
+                                        width: 5.0,
+                                      ),
+                                      GestureDetector(
+                                        onTap: (){
+                                          showModalBottomSheet(
+
+                                              context: context,
+                                              builder: (ctx) => MenuBottomSheet());
+                                        },
+                                        child: Image(
+                                          image: AssetImage('assets/images/menu.png'),
+                                          width: 40.0,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 5.0,
+                                      ),
+                                      Image(
+                                        image: AssetImage('assets/images/mic_on.png'),
+                                        width: 40.0,
+                                      ),
+                                      SizedBox(
+                                        width: 5.0,
+                                      ),
+                                      GestureDetector(
+                                        onTap: (){
+                                          showModalBottomSheet(
+
+                                              context: context,
+                                              builder: (ctx) => EmojBottomSheet());
+                                        },
+                                          child: Image(
+                                        image: AssetImage('assets/images/emoj.png'),
+                                        width: 40.0,
+                                      )),
                                     ],
-                                  ),
-                                ),
+                                  )
+                                ],
                               ),
-                            ],
-                          ),
-                          SizedBox(
-                            height: 5.0,
-                          ),
-                          GridView.count(
-                            shrinkWrap: true,
-                            crossAxisCount: 4,
-                            children:
-                                room!.mics!.map((mic) => micListItem(mic)).toList(),
-                            mainAxisSpacing: 0.0,
-                          ),
-                       
-
-                        ],
-                      ),
-                    ),
-
-                      Expanded(
-                        flex: 45,
-                      child: Row(
-                        children: [
-                          Container(
-                              padding: EdgeInsetsDirectional.only(start: 10.0),
-                              width: MediaQuery.sizeOf(context).width * .7 ,
-                      
-                      
-                              child: ListView.separated(  itemBuilder:(context, index) => roomMessageBuilder(index), separatorBuilder: (context, index) => roomMessageSeperator(), itemCount: messages.length)),
-                        ],
-                      ),
-                    ),
-                     Container(
-                      padding: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 10.0),
-                      child: !showMsgInput ? Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Column(
-                            children: [
-                              Row(
+                              Expanded(
+                                  child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 children: [
                                   GestureDetector(
                                     onTap: (){
-                                      toggleMessageInput();
-                                    },
-                                    child: Image(
-                                      image: AssetImage('assets/images/messages.png'),
-                                      width: 40.0,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  Image(
-                                    image: AssetImage('assets/images/chats.png'),
-                                    width: 40.0,
-                                  ),
-                                  SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  GestureDetector(
-                                    onTap: (){
                                       showModalBottomSheet(
 
                                           context: context,
-                                          builder: (ctx) => MenuBottomSheet());
+                                          builder: (ctx) => giftBottomSheet());
                                     },
                                     child: Image(
-                                      image: AssetImage('assets/images/menu.png'),
+                                      image: AssetImage('assets/images/gift_box.webp'),
                                       width: 40.0,
                                     ),
-                                  ),
-                                  SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  Image(
-                                    image: AssetImage('assets/images/mic_on.png'),
-                                    width: 40.0,
-                                  ),
-                                  SizedBox(
-                                    width: 5.0,
-                                  ),
-                                  GestureDetector(
-                                    onTap: (){
-                                      showModalBottomSheet(
-
-                                          context: context,
-                                          builder: (ctx) => EmojBottomSheet());
-                                    },
-                                      child: Image(
-                                    image: AssetImage('assets/images/emoj.png'),
-                                    width: 40.0,
-                                  )),
+                                  )
                                 ],
-                              )
+                              ))
                             ],
-                          ),
-                          Expanded(
-                              child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
+                          ) :     Row(
                             children: [
-                              GestureDetector(
-                                onTap: (){
-                                  showModalBottomSheet(
+                              Expanded(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.grey[600],
+                                        borderRadius: BorderRadius.circular(13.0)
+                                    ),
+                                    height: 45.0,
+                                    child: TextFormField(
+                                        controller: _messageController,
+                                         autofocus: true,
+                                        focusNode: focusNode,
+                                        cursorColor: Colors.grey,
+                                        style: TextStyle(color: Colors.white),
+                                        decoration: InputDecoration(
+                                            hintText: 'chat_hint_text_form'.tr,
+                                            hintStyle: TextStyle(
+                                                color: Colors.white, fontSize: 14),
+                                            border: OutlineInputBorder(
+                                              borderRadius: BorderRadius.circular(13.0),
+                                              borderSide: BorderSide(
+                                                  color: Colors.grey),
+                                            ),
+                                            focusedBorder: OutlineInputBorder(
+                                              borderSide: BorderSide(
+                                                color: Colors.grey,),
+                                              borderRadius: BorderRadius.circular(13.0),
+                                            ),
+                                            suffixIcon: IconButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  emojiShowing = !emojiShowing;
 
-                                      context: context,
-                                      builder: (ctx) => giftBottomSheet());
-                                },
-                                child: Image(
-                                  image: AssetImage('assets/images/gift_box.webp'),
-                                  width: 40.0,
-                                ),
-                              )
-                            ],
-                          ))
-                        ],
-                      ) :     Row(
-                        children: [
-                          Expanded(
-                              child: Container(
+                                                });
+                                              },
+                                              icon: Icon(Icons.emoji_emotions_outlined,
+                                                color: Colors.white,), iconSize: 30.0,
+                                            )
+                                        )
+                                    ),
+                                  )
+                              ),
+                              SizedBox(width: 15.0,),
+                              Container(
                                 decoration: BoxDecoration(
-                                    color: Colors.grey[600],
-                                    borderRadius: BorderRadius.circular(13.0)
+                                    color: MyColors.primaryColor,
+                                    borderRadius: BorderRadius.circular(10.0)
                                 ),
                                 height: 45.0,
-                                child: TextFormField(
-                                    controller: _messageController,
-                                     autofocus: true,
-                                    focusNode: focusNode,
-                                    cursorColor: Colors.grey,
-                                    style: TextStyle(color: Colors.white),
-                                    decoration: InputDecoration(
-                                        hintText: 'chat_hint_text_form'.tr,
-                                        hintStyle: TextStyle(
-                                            color: Colors.white, fontSize: 14),
-                                        border: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(13.0),
-                                          borderSide: BorderSide(
-                                              color: Colors.grey),
-                                        ),
-                                        focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(
-                                            color: Colors.grey,),
-                                          borderRadius: BorderRadius.circular(13.0),
-                                        ),
-                                        suffixIcon: IconButton(
-                                          onPressed: () {
-                                            setState(() {
-                                              emojiShowing = !emojiShowing;
+                                width: 65.0,
+                                child: MaterialButton(
+                                  onPressed: () {
+                                    sendMessage();
 
-                                            });
-                                          },
-                                          icon: Icon(Icons.emoji_emotions_outlined,
-                                            color: Colors.white,), iconSize: 30.0,
-                                        )
-                                    )
+                                  }, //sendMessage
+                                  child: Text('gift_send'.tr, style: TextStyle(
+                                      color: MyColors.darkColor,
+                                      fontSize: 15.0,
+                                      fontWeight: FontWeight.bold),),
                                 ),
                               )
+                            ],
                           ),
-                          SizedBox(width: 15.0,),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: MyColors.primaryColor,
-                                borderRadius: BorderRadius.circular(10.0)
-                            ),
-                            height: 45.0,
-                            width: 65.0,
-                            child: MaterialButton(
-                              onPressed: () {
-                                sendMessage();
-
-                              }, //sendMessage
-                              child: Text('gift_send'.tr, style: TextStyle(
-                                  color: MyColors.darkColor,
-                                  fontSize: 15.0,
-                                  fontWeight: FontWeight.bold),),
-                            ),
-                          )
-                        ],
-                      ),
-                    ),
-                     Offstage(
-                        offstage: !emojiShowing,
-                        child: SizedBox(
-                            height: 250,
-                            child: EmojiPicker(
-                                textEditingController: _messageController,
-                                onBackspacePressed: () {
-                                  print('clicked');
-                                },
-                                config: Config(
-                                  columns: 7,
-                                  // Issue: https://github.com/flutter/flutter/issues/28894
-                                  emojiSizeMax: 32 *
-                                      (foundation.defaultTargetPlatform ==
-                                          TargetPlatform.iOS
-                                          ? 1.30
-                                          : 1.0),
-                                  verticalSpacing: 0,
-                                  horizontalSpacing: 0,
-                                  gridPadding: EdgeInsets.zero,
-                                  initCategory: Category.RECENT,
-                                  bgColor: MyColors.darkColor,
-                                  indicatorColor: MyColors.primaryColor,
-                                  iconColor: Colors.grey,
-                                  iconColorSelected: MyColors.primaryColor,
-                                  backspaceColor: MyColors.primaryColor,
-                                  skinToneDialogBgColor: MyColors.darkColor,
-                                  skinToneIndicatorColor: Colors.grey,
-                                  enableSkinTones: true,
-                                  recentTabBehavior: RecentTabBehavior.RECENT,
-                                  recentsLimit: 28,
-                                  replaceEmojiOnLimitExceed: false,
-                                  noRecents: Text(
-                                    'chat_no_resents'.tr ,
-                                    style: TextStyle(fontSize: 20,
-                                        color: Colors.black26),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                  loadingIndicator: const SizedBox.shrink(),
-                                  tabIndicatorAnimDuration: kTabScrollDuration,
-                                  categoryIcons: const CategoryIcons(),
-                                  buttonMode: ButtonMode.MATERIAL,
-                                  checkPlatformCompatibility: true,
+                        ),
+                         Offstage(
+                            offstage: !emojiShowing,
+                            child: SizedBox(
+                                height: 250,
+                                child: EmojiPicker(
+                                    textEditingController: _messageController,
+                                    onBackspacePressed: () {
+                                      print('clicked');
+                                    },
+                                    config: Config(
+                                      columns: 7,
+                                      // Issue: https://github.com/flutter/flutter/issues/28894
+                                      emojiSizeMax: 32 *
+                                          (foundation.defaultTargetPlatform ==
+                                              TargetPlatform.iOS
+                                              ? 1.30
+                                              : 1.0),
+                                      verticalSpacing: 0,
+                                      horizontalSpacing: 0,
+                                      gridPadding: EdgeInsets.zero,
+                                      initCategory: Category.RECENT,
+                                      bgColor: MyColors.darkColor,
+                                      indicatorColor: MyColors.primaryColor,
+                                      iconColor: Colors.grey,
+                                      iconColorSelected: MyColors.primaryColor,
+                                      backspaceColor: MyColors.primaryColor,
+                                      skinToneDialogBgColor: MyColors.darkColor,
+                                      skinToneIndicatorColor: Colors.grey,
+                                      enableSkinTones: true,
+                                      recentTabBehavior: RecentTabBehavior.RECENT,
+                                      recentsLimit: 28,
+                                      replaceEmojiOnLimitExceed: false,
+                                      noRecents: Text(
+                                        'chat_no_resents'.tr ,
+                                        style: TextStyle(fontSize: 20,
+                                            color: Colors.black26),
+                                        textAlign: TextAlign.center,
+                                      ),
+                                      loadingIndicator: const SizedBox.shrink(),
+                                      tabIndicatorAnimDuration: kTabScrollDuration,
+                                      categoryIcons: const CategoryIcons(),
+                                      buttonMode: ButtonMode.MATERIAL,
+                                      checkPlatformCompatibility: true,
+                                    )
                                 )
                             )
-                        )
-                    ),
+                        ),
 
+                      ],
+                    ),
+                    entery != ""  ? SVGASimpleImage(   resUrl: entery) : Container()
                   ],
                 ),
-                entery != ""  ? SVGASimpleImage(   resUrl: entery) : Container()
+                !_localUserJoined ? Loading() : Container()
               ],
             ),
           ),

@@ -38,4 +38,40 @@ class HostAgencyService {
 
   }
 
+  Future<void> JoinAgencyRequest(agency_id , user_id) async {
+    var response = await http.post(
+      Uri.parse('${BASEURL}hostAgency/JoinAgencyRequest'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'agency_id': agency_id.toString(),
+        'user_id': user_id.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      Fluttertoast.showToast(
+          msg: 'request_process'.tr,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+      } else {
+        Fluttertoast.showToast(
+            msg: 'sorry we can not find the agency',
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0
+        );
+      }
+
+  }
+
+
 }

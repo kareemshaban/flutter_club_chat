@@ -165,6 +165,7 @@ class AppUserServices {
   }
   Future<AppUser?> getUser(id) async {
     final response = await http.get(Uri.parse('${BASEURL}Account/GetUser/${id}'));
+    print(response.body);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
