@@ -29,6 +29,7 @@ class _GiftModalState extends State<GiftModal> with TickerProviderStateMixin{
   List<Widget> giftViews = [] ;
   int? selectedGift ;
   int? sendGiftCount ;
+  int? receiver = 0;
   @override
   void initState() {
     // TODO: implement initState
@@ -91,14 +92,20 @@ class _GiftModalState extends State<GiftModal> with TickerProviderStateMixin{
                 ],
               ),
               Expanded(child:
-              sendGiftReceiverType != "all_room_members" ?
+              sendGiftReceiverType == "select_one_ore_more" ?
               ListView.separated(itemBuilder: (ctx , index) => giftBoxMicUserListItem(index),
-                separatorBuilder:  (ctx , index) => giftBoxMicUserSperator() , itemCount: room!.mics!.where((e) => e.user_id >0).length ,
+                separatorBuilder:  (ctx , index) => giftBoxMicUserSperator() , itemCount: room!.members!.where((e) => e.user_id >0).length ,
                 scrollDirection: Axis.horizontal,) :
+              sendGiftReceiverType == "all_room_members" ?
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text("gift_send_to_all_room_members".tr , style: TextStyle(color: MyColors.primaryColor),)
+                ],
+              ) :  Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text("gift_all_mic_users".tr , style: TextStyle(color: MyColors.primaryColor),)
                 ],
               )
               ),
@@ -128,15 +135,33 @@ class _GiftModalState extends State<GiftModal> with TickerProviderStateMixin{
     );
   }
 
-  Widget giftBoxMicUserListItem(index) => CircleAvatar(
-    radius: 12.0,
-      backgroundImage: getGiftBoxMicUserImage(index) ,
+  Widget giftBoxMicUserListItem(index) => GestureDetector(
+    onTap: () {
+       setState(() {
+         if(receiver == room!.members![index].user_id){
+           receiver = 0 ;
+         } else {
+           receiver = receiver = room!.members![index].user_id ;
+         }
 
+       });
+    },
+    child: Container(
+      width: 35.0,
+      height: 35.0,
+      decoration: receiver == room!.members![index].user_id ?
+      BoxDecoration(borderRadius: BorderRadius.circular(35.0) , border: Border.all(color: MyColors.primaryColor)) : null,
+      child: CircleAvatar(
+          radius: 15.0,
+          backgroundImage: getGiftBoxMicUserImage(index) ,
+
+      ),
+    ),
   );
   ImageProvider getGiftBoxMicUserImage(index){
-    if(room!.mics![index].mic_user_img != null){
-      if(room!.mics![index].mic_user_img != ""){
-        return NetworkImage(ASSETSBASEURL + 'AppUsers/' + room!.mics![index].mic_user_img! );
+    if(room!.members![index].mic_user_img != null){
+      if(room!.members![index].mic_user_img != ""){
+        return NetworkImage(ASSETSBASEURL + 'AppUsers/' + room!.members![index].mic_user_img!  );
       } else {
         return AssetImage('assets/images/user.png');
       }

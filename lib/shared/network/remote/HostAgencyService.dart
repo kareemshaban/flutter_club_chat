@@ -1,5 +1,10 @@
 import 'dart:convert';
 
+import 'package:clubchat/helpers/AgencyMemberIncomeHelper.dart';
+import 'package:clubchat/models/AgencyMember.dart';
+import 'package:clubchat/models/AgencyMemberPoints.dart';
+import 'package:clubchat/models/AgencyMemberStatics.dart';
+import 'package:clubchat/models/AgencyTarget.dart';
 import 'package:clubchat/models/HostAgency.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:flutter/material.dart';
@@ -73,5 +78,49 @@ class HostAgencyService {
 
   }
 
+
+  Future<AgencyMemberIncomeHelper?> getMemberStatics(user_id) async {
+    final response = await http.get(Uri.parse('${BASEURL}hostAgency/getAgencyMemberStatics/${user_id}'));
+    AgencyMember? member ;
+    List<AgencyMemberStatics> statics  = [];
+    List<AgencyMemberPoints> points = [] ;
+    AgencyTarget? currentTarget ;
+    AgencyTarget? nextTarget ;
+    AgencyMemberIncomeHelper helper = new AgencyMemberIncomeHelper(member: member, statics: statics, points: points, currentTarget: currentTarget, nextTarget: nextTarget);
+
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if( jsonData['member'] != null){
+        member = AgencyMember.fromJson(jsonData['member'] );
+      }
+      for(var i = 0 ; i <  jsonData['statics'].length ; i++ ){
+        AgencyMemberStatics st = AgencyMemberStatics.fromJson(jsonData['statics'][i]);
+        statics.add(st);
+      }
+      for(var i = 0 ; i <  jsonData['points'].length ; i++ ){
+        AgencyMemberPoints pt = AgencyMemberPoints.fromJson(jsonData['points'][i]);
+        points.add(pt);
+      }
+      if(jsonData['currentTarget'] != null ){
+        currentTarget = AgencyTarget.fromJson(jsonData['currentTarget'] );
+      }
+
+      nextTarget = AgencyTarget.fromJson(jsonData['nextTarget'] );
+
+      helper.member = member ;
+      helper.points = points ;
+      helper.nextTarget  = nextTarget ;
+      helper.currentTarget = currentTarget ;
+      helper.statics = statics ;
+
+      return helper ;
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
 
 }

@@ -254,7 +254,8 @@ const Map<String, String> ar = {
   "notice" : "ملاحظة : ",
   "user_enter_message" : "مرحبا ...",
   "host_agency_search": "البحث بمعرف الوكالة",
-  "request_process" : "يتم معالجة طلبك الأن"
+  "request_process" : "يتم معالجة طلبك الأن",
+  "agency_members_title":"أعضاء الوكالة"
 
 
 };

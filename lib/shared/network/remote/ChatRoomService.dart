@@ -1045,5 +1045,28 @@ class ChatRoomService {
     }
   }
 
+  Future<void> sendGift(sender_id , recevier_id , owner_id , room_id , gift_id , count) async{
+    var response = await http.post(
+      Uri.parse('${BASEURL}gifts/sendGift'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'sender_id': sender_id.toString(),
+        'recevier_id': recevier_id.toString(),
+        'owner_id': owner_id.toString(),
+        'room_id': room_id.toString(),
+        'gift_id': gift_id.toString(),
+        'count': count.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+
+    } else {
+      print(response.body);
+      throw Exception('Failed to send gift');
+
+    }
+  }
 
 }

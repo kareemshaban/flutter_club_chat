@@ -116,7 +116,7 @@ const Map<String,String> en ={
   'taps_chats':'Chats',
   'taps_me':'Me',
   'add_post_label':'Share Your Thoughts on Moments wall !',
-  'gift_one_or_more_user':'one or more user',
+  'gift_one_or_more_user':'select user',
   'gift_all_mic_users':'All Mic Users',
   'gift_all_room_users':'All Room Users',
   'gift_send_to_all_room_members':'Send to All Room Members',
@@ -254,6 +254,7 @@ const Map<String,String> en ={
   "notice": "Notice: ",
   "user_enter_message": "Welcome ...",
   "host_agency_search": "Search By Agency ID",
-  "request_process":"your request is being processed"
+  "request_process":"your request is being processed",
+  "agency_members_title" : "Agency Members"
 
 };

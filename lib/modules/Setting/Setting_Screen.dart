@@ -3,6 +3,7 @@ import 'package:clubchat/modules/About/About_Screen.dart';
 import 'package:clubchat/modules/AccountManagement/Account_Management_Screen.dart';
 import 'package:clubchat/modules/AgencyCharge/agency_charge_screen.dart';
 import 'package:clubchat/modules/AgencyIncome/agency_income_screen.dart';
+import 'package:clubchat/modules/AgencyMembers/Agency_Members_Screen.dart';
 import 'package:clubchat/modules/Agreement/Agreement_Screen.dart';
 import 'package:clubchat/modules/BlockList/block_list_screen.dart';
 import 'package:clubchat/modules/EditLanguage/Edit_Language_Screen.dart';
@@ -375,6 +376,30 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: Row(
                     children: [
                       Text("agency_charge_title".tr ,style:TextStyle( color: MyColors.unSelectedColor,fontSize: 15.0) ,),
+                      Expanded(
+                        child:Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Icon(Icons.arrow_forward_ios_outlined , color: MyColors.unSelectedColor , size: 20.0,)
+                            ]
+                          //change your color here
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ): Container(),
+              user!.isHostingAgent == 1 ? GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx) => const AgencyMembsersScreen()));
+                },
+                child: Container(
+                  color: Colors.black26,
+                  padding: EdgeInsets.all(15.0) ,
+                  child: Row(
+                    children: [
+                      Text("agency_members_title".tr ,style:TextStyle( color: MyColors.unSelectedColor,fontSize: 15.0) ,),
                       Expanded(
                         child:Row(
                             mainAxisAlignment: MainAxisAlignment.end,

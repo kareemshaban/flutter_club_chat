@@ -22,14 +22,17 @@ class _EditLanguageScreenState extends State<EditLanguageScreen> {
     super.initState();
 
     getLang();
-    Translation( );
+  // Translation();
   }
   getLang() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    String l = await prefs.getString('local_lang')!;
+    String? l = await prefs.getString('local_lang') ;
+    print('lang') ;
+    print(l);
     if(l == null){l = ('en') ;};
+    if(l == ""){l = ('en') ;};
     setState(() {
-      _SelectedLang = l;
+      _SelectedLang = l!;
       groupValue = l;
     });
   }
@@ -115,6 +118,8 @@ void Translation() async {
   final SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.setString('local_lang', _SelectedLang);
   Get.updateLocale(Locale(_SelectedLang));
+  print('SharedPreferences');
+  print(_SelectedLang);
   Navigator.pop(context);
   setState(() {
     groupValue = _SelectedLang ;

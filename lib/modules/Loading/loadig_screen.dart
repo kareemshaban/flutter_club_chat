@@ -38,7 +38,7 @@ class _LoadingState extends State<Loading> {
                     borderRadius: BorderRadius.circular(20.0),
                     boxShadow: [
                       BoxShadow(
-                        color: Colors.black26,
+                        color: Colors.transparent,
                             blurRadius: 10.0,
                         offset: Offset(0,10)
                       )

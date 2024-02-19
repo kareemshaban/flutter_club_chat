@@ -70,13 +70,16 @@ class _MyAppState extends State<MyApp> {
     int? id = await prefs.getInt('userId');
 
     String? l = await prefs.getString('local_lang') ;
+
+    if(l == null) l = 'en' ;
+    if(l == '') l = 'en' ;
     print('lang cashed');
     print(l);
     setState(() {
-      if(l == null) l = 'en' ;
-      if(l == '') l = 'en' ;
+
       local_lang = l! ;
     });
+    Get.updateLocale(Locale(local_lang));
     print(local_lang);
     if(id == null){
       FlutterNativeSplash.remove();
