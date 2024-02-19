@@ -255,7 +255,9 @@ const Map<String, String> ar = {
   "user_enter_message" : "مرحبا ...",
   "host_agency_search": "البحث بمعرف الوكالة",
   "request_process" : "يتم معالجة طلبك الأن",
-  "agency_members_title":"أعضاء الوكالة"
+  "agency_members_title":"أعضاء الوكالة",
+  "choose_receiver" : "يجب تحديد مستلم الهدية أولا",
+  "choose_gift": "برجاء اختيار الهدية"
 
 
 };

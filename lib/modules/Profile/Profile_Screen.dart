@@ -1,6 +1,7 @@
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChargingOperation.dart';
+import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/modules/AddStatus/Add_Status_Screen.dart';
 import 'package:clubchat/modules/Agreement/Agreement_Screen.dart';
@@ -15,12 +16,14 @@ import 'package:clubchat/modules/MyGifts/My_Gifts_Screen.dart';
 import 'package:clubchat/modules/MyLevel/My_Level_Screen.dart';
 import 'package:clubchat/modules/MyPosts/My_Posts_Screen.dart';
 import 'package:clubchat/modules/PrivacyPolicy/Privacy_Policy_Screen.dart';
+import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/modules/Setting/Setting_Screen.dart';
 import 'package:clubchat/modules/VIP/Vip_Screen.dart';
 import 'package:clubchat/modules/VisitorsScreen/Visitors_Screen.dart';
 import 'package:clubchat/modules/WalletScreen/wallet_screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/network/remote/WalletServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -103,6 +106,14 @@ class ProfileScreenState extends State<ProfileScreen> {
       loading = false ;
     });
   }
+
+  void openMyRoom() async{
+    ChatRoom? room =  await ChatRoomService().openMyRoom(user!.id);
+    ChatRoomService().roomSetter(room!);
+    print(room);
+    Navigator.push(context, MaterialPageRoute(builder: (ctx) => const RoomScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
@@ -418,13 +429,18 @@ class ProfileScreenState extends State<ProfileScreen> {
                   child: Row(
                     children: [
                       Expanded(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Image(image: AssetImage('assets/images/Room.png') , width: 45.0,),
+                        child: GestureDetector(
+                          onTap: (){
+                            openMyRoom();
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Image(image: AssetImage('assets/images/Room.png') , width: 45.0,),
 
-                            Text("profile_room".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 ),)
-                          ],
+                              Text("profile_room".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 12.0 ),)
+                            ],
+                          ),
                         ),
                       ),
                       Expanded(

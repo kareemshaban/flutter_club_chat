@@ -255,6 +255,8 @@ const Map<String,String> en ={
   "user_enter_message": "Welcome ...",
   "host_agency_search": "Search By Agency ID",
   "request_process":"your request is being processed",
-  "agency_members_title" : "Agency Members"
+  "agency_members_title" : "Agency Members",
+  "choose_receiver": "Please select receiver first !",
+  "choose_gift": "Please select a Gift first !"
 
 };

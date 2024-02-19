@@ -1,14 +1,17 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Category.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Gift.dart';
+import 'package:clubchat/models/RoomMember.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class GiftModal extends StatefulWidget {
@@ -146,11 +149,9 @@ class _GiftModalState extends State<GiftModal> with TickerProviderStateMixin{
 
        });
     },
-    child: Container(
-      width: 35.0,
-      height: 35.0,
-      decoration: receiver == room!.members![index].user_id ?
-      BoxDecoration(borderRadius: BorderRadius.circular(35.0) , border: Border.all(color: MyColors.primaryColor)) : null,
+    child: CircleAvatar(
+      radius: 18.0,
+      backgroundColor: receiver == room!.members![index].user_id ? MyColors.primaryColor : Colors.transparent,
       child: CircleAvatar(
           radius: 15.0,
           backgroundImage: getGiftBoxMicUserImage(index) ,
@@ -278,12 +279,17 @@ class _GiftModalState extends State<GiftModal> with TickerProviderStateMixin{
                             ],
                           ),
                         ),
-                        Container(
-                          width: 60.0,
-                          height:40.0,
-                          decoration: BoxDecoration(color: MyColors.primaryColor ,
-                              borderRadius:BorderRadiusDirectional.only(topEnd: Radius.circular(20.0) , bottomEnd: Radius.circular(20.0))),
-                          child: Center(child: Text("gift_send".tr , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0),)),
+                        GestureDetector(
+                          onTap: (){
+                            sendGift();
+                          },
+                          child: Container(
+                            width: 60.0,
+                            height:40.0,
+                            decoration: BoxDecoration(color: MyColors.primaryColor ,
+                                borderRadius:BorderRadiusDirectional.only(topEnd: Radius.circular(20.0) , bottomEnd: Radius.circular(20.0))),
+                            child: Center(child: Text("gift_send".tr , style: TextStyle(color: MyColors.darkColor , fontSize: 15.0),)),
+                          ),
                         ),
 
                       ],
@@ -324,4 +330,79 @@ class _GiftModalState extends State<GiftModal> with TickerProviderStateMixin{
       ),
     ),
   );
+
+
+  sendGiftToSingleUser() async{
+    if(receiver! > 0){
+      bool res = await ChatRoomService().sendGift(user!.id , receiver , room!.userId , room!.id ,  selectedGift , sendGiftCount );
+
+
+      if(res == true){
+        AppUser? reciver_obj = await AppUserServices().getUser(receiver);
+        AppUser? ress = await AppUserServices().getUser(user!.id);
+        setState(() {
+          user = ress ;
+          AppUserServices().userSetter(user!);
+        });
+
+        Gift gift = gifts.where((element) => element.id == selectedGift).toList()[0] ;
+        await FirebaseFirestore.instance.collection("gifts").add({
+          'room_id': room!.id,
+          'sender_id': user!.id ,
+          'sender_name': user!.name ,
+          'sender_img': '${ASSETSBASEURL}AppUsers/${user!.img}'  ,
+          'receiver_id': reciver_obj!.id ,
+          'receiver_name': reciver_obj.name ,
+          'receiver_img': '${ASSETSBASEURL}AppUsers/${reciver_obj.img}',
+          'gift_name':  gift.name ,
+          'gift_img': gift.motion_icon != "" ? '${ASSETSBASEURL}Designs/Motion/${gift.motion_icon}' : '${ASSETSBASEURL}Designs/Video/${gift.video_url}' ,
+          'count' : sendGiftCount,
+          'sender_share_level': user!.share_level_icon
+
+        });
+      }
+
+
+
+
+    } else {
+      Fluttertoast.showToast(
+          msg: 'choose_receiver'.tr,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+    }
+  }
+  sendGiftToAllMicUsers(){
+
+  }
+  sendGiftToAllRoomMembers(){
+
+  }
+  sendGift(){
+  if(selectedGift! > 0){
+    if( sendGiftReceiverType == 'select_one_ore_more'){
+      sendGiftToSingleUser();
+    } else if(sendGiftReceiverType == 'all_mic_users'){
+      sendGiftToAllMicUsers();
+    } else if(sendGiftReceiverType == 'all_room_members'){
+      sendGiftToAllRoomMembers();
+    }
+  } else {
+    Fluttertoast.showToast(
+        msg: 'choose_gift'.tr,
+        toastLength: Toast.LENGTH_SHORT,
+        gravity: ToastGravity.CENTER,
+        timeInSecForIosWeb: 1,
+        backgroundColor: Colors.black26,
+        textColor: Colors.orange,
+        fontSize: 16.0
+    );
+  }
+
+  }
 }

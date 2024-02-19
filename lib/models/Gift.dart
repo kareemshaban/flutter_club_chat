@@ -14,12 +14,13 @@ class Gift {
   final String dark_icon ;
   final int subject ;
   final int vip_id ;
-
+  final String video_url ;
+  final String audio_url ;
 
   Gift({required this.id , required this.name , required this.tag , required this.icon ,
     required this.behaviour , required this.category_id , required this.dark_icon , required this.days , required this.gift_category_id ,
     required this.is_store , required this.motion_icon , required this.order , required this.price , required this.subject ,
-    required this.vip_id });
+    required this.vip_id , required this.video_url , required this.audio_url});
 
   factory Gift.fromJson(Map<String, dynamic> json) {
     return switch (json) {
@@ -39,7 +40,8 @@ class Gift {
       'dark_icon': String dark_icon,
       'subject': int subject,
       'vip_id': int vip_id,
-
+      'video_url': String video_url ,
+      'audio_url': String audio_url
 
 
       } =>
@@ -59,6 +61,8 @@ class Gift {
               dark_icon: dark_icon,
               subject: subject,
               vip_id: vip_id,
+              video_url: video_url ,
+              audio_url: audio_url
 
           ),
       _ => throw const FormatException('Failed to load Country.'),

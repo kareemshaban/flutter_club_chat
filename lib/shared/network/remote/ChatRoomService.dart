@@ -1045,7 +1045,7 @@ class ChatRoomService {
     }
   }
 
-  Future<void> sendGift(sender_id , recevier_id , owner_id , room_id , gift_id , count) async{
+  Future<bool> sendGift(sender_id , recevier_id , owner_id , room_id , gift_id , count) async{
     var response = await http.post(
       Uri.parse('${BASEURL}gifts/sendGift'),
       headers: <String, String>{
@@ -1062,9 +1062,13 @@ class ChatRoomService {
     );
     if (response.statusCode == 200) {
 
+      return true ;
+
     } else {
       print(response.body);
       throw Exception('Failed to send gift');
+
+
 
     }
   }

@@ -19,10 +19,11 @@ class Design {
   final int? isDefault ;
   final int? design_cat ;
 
+
   Design({required this.id , required this.name , required this.tag , required this.icon , required this.available_until ,
     required this.behaviour , required this.category_id , required this.dark_icon , required this.days , required this.gift_category_id ,
   required this.is_store , required this.motion_icon , required this.order , required this.price , required this.subject ,
-    required this.vip_id , required this.count ,  this.isDefault ,  this.design_cat});
+    required this.vip_id , required this.count ,  this.isDefault ,  this.design_cat });
 
   factory Design.fromJson(Map<String, dynamic> json) {
     return switch (json) {
@@ -45,7 +46,8 @@ class Design {
       'available_until': String available_until,
       'count': int count,
        'isDefault': int isDefault,
-      'design_cat': int design_cat
+      'design_cat': int design_cat,
+
 
 
       } =>
@@ -68,7 +70,8 @@ class Design {
               available_until: available_until,
               count: count,
               isDefault: isDefault,
-              design_cat: design_cat
+              design_cat: design_cat,
+
           ),
       _ => throw const FormatException('Failed to load Country.'),
     };
