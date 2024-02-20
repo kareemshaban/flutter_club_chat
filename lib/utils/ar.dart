@@ -257,7 +257,11 @@ const Map<String, String> ar = {
   "request_process" : "يتم معالجة طلبك الأن",
   "agency_members_title":"أعضاء الوكالة",
   "choose_receiver" : "يجب تحديد مستلم الهدية أولا",
-  "choose_gift": "برجاء اختيار الهدية"
+  "choose_gift": "برجاء اختيار الهدية",
+  "daily": "يومي",
+  "weekly":"أسبوعي",
+  "monthly":"شهري",
+  "app_rank": "كاس كلوب شات"
 
 
 };

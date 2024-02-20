@@ -37,13 +37,14 @@ class ChatRoom {
   List<RoomAdmin>? admins ;
   List<RoomFollow>? followers ;
   List<RoomBlock>? blockers ;
+  String? roomCup ;
 
 
 
   ChatRoom({required this.id, required this.tag,required this.name, required this.img,required  this.state, required this.password, required this.userId, required this.subject, required this.talkers_count,
     required this.starred,required this.isBlocked,required this.blockedDate, required this.blockedUntil, required this.createdDate, required this.isTrend, required this.details, required this.micCount,
     required this.enableMessages, required this.reportCount, required this.themeId , required this.flag , required this.admin_tag , required this.admin_name , required this .admin_img , required this.country_id ,
-   this.members , this.followers , this.admins , this.blockers , this.mics , this.room_bg , required this.hello_message});
+   this.members , this.followers , this.admins , this.blockers , this.mics , this.room_bg , required this.hello_message , this.roomCup});
 
 
   factory ChatRoom.fromJson(Map<String, dynamic> json) {

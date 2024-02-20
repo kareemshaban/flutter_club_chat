@@ -22,6 +22,7 @@ import 'package:clubchat/modules/Room/Components/emoj_modal.dart';
 import 'package:clubchat/modules/Room/Components/gift_modal.dart';
 import 'package:clubchat/modules/Room/Components/menu_modal.dart';
 import 'package:clubchat/modules/Room/Components/room_close_modal.dart';
+import 'package:clubchat/modules/Room/Components/room_cup_modal.dart';
 import 'package:clubchat/modules/Room/Components/room_info_modal.dart';
 import 'package:clubchat/modules/Room/Components/room_members_modal.dart';
 import 'package:clubchat/modules/SmallProfile/Small_Profile_Screen.dart';
@@ -31,14 +32,12 @@ import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_vap2/flutter_vap.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
 import 'package:popover/popover.dart';
 import 'package:svgaplayer_flutter/player.dart';
 import 'package:flutter/foundation.dart' as foundation;
-import 'package:video_player/video_player.dart';
 
 const appId = "d3a7fdb87c8d4bbd8b0e33a95a1d4e2a";
 
@@ -81,7 +80,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   bool showBanner = false ;
   String bannerMsg = "" ;
   String giftImgSmall = "" ;
-  VapViewController? vapViewController;
   @override
   void initState() {
     // TODO: implement initState
@@ -287,7 +285,9 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
         String gift_img = data['gift_img'] ;
         int count = data['count'] ;
         String sender_share_level = data['sender_share_level'] ;
-
+           if(room_id == room!.id){
+             refreshRoom(0);
+           }
            if(gift_img.toLowerCase().endsWith('.svga')){
              svgaImagesListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id);
            }
@@ -671,30 +671,39 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.end,
                                             children: [
-                                              Container(
-                                                padding: EdgeInsets.all(5.0),
-                                                decoration: BoxDecoration(
-                                                    color: Colors.black26,
-                                                    borderRadius:
-                                                        BorderRadius.circular(10.0)),
-                                                child: Row(
-                                                  children: [
-                                                    Image(
-                                                      image: AssetImage(
-                                                          'assets/images/chatroom_rank_ic.png'),
-                                                      height: 18.0,
-                                                      width: 18.0,
-                                                    ),
-                                                    SizedBox(
-                                                      width: 5.0,
-                                                    ),
-                                                    Text(
-                                                      "0",
-                                                      style: TextStyle(
-                                                          color: Colors.white,
-                                                          fontSize: 13.0),
-                                                    )
-                                                  ],
+                                              GestureDetector(
+                                                onTap:(){
+                                                  showModalBottomSheet(
+                                                      isScrollControlled: true ,
+                                                      context: context,
+                                                      builder: (ctx) => RoomCup());
+                                                 },
+
+                                                child: Container(
+                                                  padding: EdgeInsets.all(5.0),
+                                                  decoration: BoxDecoration(
+                                                      color: Colors.black26,
+                                                      borderRadius:
+                                                          BorderRadius.circular(10.0)),
+                                                  child: Row(
+                                                    children: [
+                                                      Image(
+                                                        image: AssetImage(
+                                                            'assets/images/chatroom_rank_ic.png'),
+                                                        height: 18.0,
+                                                        width: 18.0,
+                                                      ),
+                                                      SizedBox(
+                                                        width: 5.0,
+                                                      ),
+                                                      Text(
+                                                        double.parse(room!.roomCup.toString()).floor().toString()  ,
+                                                        style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontSize: 13.0),
+                                                      )
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                               SizedBox(
@@ -1021,7 +1030,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                         ),
                         entery != ""  ? SVGASimpleImage(   resUrl: entery) : Container() ,
                         giftImg != "" ?  SVGASimpleImage(   resUrl: giftImg) : Container() ,
-                        videoPlayerController != null ? VideoPlayer(videoPlayerController!) :  Container()   ,
 
                       ],
                     ),
@@ -1143,6 +1151,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       return NetworkImage(ASSETSBASEURL + 'AppUsers/' + mic!.mic_user_img);
     }
   }
+
+
+  Widget RoomCup( ) => RoomCupModal();
+
   Widget EmojBottomSheet( ) => EmojModal();
   Widget giftBottomSheet() => GiftModal();
   Widget MenuBottomSheet() => MenuModal();

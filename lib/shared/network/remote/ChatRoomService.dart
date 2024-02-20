@@ -1,7 +1,9 @@
 import 'dart:convert';
 
 import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
+import 'package:clubchat/helpers/RoomCupHelper.dart';
 import 'package:clubchat/helpers/RoomHelper.dart';
+import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Category.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Emossion.dart';
@@ -9,10 +11,12 @@ import 'package:clubchat/models/Gift.dart';
 import 'package:clubchat/models/Mic.dart';
 import 'package:clubchat/models/RoomAdmin.dart';
 import 'package:clubchat/models/RoomBlock.dart';
+import 'package:clubchat/models/RoomCup.dart';
 import 'package:clubchat/models/RoomFollow.dart';
 import 'package:clubchat/models/RoomMember.dart';
 import 'package:clubchat/models/RoomTheme.dart';
 import 'package:clubchat/shared/components/Constants.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
@@ -85,6 +89,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
 
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
@@ -147,7 +153,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -210,7 +217,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -266,7 +274,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -376,7 +385,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -445,7 +455,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -513,7 +524,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -581,7 +593,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -649,7 +662,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -719,7 +733,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -788,7 +803,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -858,7 +874,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -929,7 +946,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -998,7 +1016,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-
+        String roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -1072,5 +1091,47 @@ class ChatRoomService {
 
     }
   }
+
+  Future<RoomCupHelper> getRoomCup($room_id) async {
+
+    List<RoomCup> daily = [] ;
+    List<RoomCup> weekly = [] ;
+    List<RoomCup> monthly = [] ;
+    RoomCupHelper helper = new RoomCupHelper(daily: daily , weekly: weekly , monthly: monthly);
+    final response = await http.get(
+        Uri.parse('${BASEURL}chatRooms/getRoomCup/${$room_id}'));
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      AppUser? user ;
+      for (var j = 0; j < jsonData['daily'].length; j ++) {
+        RoomCup cup = RoomCup.fromJson(jsonData['daily'][j]);
+        user = await AppUserServices().getUser(cup.sender_id);
+        cup.user = user ;
+        daily.add(cup);
+      }
+      for (var j = 0; j < jsonData['weekly'].length; j ++) {
+        RoomCup cup = RoomCup.fromJson(jsonData['weekly'][j]);
+        user = await AppUserServices().getUser(cup.sender_id);
+        cup.user = user ;
+        weekly.add(cup);
+      }
+      for (var j = 0; j < jsonData['monthly'].length; j ++) {
+        RoomCup cup = RoomCup.fromJson(jsonData['monthly'][j]);
+        user = await AppUserServices().getUser(cup.sender_id);
+        cup.user = user ;
+        monthly.add(cup);
+      }
+      helper.daily = daily ;
+      helper.monthly = monthly ;
+      helper.weekly = weekly ;
+
+      return helper ;
+    } else {
+      throw Exception('Failed to load album');
+    }
+
+  }
+
+
 
 }

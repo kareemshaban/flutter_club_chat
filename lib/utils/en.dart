@@ -257,6 +257,10 @@ const Map<String,String> en ={
   "request_process":"your request is being processed",
   "agency_members_title" : "Agency Members",
   "choose_receiver": "Please select receiver first !",
-  "choose_gift": "Please select a Gift first !"
+  "choose_gift": "Please select a Gift first !",
+  "daily": "Daily",
+  "weekly":"Weekly",
+  "monthly":"Monthly",
+  "app_rank": "ClubChat Rank"
 
 };

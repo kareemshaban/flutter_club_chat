@@ -7,6 +7,7 @@ import 'package:clubchat/models/Banner.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Country.dart';
 import 'package:clubchat/models/FestivalBanner.dart';
+import 'package:clubchat/modules/AppCup/app_cup_screen.dart';
 import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/modules/Search_Screen/SearchScreen.dart';
@@ -57,7 +58,6 @@ class HomeScreenState extends State<HomeScreen> {
     List<BannerData> res = await BannerServices().getAllBanners();
     setState(() {
       banners = res ;
-      print(banners[0].img);
     });
      List<Country> res2 = await CountryService().getAllCountries();
     setState(() {
@@ -72,7 +72,8 @@ class HomeScreenState extends State<HomeScreen> {
     List<FestivalBanner> res4 = await FestivalBannerService().getAllBanners();
     setState(() {
       festivalBanners = res4 ;
-      print(FestivalBanner);
+      print('FestivalBanner');
+
     });
     setState(() {
       loading = false ;
@@ -90,7 +91,6 @@ class HomeScreenState extends State<HomeScreen> {
     //PusherChannelsFlutter pusher =
     setState(() {
       user =  AppUserServices().userGetter();
-      print(user!.id);
     });
     getMicPermission();
     getBanners();
@@ -128,7 +128,9 @@ class HomeScreenState extends State<HomeScreen> {
                 behavior: HitTestBehavior.opaque,
                 child: const Image(
                   image: AssetImage('assets/images/chatroom_rank_ic.png') , width: 30.0, height: 30.0,),
-                  onTap: (){}
+                  onTap: (){
+                  Navigator.push(context, MaterialPageRoute(builder: (context) => const AppCupScreen(),));
+                  }
             ),
             const SizedBox(width: 20.0,),
             GestureDetector(
@@ -196,7 +198,7 @@ class HomeScreenState extends State<HomeScreen> {
               //discover
               Column(
                 children: [
-                  Container(
+                  festivalBanners.length > 0 ?  Container(
                     padding: const EdgeInsets.symmetric(horizontal: 5.0 , vertical: 10.0),
 
                     child: CarouselSlider(items:
@@ -207,7 +209,7 @@ class HomeScreenState extends State<HomeScreen> {
                       child: Image.network('${ASSETSBASEURL}FestivalBanner/${banner.img}' , fit: BoxFit.cover, ),
                     )).toList()
                         , options: CarouselOptions( aspectRatio: 3 , autoPlay: true , viewportFraction: 1.0)),
-                  ),
+                  ) : Container(),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 15.0),
                     height:40.0,
@@ -372,7 +374,6 @@ class HomeScreenState extends State<HomeScreen> {
  void openMyRoom() async{
    ChatRoom? room =  await ChatRoomService().openMyRoom(user!.id);
     ChatRoomService().roomSetter(room!);
-   print(room);
    Navigator.push(context, MaterialPageRoute(builder: (ctx) => const RoomScreen()));
  }
   void openSearch(){
