@@ -261,7 +261,9 @@ const Map<String, String> ar = {
   "daily": "يومي",
   "weekly":"أسبوعي",
   "monthly":"شهري",
-  "app_rank": "كاس كلوب شات"
+  "app_rank": "كاس كلوب شات",
+  "room_remove_mic": "عفوا لقد أنزلك الأدمن من علي المايك",
+  "music_error_permissions": "لا يمكن تحميل ملفات الموسيقي بدون إعطاء إذن الوصول الي الملفات"
 
 
 };

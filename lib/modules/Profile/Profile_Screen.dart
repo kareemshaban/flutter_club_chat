@@ -371,7 +371,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                     children: [
                                       Image(image: AssetImage('assets/images/gold.png') , width: 30.0, height: 30.0,),
                                       SizedBox(width: 5.0,),
-                                      Text(user!.gold , style: TextStyle(color: MyColors.primaryColor , fontSize: 18.0 , fontWeight: FontWeight.bold),),
+                                      Text(double.parse(user!.gold).floor().toString()  , style: TextStyle(color: MyColors.primaryColor , fontSize: 18.0 , fontWeight: FontWeight.bold),),
                                     ],
                                   )
                                 ],
@@ -407,7 +407,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                     children: [
                                       Image(image: AssetImage('assets/images/diamond.png') , width: 27.0, height: 27.0,),
                                       SizedBox(width: 5.0,),
-                                      Text(user!.diamond , style: TextStyle(color: MyColors.blueColor.withOpacity(.9) , fontSize: 18.0 , fontWeight: FontWeight.bold),),
+                                      Text(double.parse(user!.diamond).floor().toString(), style: TextStyle(color: MyColors.blueColor.withOpacity(.9) , fontSize: 18.0 , fontWeight: FontWeight.bold),),
                                     ],
                                   )
                                 ],

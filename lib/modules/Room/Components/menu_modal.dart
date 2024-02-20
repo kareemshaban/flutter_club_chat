@@ -13,7 +13,8 @@ import 'package:get/get.dart';
 import 'musics_modal.dart';
 
 class MenuModal extends StatefulWidget {
-  const MenuModal({super.key});
+  final ScrollController scrollController ;
+  const MenuModal({super.key , required this.scrollController});
 
   @override
   State<MenuModal> createState() => _MenuModalState();
@@ -159,6 +160,12 @@ class _MenuModalState extends State<MenuModal> {
     var rng = Random();
     int rand = rng.nextInt(5);
     await ChatRoomMessagesHelper(room_id: room!.id , user_id: user!.id , message: (rand + 1).toString() , type: 'NURD').handleSendRoomMessage();
+    Future.delayed(Duration(seconds: 2)).then((value) => {
+      widget.scrollController.animateTo(
+          widget.scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 1),
+          curve: Curves.fastOutSlowIn)
+    });
     Navigator.pop(context);
   }
   numberGame() async {
@@ -168,6 +175,13 @@ class _MenuModalState extends State<MenuModal> {
     int num3 = rng.nextInt(9);
     String val = num1.toString() + num2.toString() + num3.toString() ;
     await ChatRoomMessagesHelper(room_id: room!.id , user_id: user!.id , message: val , type: 'LUCKY').handleSendRoomMessage();
+    Future.delayed(Duration(seconds: 2)).then((value) => {
+    widget.scrollController.animateTo(
+    widget.scrollController.position.maxScrollExtent,
+    duration: const Duration(milliseconds: 1),
+    curve: Curves.fastOutSlowIn)
+    });
+
     Navigator.pop(context);
   }
 }

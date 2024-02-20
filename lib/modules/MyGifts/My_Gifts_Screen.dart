@@ -35,8 +35,24 @@ class _MyGiftsScreenState extends State<MyGiftsScreen> {
     });
     DesignGiftHelper helper = await AppUserServices().getMyDesigns(user!.id);
 
+    List<Design> _gifts = [] ;
+    Design? design ;
+     for(var i = 0 ; i< helper.gifts!.length ; i++){
+       if(_gifts.where((element) => element.id ==helper.gifts![i].id ).toList().length == 0){
+         design = helper.gifts![i] ;
+         design.send_count = 1 ;
+         _gifts.add(design);
+
+       } else {
+         design =  _gifts.where((element) => element.id ==helper.gifts![i].id ).toList()[0];
+         _gifts.remove(design);
+         design.send_count = design.send_count! + 1  ;
+         _gifts.add(design);
+
+       }
+     }
     setState(() {
-      gifts = helper.gifts! ;
+      gifts =_gifts;
       loading = false ;
     });
 
@@ -135,7 +151,7 @@ class _MyGiftsScreenState extends State<MyGiftsScreen> {
             children: [
               Image(image: NetworkImage(ASSETSBASEURL + 'Designs/' + gift.icon) , width: 100.0, height: 100.0,),
               Text(gift.name , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 15.0),),
-              Text("X" + gift.count.toString() , style: TextStyle(color: Colors.white , fontSize: 15.0),)
+              Text("X" + gift.send_count.toString() , style: TextStyle(color: Colors.white , fontSize: 15.0),)
             ],
           )
        ),

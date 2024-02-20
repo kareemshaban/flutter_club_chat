@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:file_manager/file_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -25,8 +26,9 @@ class _MusicsModalState2 extends State<MusicsModal2> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    initlist();
     requestPermissions();
+    //initlist();
+
   }
   void initlist() async {
 
@@ -41,9 +43,20 @@ class _MusicsModalState2 extends State<MusicsModal2> {
   requestPermissions() async{
     // Request permission to access the device's storage
     var status = await Permission.storage.request();
-    if (status.isGranted) {
+    var status2 =  await  Permission.manageExternalStorage.request();
+    if (status.isGranted || status2.isGranted) {
       // Permission granted, you can now proceed with file access
+      initlist();
     } else {
+      Fluttertoast.showToast(
+          msg: 'music_error_permissions'.tr,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0);
+          Navigator.pop(context);
       // Permission denied
       // Handle the situation where the user denied permission
     }
@@ -203,7 +216,7 @@ class _MusicsModalState2 extends State<MusicsModal2> {
                                   ),
                                   clipBehavior: Clip.antiAlias,
                                     child: Image(
-                                      image: AssetImage('assets/images/flag.png'),
+                                      image: AssetImage('assets/images/mp3.png'),
                                     ),
                                 ),
                               ],
@@ -224,11 +237,6 @@ class _MusicsModalState2 extends State<MusicsModal2> {
                                       ),
                                     ],
                                   ),
-                                ),
-                                Row(
-                                  children: [
-                                    Text('Artist NAme' , style: TextStyle(color: Colors.white),),
-                                  ],
                                 ),
                                 Row(
                                   children: [

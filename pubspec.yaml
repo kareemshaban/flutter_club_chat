@@ -92,9 +92,9 @@ flutter_native_splash:
 
 
   android_12:
-    image: 'assets/images/logo_blue_big.png'
+    image: 'assets/images/splash_icon.png'
     icon_background_color: "#162732"
-    image_dark: 'assets/images/logo_blue_big.png'
+    image_dark: 'assets/images/splash_icon.png'
     icon_background_color_dark: "#162732"
 
 
@@ -134,8 +134,8 @@ flutter:
   fonts:
      - family: arabFont
        fonts:
-         - asset: assets/fonts/ArbFONTS-TheSans-Plain.otf
-         - asset: assets/fonts/ArbFONTS-TheSans-Plain.otf
+         - asset: assets/fonts/ArbFONTS-The-Sans-Plain.otf
+         - asset: assets/fonts/ArbFONTS-The-Sans-Plain.otf
            style: italic
          - asset: assets/fonts/ArbFONTS-TheSans-Bold.otf
            weight: 700

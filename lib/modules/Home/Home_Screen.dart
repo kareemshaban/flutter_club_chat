@@ -393,10 +393,19 @@ class HomeScreenState extends State<HomeScreen> {
  ImageProvider getRoomImage(room){
    String room_img = '';
    if(room!.img == room!.admin_img){
+       if(room!.admin_img != ""){
+         room_img = '${ASSETSBASEURL}AppUsers/${room?.img}' ;
+       } else {
+         room_img = '${ASSETSBASEURL}Defaults/room_default.png' ;
+       }
 
-     room_img = '${ASSETSBASEURL}AppUsers/${room?.img}' ;
    } else {
-     room_img = '${ASSETSBASEURL}Rooms/${room?.img}' ;
+     if(room?.img != ""){
+       room_img = '${ASSETSBASEURL}Rooms/${room?.img}' ;
+     } else {
+       room_img = '${ASSETSBASEURL}Defaults/room_default.png' ;
+     }
+
    }
   return  NetworkImage(room_img);
  }

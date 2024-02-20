@@ -78,6 +78,8 @@ class LoginScreenState extends State<LoginScreen> {
 
 
     });
+
+
     _googleSignIn.signInSilently();
 
   }

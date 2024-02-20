@@ -89,8 +89,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
 
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
@@ -153,8 +153,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -217,8 +217,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -274,8 +274,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -385,8 +385,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -455,8 +455,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -524,8 +524,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -593,8 +593,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -662,8 +662,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -733,8 +733,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -803,8 +803,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -874,8 +874,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -946,8 +946,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -1016,8 +1016,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        String roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup ;
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
           mics.add(mic);
@@ -1065,6 +1065,8 @@ class ChatRoomService {
   }
 
   Future<bool> sendGift(sender_id , recevier_id , owner_id , room_id , gift_id , count) async{
+
+
     var response = await http.post(
       Uri.parse('${BASEURL}gifts/sendGift'),
       headers: <String, String>{
@@ -1080,8 +1082,23 @@ class ChatRoomService {
       }),
     );
     if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
 
-      return true ;
+       if(jsonData['message'] == 'success'){
+         return true ;
+       } else {
+         Fluttertoast.showToast(
+             msg: jsonData['message'],
+             toastLength: Toast.LENGTH_SHORT,
+             gravity: ToastGravity.CENTER,
+             timeInSecForIosWeb: 1,
+             backgroundColor: Colors.black26,
+             textColor: Colors.orange,
+             fontSize: 16.0
+         );
+         return false ;
+       }
+
 
     } else {
       print(response.body);

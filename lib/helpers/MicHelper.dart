@@ -45,6 +45,19 @@ class MicHelper {
     });
   }
 
+
+  removeFromMic(admin_id) async{
+    await ChatRoomService().leaveMic(user_id, room_id, mic);
+    await FirebaseFirestore.instance.collection("mic-remove").add({
+      'room_id': room_id,
+      'admin_id': admin_id,
+      'user_id': user_id,
+      'mic': mic,
+      'using': 0
+    });
+  }
+
+
   showEmoj(emoj) async {
     await FirebaseFirestore.instance.collection("emossions").add({
       'room_id': room_id,

@@ -1,4 +1,6 @@
 import 'package:clubchat/models/AppUser.dart';
+import 'package:clubchat/models/LevelStats.dart';
+import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/DesignServices.dart';
@@ -19,7 +21,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
   double share_level_progress = .3;
   double karizma_level_progress = .7;
   double charging_level_progress = .6;
-
+  LevelStats? stats ;
   @override
   void initState() {
     // TODO: implement initState
@@ -27,10 +29,15 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
     getData();
   }
 
-  getData()  {
+  getData()  async {
     setState(() {
       user = AppUserServices().userGetter();
     });
+    LevelStats? res = await AppUserServices().getLevelStats(user!.id);
+    setState(() {
+      stats = res ;
+    });
+    print(stats!.karizma_percent);
   }
 
   @override
@@ -88,7 +95,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
           width: double.infinity,
           height: double.infinity,
           padding: EdgeInsets.only(top: 60.0),
-          child: TabBarView(
+          child: stats != null ?  TabBarView(
             children: [
               SingleChildScrollView(
                 child: Column(
@@ -138,7 +145,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                               child: new CircularPercentIndicator(
                                 radius: 90.0,
                                 lineWidth: 10.0,
-                                percent: share_level_progress,
+                                percent: stats!.share_percent,
                                 animation: true,
                                 animationDuration: 3000,
                                 arcType: ArcType.FULL_REVERSED,
@@ -174,7 +181,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "2500",
+                                stats!.share_value.toString(),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16.0),
                               ),
@@ -199,7 +206,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "5000",
+                                stats!.share_up.toString(),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16.0),
                               ),
@@ -323,7 +330,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                               child: new CircularPercentIndicator(
                                 radius: 90.0,
                                 lineWidth: 10.0,
-                                percent: karizma_level_progress,
+                                percent: stats!.karizma_percent,
                                 animation: true,
                                 animationDuration: 3000,
                                 arcType: ArcType.FULL_REVERSED,
@@ -356,7 +363,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "2500",
+                                stats!.karizma_value.toString(),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16.0),
                               ),
@@ -381,7 +388,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "5000",
+                                stats!.karizma_up.toString(),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16.0),
                               ),
@@ -504,7 +511,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                               child: new CircularPercentIndicator(
                                 radius: 90.0,
                                 lineWidth: 10.0,
-                                percent: charging_level_progress,
+                                percent: stats!.charging_percent,
                                 animation: true,
                                 animationDuration: 3000,
                                 arcType: ArcType.FULL_REVERSED,
@@ -537,7 +544,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "2500",
+                                stats!.charging_value.toString(),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16.0),
                               ),
@@ -562,7 +569,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
                                 height: 10,
                               ),
                               Text(
-                                "5000",
+                                stats!.charging_up_value.toString(),
                                 style: TextStyle(
                                     color: Colors.white, fontSize: 16.0),
                               ),
@@ -640,7 +647,7 @@ class _MyLevelScreenState extends State<MyLevelScreen> {
 
               ),
             ],
-          ),
+          ) : Loading(),
         ),
       ),
     );

@@ -80,6 +80,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   bool showBanner = false ;
   String bannerMsg = "" ;
   String giftImgSmall = "" ;
+  ScrollController _scrollController = new ScrollController();
   @override
   void initState() {
     // TODO: implement initState
@@ -121,6 +122,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     geAdminDesigns();
     micEmossionListener();
     giftListener();
+    micRemoveListener();
     initAgora();
     messagesListener();
     getRoomBasicData();
@@ -190,6 +192,42 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       }
     });
   }
+  micRemoveListener() {
+    CollectionReference reference = FirebaseFirestore.instance.collection('mic-remove');
+    reference.snapshots().listen((querySnapshot) async{
+      DocumentChange change =   querySnapshot.docChanges[0] ;
+      if(change.newIndex > 0){
+        Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
+        int room_id = data['room_id'] ;
+        int user_id = data['user_id'] ;
+        print('micRemoveListener');
+        print(room_id);
+        if(room_id == room!.id){
+          print('refreshRoom');
+          refreshRoom(0);
+        }
+        if(user_id == user!.id){
+          // if this is the user
+          // show toast and stop publish
+          try{
+            await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+          }catch(err){
+
+          }
+          Fluttertoast.showToast(
+              msg: 'room_remove_mic'.tr,
+              toastLength: Toast.LENGTH_SHORT,
+              gravity: ToastGravity.CENTER,
+              timeInSecForIosWeb: 1,
+              backgroundColor: Colors.black26,
+              textColor: Colors.orange,
+              fontSize: 16.0);
+
+        }
+      }
+    });
+  }
+
   themesListener(){
     CollectionReference reference = FirebaseFirestore.instance.collection('themes');
     reference.snapshots().listen((querySnapshot) {
@@ -209,22 +247,26 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     reference.snapshots().listen((querySnapshot) async{
 
           DocumentChange change =   querySnapshot.docChanges[0] ;
-          Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
-          int room_id = data['room_id'] ;
-          int mic = data['mic'] ;
-          int user = data['user'] ;
-          String emoj = data['emoj'] ;
-          if(room_id == room!.id){
-            setState(() {
-              micEmojs[mic -1] = emoj ;
-            });
+          if(change.newIndex > 0){
+            Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
+            int room_id = data['room_id'] ;
+            int mic = data['mic'] ;
+            int user = data['user'] ;
+            String emoj = data['emoj'] ;
+            if(room_id == room!.id){
+              setState(() {
+                micEmojs[mic -1] = emoj ;
+              });
 
-            await Future.delayed(Duration(seconds: 5));
-            setState(() {
-              micEmojs[mic -1] = "" ;
-            });
+              await Future.delayed(Duration(seconds: 5));
+              setState(() {
+                micEmojs[mic -1] = "" ;
+              });
+
+            }
 
           }
+
 
        // });
     });
@@ -258,6 +300,18 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           setState(() {
             messages = old ;
           });
+          // _scrollController.animateTo(
+          //   0.0,
+          //   curve: Curves.easeOut,
+          //   duration: const Duration(milliseconds: 300),
+          // );
+          await Future.delayed(Duration(seconds: 2));
+          print('_scrollController');
+          _scrollController.animateTo(
+              _scrollController.position.maxScrollExtent,
+              duration: const Duration(milliseconds: 1),
+              curve: Curves.fastOutSlowIn);
+
 
         }
 
@@ -482,6 +536,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       appId: appId,
       channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
     ));
+    await _engine.enableAudioVolumeIndication(interval: 200, smooth: 3, reportVad: true);
 
     _engine.registerEventHandler(
       RtcEngineEventHandler(
@@ -510,6 +565,11 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           debugPrint(
               '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
         },
+
+          onAudioVolumeIndication:(connection, speakers, speakerNumber, totalVolume) =>  (){
+            print('onAudioVolumeIndication' );
+            print(speakers);
+          },
       ),
     );
 
@@ -524,6 +584,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
 
       options: const ChannelMediaOptions( clientRoleType: ClientRoleType.clientRoleAudience),
     );
+
+
   }
   @override
   void dispose() {
@@ -556,6 +618,11 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
          });
 
        }
+       await Future.delayed(Duration(seconds: 2));
+      _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: const Duration(milliseconds: 1),
+          curve: Curves.fastOutSlowIn);
     }
 
   }
@@ -587,7 +654,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Kareem Shaban sent gift to ahmed' , style: TextStyle(fontSize: 11.0),),
+                        Text(bannerMsg , style: TextStyle(fontSize: 11.0),),
                         SizedBox(width: 10.0,),
                         SizedBox(height: 40.0, width: 40.0,  child: SVGASimpleImage(resUrl: giftImgSmall)),
 
@@ -825,7 +892,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                       width: MediaQuery.sizeOf(context).width * .7 ,
 
 
-                                      child: ListView.separated(  itemBuilder:(context, index) => roomMessageBuilder(index), separatorBuilder: (context, index) => roomMessageSeperator(), itemCount: messages.length)),
+                                      child: ListView.separated(   itemBuilder:(context, index) => roomMessageBuilder(index), separatorBuilder: (context, index) => roomMessageSeperator(), itemCount: messages.length ,  controller: _scrollController,) ),
                                 ],
                               ),
                             ),
@@ -1070,11 +1137,19 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                           Stack(
                             alignment: Alignment.center,
                             children: [
-                              CircleAvatar(
+                              mic!.mic_user_img == null ? CircleAvatar(
                                 backgroundColor: Colors.transparent,
                                 radius: 25,
                                 backgroundImage: getMicUserImg(mic),
-                              ),
+                              ) :     CircleAvatar(
+                                      backgroundColor:  mic.mic_user_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                                      backgroundImage:  mic!.mic_user_img != "" ? ( mic!.mic_user_img.startsWith('https') ? NetworkImage( mic!.mic_user_img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${ mic!.mic_user_img}'))  :    null,
+                                      radius: 25,
+                                      child:  mic!.mic_user_img== "" ?
+                                      Text(mic!.mic_user_name.toUpperCase().substring(0 , 1) +
+                                      (mic!.mic_user_name.contains(" ") ? mic!.mic_user_name.substring(mic!.mic_user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                                      style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                                      ),
                               Container(height: 70.0, width: 70.0, child: mic!.frame != "" ? SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Designs/Motion/' + mic!.frame +'?raw=true') : null),
                               //frame
                             ],
@@ -1088,6 +1163,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                             ? mic!.order.toString()
                             : mic!.mic_user_name,
                         style: TextStyle(color: Colors.white, fontSize: 13.0),
+                        overflow: TextOverflow.ellipsis,
                       )
                     ],
                   ),
@@ -1122,6 +1198,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                   }
                   else if(result == 6){
                     //remove_from_mic
+                    MicHelper(user_id:  mic!.user_id , room_id:  room!.id , mic: mic.order).removeFromMic(user!.id);
+
                   }
                   else if(result == 7){
                     //un_use_mic
@@ -1142,14 +1220,15 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     }
   );
   ImageProvider getMicUserImg(mic) {
-    if (mic!.mic_user_img == null) {
+    //if (mic!.mic_user_img == null) {
       if(mic.isClosed == 0)
       return AssetImage('assets/images/mic_open.png');
       else
       return AssetImage('assets/images/mic_close.png');
-    } else {
-      return NetworkImage(ASSETSBASEURL + 'AppUsers/' + mic!.mic_user_img);
-    }
+    // } else {
+    //
+    //   return NetworkImage(ASSETSBASEURL + 'AppUsers/' + mic!.mic_user_img);
+    // }
   }
 
 
@@ -1157,7 +1236,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
 
   Widget EmojBottomSheet( ) => EmojModal();
   Widget giftBottomSheet() => GiftModal();
-  Widget MenuBottomSheet() => MenuModal();
+  Widget MenuBottomSheet() => MenuModal(scrollController: _scrollController,);
   Widget RoomInfoBottomSheet() => RoomInfoModal();
   Widget roomCloseModal() => RoomCloseModal(pcontext: context, engine: _engine);
   Widget roomMembersModal() => RoomMembersModal();

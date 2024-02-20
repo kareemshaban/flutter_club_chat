@@ -1,8 +1,10 @@
+import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/models/Mall.dart';
 import 'package:clubchat/models/Vip.dart';
 import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/VipServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +21,15 @@ class _VipScreenState extends State<VipScreen> {
   List<Mall> designs = [] ;
   List<Vip> vips = [] ;
   bool loading = false ;
+  AppUser? user ;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    setState(() {
+      user = AppUserServices().userGetter();
+    });
     getVipData();
   }
   getVipData() async{
@@ -1087,7 +1093,17 @@ class _VipScreenState extends State<VipScreen> {
           children: [
             Transform.translate(
                 offset: Offset(0 , 15),
-                child: Image(image: AssetImage('assets/images/user.png') , width: 85.0,)),
+                child:
+                CircleAvatar(
+                  backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                  backgroundImage: user?.img != "" ? (user!.img.startsWith('https') ? NetworkImage(user!.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}'))  :    null,
+                  radius: 42,
+                  child: user?.img== "" ?
+                  Text(user!.name.toUpperCase().substring(0 , 1) +
+                      (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                    style: const TextStyle(color: Colors.white , fontSize: 28.0 , fontWeight: FontWeight.bold),) : null,
+                ),
+            ),
 
             Transform.translate(
                 offset: Offset(0 , -85),

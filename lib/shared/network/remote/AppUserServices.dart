@@ -9,6 +9,7 @@ import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
 import 'package:clubchat/models/HostAgency.dart';
+import 'package:clubchat/models/LevelStats.dart';
 import 'package:clubchat/models/Tag.dart';
 import 'package:clubchat/models/UserHoppy.dart';
 import 'package:clubchat/models/Visitor.dart';
@@ -1123,6 +1124,37 @@ class AppUserServices {
     }
 
   }
+  Future<LevelStats?> getLevelStats(user_id) async {
+    final response = await http.get(Uri.parse('${BASEURL}Account/getUserLevelsData/${user_id}'));
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if( jsonData['state'] == 'success'){
+        int charging_value = jsonData['charging_value'];
+        int charging_up_value = jsonData['charging_up_value'];
+        double charging_percent = double.parse(jsonData['charging_percent'].toString()) ;
+        int share_value = jsonData['share_value'];
+        int share_up = jsonData['share_up'];
+        double share_percent = double.parse(jsonData['share_percent'].toString());
+        int karizma_value = jsonData['karizma_value'];
+        int karizma_up = jsonData['karizma_up'];
+        double karizma_percent = double.parse(jsonData['karizma_percent'].toString()) ;
+
+        LevelStats levelStats = LevelStats(charging_value: charging_value, charging_up_value: charging_up_value, charging_percent: charging_percent,
+            share_value: share_value, share_up: share_up, share_percent: share_percent, karizma_value: karizma_value, karizma_up: karizma_up, karizma_percent: karizma_percent);
+
+        return levelStats ;
+      } else {
+        return null ;
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+
+  }
+
 
 
 }

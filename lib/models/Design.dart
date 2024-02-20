@@ -18,12 +18,13 @@ class Design {
   final int count ;
   final int? isDefault ;
   final int? design_cat ;
+  int? send_count ;
 
 
   Design({required this.id , required this.name , required this.tag , required this.icon , required this.available_until ,
     required this.behaviour , required this.category_id , required this.dark_icon , required this.days , required this.gift_category_id ,
   required this.is_store , required this.motion_icon , required this.order , required this.price , required this.subject ,
-    required this.vip_id , required this.count ,  this.isDefault ,  this.design_cat });
+    required this.vip_id , required this.count ,  this.isDefault ,  this.design_cat  });
 
   factory Design.fromJson(Map<String, dynamic> json) {
     return switch (json) {

@@ -151,8 +151,8 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
                 ],
               ),
             Center(
-              child: animationController!.videoItem != null ? SVGAImage(animationController!) : Container(),
-              // child: preview_img != "" ?  SVGASimpleImage( resUrl: preview_img) : Container(),
+             // child: animationController!.videoItem != null ? SVGAImage(animationController!) : Container(),
+               child: preview_img != "" ?  SVGASimpleImage( resUrl: preview_img) : Container(),
             )
           ],
         ) : Container()
@@ -290,14 +290,32 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
                   color: MyColors.darkColor.withAlpha(100),
                   child: Center(
                     child: (design!.category_id == 3 || design!.category_id == 5) ? Image(image: NetworkImage(ASSETSBASEURL + 'Designs/' + design.icon),)
-                      : SVGASimpleImage( resUrl: ASSETSBASEURL + 'Designs/Motion/' + design.motion_icon +'?raw=true'),
+                      : design!.category_id == 4 ?
+
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        CircleAvatar(
+                          backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                          backgroundImage: user?.img != "" ? (user!.img.startsWith('https') ? NetworkImage(user!.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}'))  :    null,
+                          radius: 80.0,
+                          child: user?.img== "" ?
+                          Text(user!.name.toUpperCase().substring(0 , 1) +
+                              (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                            style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                        ),
+                        SizedBox(height: 200.0, width: 200.0, child: SVGASimpleImage( resUrl: ASSETSBASEURL + 'Designs/Motion/' + design.motion_icon +'?raw=true')),
+                      ],
+                    ) :
+
+                    SVGASimpleImage( resUrl: ASSETSBASEURL + 'Designs/Motion/' + design.motion_icon +'?raw=true'),
                   // /  SVGASimpleImage( resUrl: "https://chat.gifty-store.com/images/Designs/Motion/1703720610motion_icon.svga" ),
                   ),
                 ),
                 (design!.category_id == 3 || design!.category_id == 5) ? Container(
                   width: 40.0,
                   height: 40.0,
-                  padding: EdgeInsets.all(3.0),
+
                   decoration: BoxDecoration(color: Colors.black12 , borderRadius: BorderRadius.circular(10.0)),
                   child:  IconButton(onPressed: (){
                     setState(() {
@@ -397,18 +415,32 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
 
   preview(img , design) async{
     Navigator.pop(context);
-    final videoItem = await SVGAParser.shared.decodeFromURL(img);
-    this.animationController!.videoItem = videoItem;
-    this
-        .animationController
-    !.repeat()
-    .whenComplete(() => this.animationController!.videoItem = null);
-     await Future.delayed(Duration(seconds: 8));
-    animationController!.stop();
-    this.animationController!.videoItem = null ;
+      setState(() {
+        preview_img = img ;
+      });
+     await Future.delayed(Duration(seconds: 10));
+      setState(() {
+        preview_img = "" ;
+      });
     showModalBottomSheet(
         context: context,
         builder: (ctx) => DesignBottomSheet(design));
+
+
+
+    // Navigator.pop(context);
+    // final videoItem = await SVGAParser.shared.decodeFromURL(img);
+    // this.animationController!.videoItem = videoItem;
+    // this
+    //     .animationController
+    // !.repeat()
+    // .whenComplete(() => this.animationController!.videoItem = null);
+    //  await Future.delayed(Duration(seconds: 8));
+    // animationController!.stop();
+    // this.animationController!.videoItem = null ;
+    // showModalBottomSheet(
+    //     context: context,
+    //     builder: (ctx) => DesignBottomSheet(design));
 
   }
 
