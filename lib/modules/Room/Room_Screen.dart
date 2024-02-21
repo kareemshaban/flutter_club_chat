@@ -76,6 +76,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   String giftImg = "";
   List<String> micEmojs = ["" , "" , "" , "" , "" , "" , "" , "" , "" , "" , "" , ""  ];
   bool _localUserJoined = false;
+  bool _localUserMute = true ;
   int bannerState = 0 ;
   bool showBanner = false ;
   String bannerMsg = "" ;
@@ -211,6 +212,9 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           // show toast and stop publish
           try{
             await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+            setState(() {
+              _localUserMute = true ;
+            });
           }catch(err){
 
           }
@@ -939,9 +943,35 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                           SizedBox(
                                             width: 5.0,
                                           ),
-                                          Image(
-                                            image: AssetImage('assets/images/mic_on.png'),
-                                            width: 40.0,
+                                          GestureDetector(
+                                            onTap: () async{
+                                              if(room!.mics!.where((element) => element.user_id == user!.id).toList().length > 0){
+                                                  if(_localUserMute){
+                                                    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+                                                    setState(() {
+                                                      _localUserMute = false ;
+                                                    });
+                                                  } else {
+                                                    await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+                                                    setState(() {
+                                                      _localUserMute = true ;
+                                                    });
+                                                  }
+                                              } else {
+                                                Fluttertoast.showToast(
+                                                    msg: 'You are not using any mic !',
+                                                    toastLength: Toast.LENGTH_SHORT,
+                                                    gravity: ToastGravity.CENTER,
+                                                    timeInSecForIosWeb: 1,
+                                                    backgroundColor: Colors.black26,
+                                                    textColor: Colors.orange,
+                                                    fontSize: 16.0);
+                                              }
+                                            },
+                                            child: Image(
+                                              image: _localUserMute ? AssetImage('assets/images/mic_off.png') :  AssetImage('assets/images/mic_on.png'),
+                                              width: 40.0,
+                                            ),
                                           ),
                                           SizedBox(
                                             width: 5.0,
@@ -1179,6 +1209,9 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                      //use_mic
                    await MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).useMic();
                    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+                   setState(() {
+                     _localUserMute = false ;
+                   });
                   }
                   else if(result == 2){
                     //lock_mic
@@ -1205,10 +1238,26 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                     //un_use_mic
                     MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).leaveMic();
                     await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+                    setState(() {
+                      _localUserMute = true ;
+                    });
       
                   }
                   else if(result == 8){
                     //mute
+                    if(_localUserMute){
+                      await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+                      setState(() {
+                        _localUserMute = false ;
+                      });
+                    } else {
+                      await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+                      setState(() {
+                        _localUserMute = true ;
+                      });
+                    }
+
+
                   }
                 },
                 itemBuilder: (BuildContext context) =>  AdminMicListItems(mic)
@@ -1294,7 +1343,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
               ),
               PopupMenuItem<int>(
                 value: 8,
-                child: Text('mute'.tr , style: TextStyle(color: Colors.white),),
+                child: _localUserMute ? Text('unmute'.tr , style: TextStyle(color: Colors.white),) :  Text('mute'.tr , style: TextStyle(color: Colors.white),),
               ),
 
             ];

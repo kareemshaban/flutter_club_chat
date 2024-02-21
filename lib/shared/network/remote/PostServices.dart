@@ -188,10 +188,6 @@ class PostServices {
   }
 
   Future<List<Comment>> addComment( post_id , user_id , content) async {
-    print(post_id);
-    print(user_id);
-    print(content);
-
     List<Comment> comments = [] ;
     var res = await http.post(
       Uri.parse('${BASEURL}Comments/addComment'),
@@ -204,7 +200,7 @@ class PostServices {
         'content': content.toString()  ,
       }),
     );
-    print(res);
+    print(res.body);
     if (res.statusCode == 200) {
       final Map resonse = json.decode(res.body);
       for (var i = 0; i < resonse['comments'].length; i ++) {

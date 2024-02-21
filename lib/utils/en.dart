@@ -263,7 +263,8 @@ const Map<String,String> en ={
   "monthly":"Monthly",
   "app_rank": "ClubChat Rank",
   "room_remove_mic": "Sorry the admin remove you from mic !",
-  "music_error_permissions": "ٍMusic Files Can not be loaded without this permission!"
+  "music_error_permissions": "ٍMusic Files Can not be loaded without this permission!",
+  "unmute": "Un Mute"
 
 
 };

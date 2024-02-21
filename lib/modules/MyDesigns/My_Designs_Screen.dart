@@ -226,7 +226,20 @@ class _MyDesignScreenState extends State<MyDesignScreen> with TickerProviderStat
             child: Stack(
               alignment: AlignmentDirectional.topStart,
               children: [
-                Container(
+                design.vip_id > 0 ?    Banner(
+                  message: 'VIP' ,
+                  location: BannerLocation.topEnd,
+                  color:  MyColors.primaryColor ,
+                  child: Container(
+                    decoration: BoxDecoration(color: MyColors.lightUnSelectedColor ,
+                        borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0) , topRight: Radius.circular(15.0))),
+                    child: Center(
+                      child: Image(image: NetworkImage(ASSETSBASEURL + 'Designs/' + design.icon),),
+                      // child: SVGASimpleImage(
+                      //     resUrl: "https://github.com/yyued/SVGA-Samples/blob/master/angel.svga?raw=true"),
+                    ),
+                  ),
+                ) : Container(
                   decoration: BoxDecoration(color: MyColors.lightUnSelectedColor ,
                       borderRadius: BorderRadius.only(topLeft: Radius.circular(15.0) , topRight: Radius.circular(15.0))),
                   child: Center(

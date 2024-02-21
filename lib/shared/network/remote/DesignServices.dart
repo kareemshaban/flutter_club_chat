@@ -179,4 +179,50 @@ class DesignServices {
       throw Exception('Failed to load album');
     }
   }
+
+
+  Future<void> purchaseVip(user_id , vip   ) async {
+
+    var response = await http.post(
+      Uri.parse('${BASEURL}vip/purchaseVip'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'vip': vip.toString()  ,
+      }),
+    );
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if(jsonData['state'] == "success"){
+        Fluttertoast.showToast(
+            msg: jsonData['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0
+        );
+
+      } else if(jsonData['state'] == "failed"){
+        Fluttertoast.showToast(
+            msg: jsonData['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0
+        );
+      }
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
 }

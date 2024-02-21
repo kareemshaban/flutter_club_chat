@@ -181,7 +181,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                   children: [
                     Container(
                       width: double.infinity,
-                      height: 200.0,
+                      height: 150.0,
                       decoration: BoxDecoration(
                           image:  user!.cover != "" ?
                           DecorationImage( image: NetworkImage(ASSETSBASEURL + 'AppUsers/Covers/' + user!.cover), fit: BoxFit.cover) :
@@ -277,15 +277,15 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("inner_basic_information".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("inner_basic_information".tr , style: TextStyle(color: Colors.white , fontSize: 16.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
-                          SizedBox(height: 15.0,),
+                          SizedBox(height: 5.0,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("ID" , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("ID" , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -293,7 +293,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Text(user!.tag , style: TextStyle(fontSize: 16.0 , color: Colors.white),),
+                                        Text(user!.tag , style: TextStyle(fontSize: 14.0 , color: Colors.white),),
                                         SizedBox(width: 5.0,),
                                         IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.idBadge , color: Colors.white , size: 20.0,) ,)
                                       ],
@@ -304,12 +304,12 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 15.0,),
+                          SizedBox(height: 5.0,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("edit_profile_user_name".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("edit_profile_user_name".tr , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -317,7 +317,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Text(user!.name , style: TextStyle(fontSize: 16.0 , color: Colors.white),),
+                                        Text(user!.name , style: TextStyle(fontSize: 14.0 , color: Colors.white),),
                                         SizedBox(width: 5.0,),
                                         IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.faceGrinWide , color: Colors.white , size: 20.0))
                                       ],
@@ -330,12 +330,12 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 15.0,),
+                          SizedBox(height: 5.0,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("edit_profile_gender".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("edit_profile_gender".tr , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -343,7 +343,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Text(user!.gender == 0 ? "edit_profile_male".tr : "edit_profile_female".tr , style: TextStyle(fontSize: 16.0 , color: Colors.white),),
+                                        Text(user!.gender == 0 ? "edit_profile_male".tr : "edit_profile_female".tr , style: TextStyle(fontSize: 14.0 , color: Colors.white),),
                                         SizedBox(width: 5.0,),
                                         IconButton(onPressed: (){}, icon: Icon(user!.gender == 0 ?  FontAwesomeIcons.male : FontAwesomeIcons.female , color: Colors.white , size: 20.0))
                                       ],
@@ -356,12 +356,12 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 15.0,),
+                          SizedBox(height: 5.0,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("edit_profile_date_of_birth".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("edit_profile_date_of_birth".tr , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -369,7 +369,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                     Row(
                                       mainAxisAlignment: MainAxisAlignment.end,
                                       children: [
-                                        Text(formattedDate(user!.birth_date ).toString(), style: TextStyle(fontSize: 16.0 , color: Colors.white),),
+                                        Text(formattedDate(user!.birth_date ).toString(), style: TextStyle(fontSize: 14.0 , color: Colors.white),),
                                         SizedBox(width: 5.0,),
                                         IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.birthdayCake  , color: Colors.white , size: 20.0))
                                       ],
@@ -382,12 +382,12 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 15.0,),
+                          SizedBox(height: 5.0,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
                               children: [
-                                Text("edit_profile_country".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                                Text("edit_profile_country".tr , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                                 Expanded(child:
                                 Column(
                                   crossAxisAlignment: CrossAxisAlignment.end,
@@ -430,10 +430,10 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("edit_profile_my_tags".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("edit_profile_my_tags".tr , style: TextStyle(color: Colors.white , fontSize: 16.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
-                          SizedBox(height: 15.0,),
+                          SizedBox(height:10.0,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Row(
@@ -469,10 +469,10 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("inner_room_gifts".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("inner_room_gifts".tr , style: TextStyle(color: Colors.white , fontSize: 16.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
-                          SizedBox(height: 15.0,),
+                          SizedBox(height: 5.0,),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 10.0),
                             child: Container(
@@ -506,7 +506,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("inner_my_frames".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("inner_my_frames".tr , style: TextStyle(color: Colors.white , fontSize: 16.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
                           SizedBox(height: 15.0,),
@@ -543,7 +543,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                 decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                               ),
                               SizedBox(width: 10.0,),
-                              Text("inner_cars_(Entries)".tr , style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                              Text("inner_cars_(Entries)".tr , style: TextStyle(color: Colors.white , fontSize: 16.0 , fontWeight: FontWeight.bold),)
                             ],
                           ),
                           SizedBox(height: 15.0,),

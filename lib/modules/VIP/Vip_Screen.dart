@@ -5,6 +5,7 @@ import 'package:clubchat/models/Vip.dart';
 import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
+import 'package:clubchat/shared/network/remote/DesignServices.dart';
 import 'package:clubchat/shared/network/remote/VipServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -1132,12 +1133,17 @@ class _VipScreenState extends State<VipScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Container(
-                    width: 80.0,
-                    height: 40.0,
-                    decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(15.0)),
-                    child: Center(child: Text('mall_purchase'.tr)),
+                  GestureDetector(
+                    onTap:(){
+                      purchaseVip(vips[index].id);
+                   },
+                    child: Container(
+                      width: 80.0,
+                      height: 40.0,
+                      decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(15.0)),
+                      child: Center(child: Text('mall_purchase'.tr)),
 
+                    ),
                   ),
                 ],
               ),
@@ -1148,6 +1154,10 @@ class _VipScreenState extends State<VipScreen> {
     ),
 
   );
+
+  purchaseVip(vip) async{
+    await DesignServices().purchaseVip(user!.id , vip);
+  }
 
 
 }
