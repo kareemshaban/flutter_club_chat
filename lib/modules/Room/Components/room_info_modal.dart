@@ -55,8 +55,8 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                       Row(
                         children: [
                           Container(
-                              width: 50.0,
-                              height: 50.0,
+                              width: 40.0,
+                              height: 40.0,
                               child: SizedBox(),
                               clipBehavior: Clip.antiAliasWithSaveLayer,
                               decoration: BoxDecoration(
@@ -77,10 +77,10 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                             children: [
                               Text(
                                 room!.name,
-                                style: TextStyle(color: Colors.white, fontSize: 16.0),
+                                style: TextStyle(color: Colors.white, fontSize: 14.0),
                               ),
                               SizedBox(
-                                height: 5.0,
+                                height: 2.0,
                               ),
                               Row(
                                 children: [
@@ -106,7 +106,7 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                                       child: Image(
                                         image: NetworkImage(
                                             ASSETSBASEURL + 'Countries/' + room!.flag),
-                                        width: 30.0,
+                                        width: 25.0,
                                       )),
                                   SizedBox(
                                     width: 5.0,
@@ -120,10 +120,10 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                                     width: 5.0,
                                   ),
                                   Container(
-                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0) ,
+                                    decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ,
                                         color: getTagColor()),
                                     padding: EdgeInsets.all(3.0),
-                                    child: Text('#' + room!.subject , style: TextStyle(fontSize: 10.0 , color: Colors.white),),
+                                    child: Text('#' + room!.subject , style: TextStyle(fontSize: 9.0 , color: Colors.white),),
                                   )
                                 ],
                               ),
@@ -145,7 +145,7 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                                 context: context,
                                 builder: (ctx) => roomSettingsBottomSheet());
 
-                        }, icon: Icon(Icons.settings , size: 35.0,) , color: MyColors.unSelectedColor, ) : SizedBox(width: 1.0,),
+                        }, icon: Icon(Icons.settings , size: 25.0,) , color: MyColors.unSelectedColor, ) : SizedBox(width: 1.0,),
 
                       ],
                     ),
@@ -162,14 +162,14 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                       decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(3.0)),
                     ),
                     SizedBox(width: 10.0,),
-                    Text("edit_profile_basic_information".tr, style: TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),)
+                    Text("edit_profile_basic_information".tr, style: TextStyle(color: Colors.white , fontSize: 16.0 , fontWeight: FontWeight.bold),)
                   ],
                 ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Row(
                   children: [
-                    Text("ID" , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                    Text("ID" , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                     Expanded(child:
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -177,9 +177,9 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(room!.tag , style: TextStyle(fontSize: 16.0 , color: Colors.white),),
+                            Text(room!.tag , style: TextStyle(fontSize: 14.0 , color: Colors.white),),
                             SizedBox(width: 5.0,),
-                            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.tag , color: Colors.white , size: 20.0,) ,)
+                            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.tag , color: Colors.white , size: 18.0,) ,)
                           ],
                         )                          ],
                     )
@@ -192,7 +192,7 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Row(
                   children: [
-                    Text("room_info_room_name".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                    Text("room_info_room_name".tr , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                     Expanded(child:
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -200,9 +200,9 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Text(room!.name , style: TextStyle(fontSize: 16.0 , color: Colors.white),),
+                            Text(room!.name , style: TextStyle(fontSize: 14.0 , color: Colors.white),),
                             SizedBox(width: 5.0,),
-                            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.signature , color: Colors.white , size: 20.0,) ,)
+                            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.signature , color: Colors.white , size: 18.0,) ,)
                           ],
                         )                          ],
                     )
@@ -215,7 +215,7 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Row(
                   children: [
-                    Text("room_info_room_admin".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                    Text("room_info_room_admin".tr , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                     Expanded(child:
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -225,13 +225,13 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                           children: [
                             Column(
                               children: [
-                                Text(room!.admin_name , style: TextStyle(fontSize: 16.0 , color: Colors.white),),
-                                Text(room!.admin_tag , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor),),
+                                Text(room!.admin_name , style: TextStyle(fontSize: 14.0 , color: Colors.white),),
+                                Text(room!.admin_tag , style: TextStyle(fontSize: 12.0 , color: MyColors.unSelectedColor),),
                               ],
                             ),
 
                             SizedBox(width: 5.0,),
-                            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.idBadge , color: Colors.white , size: 20.0,) ,)
+                            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.idBadge , color: Colors.white , size: 18.0,) ,)
                           ],
                         )                          ],
                     )
@@ -244,7 +244,7 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: Row(
                   children: [
-                    Text("room_info_room_country".tr , style: TextStyle(fontSize: 16.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
+                    Text("room_info_room_country".tr , style: TextStyle(fontSize: 14.0 , color: MyColors.unSelectedColor , fontWeight: FontWeight.bold),),
                     Expanded(child:
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -252,9 +252,9 @@ class _RoomInfoModalState extends State<RoomInfoModal> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
-                            Image(image: NetworkImage(ASSETSBASEURL + 'Countries/' + room!.flag) , width: 30.0,),
+                            Image(image: NetworkImage(ASSETSBASEURL + 'Countries/' + room!.flag) , width: 25.0,),
                             SizedBox(width: 5.0,),
-                            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.flag , color: Colors.white , size: 20.0,) ,)
+                            IconButton(onPressed: (){}, icon: Icon(FontAwesomeIcons.flag , color: Colors.white , size: 18.0,) ,)
                           ],
                         )                          ],
                     )

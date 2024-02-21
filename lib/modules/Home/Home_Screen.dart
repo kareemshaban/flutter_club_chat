@@ -19,6 +19,7 @@ import 'package:clubchat/shared/network/remote/CountryService.dart';
 import 'package:clubchat/shared/network/remote/FestivalBannerServices.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
@@ -34,8 +35,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomeScreenState extends State<HomeScreen> {
-  double _xPosition = 1.0;
-  double _yPosition = 1.0;
+
 
   //vars
   List<BannerData> banners = [] ;
@@ -47,6 +47,7 @@ class HomeScreenState extends State<HomeScreen> {
   String selectedChatRoomCategory = 'CHAT' ;
   bool loaded = false ;
   bool loading = false ;
+  var passwordController = TextEditingController();
   HomeScreenState()  {
 
   }
@@ -384,11 +385,104 @@ class HomeScreenState extends State<HomeScreen> {
 
    ChatRoom? res = await ChatRoomService().openRoomById(id);
    if(res != null){
-     ChatRoomService().roomSetter(res);
-     Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+     if(res.state == 0 || res.userId == user!.id){
+       ChatRoomService().roomSetter(res);
+       Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+     } else {
+
+       //showPassword popup
+       _displayTextInputDialog(context , res);
+     }
+
 
    }
  }
+
+  Future<void> _displayTextInputDialog(BuildContext context , ChatRoom room) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Container(
+          child: AlertDialog(
+            backgroundColor: MyColors.darkColor,
+            title: Text(
+              'room_password_label'.tr,
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              textAlign: TextAlign.center,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+
+                Container(
+                  height: 70.0,
+                  child: TextField(
+                    controller: passwordController,
+                    style: TextStyle(color: Colors.white),
+                    cursorColor: MyColors.primaryColor,
+                    maxLength: 20,
+                    keyboardType: TextInputType.visiblePassword,
+                    decoration: InputDecoration(
+                        hintText: "XXXXXXX",
+                        hintStyle: TextStyle(color: Colors.white),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: MyColors.whiteColor)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0))),
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    color: MyColors.solidDarkColor,
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: MaterialButton(
+                  child: Text(
+                    'edit_profile_cancel'.tr,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: MyColors.primaryColor,
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: MaterialButton(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: MyColors.darkColor),
+                  ),
+                  onPressed: () async {
+                    if(passwordController.text == room.password){
+                      ChatRoomService().roomSetter(room);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "room_password_wrong".tr,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.black26,
+                          textColor: Colors.orange,
+                          fontSize: 16.0
+                      );
+                    }
+
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
  ImageProvider getRoomImage(room){
    String room_img = '';
@@ -409,5 +503,8 @@ class HomeScreenState extends State<HomeScreen> {
    }
   return  NetworkImage(room_img);
  }
+
+
+
 
 }

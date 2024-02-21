@@ -10,6 +10,7 @@ import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
 import 'package:clubchat/models/HostAgency.dart';
 import 'package:clubchat/models/LevelStats.dart';
+import 'package:clubchat/models/Medal.dart';
 import 'package:clubchat/models/Tag.dart';
 import 'package:clubchat/models/UserHoppy.dart';
 import 'package:clubchat/models/Visitor.dart';
@@ -69,6 +70,12 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<Block> blocks = [];
         List<UserHoppy> hoppies = [];
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -105,6 +112,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -176,8 +184,15 @@ class AppUserServices {
         List<Friends> friends = [];
         List<Visitor> visitors = [];
         List<Block> blocks = [];
-
         List<UserHoppy> hoppies = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -212,6 +227,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -265,6 +281,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -300,6 +324,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -334,6 +359,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -370,6 +403,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -404,6 +438,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -440,6 +482,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -474,6 +517,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -510,6 +561,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -544,6 +596,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -579,6 +639,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -613,6 +674,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -648,6 +717,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -833,6 +903,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -869,6 +947,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -902,6 +981,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -938,6 +1025,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -971,6 +1059,14 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -1007,6 +1103,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;
@@ -1040,6 +1137,13 @@ class AppUserServices {
         List<Visitor> visitors = [];
         List<UserHoppy> hoppies = [];
         List<Block> blocks = [] ;
+        List<Medal> medals = [];
+        for (var j = 0; j < jsonData['medals'].length; j ++) {
+          Medal medal = Medal.fromJson(jsonData['medals'][j]);
+          medals.add(medal);
+
+        }
+
         for (var j = 0; j < jsonData['followers'].length; j ++) {
           Follower like = Follower.fromJson(jsonData['followers'][j]);
           followers.add(like);
@@ -1076,6 +1180,7 @@ class AppUserServices {
         user.followers = followers ;
         user.hoppies = hoppies ;
         user.blocks = blocks ;
+        user.medals = medals ;
         return  user;
       } else {
         return null ;

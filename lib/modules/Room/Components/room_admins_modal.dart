@@ -2,9 +2,11 @@ import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/RoomAdmin.dart';
+import 'package:clubchat/modules/Room/Components/add_admin_modal.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import '../../../models/Follower.dart';
@@ -22,6 +24,7 @@ class _RoomAdminsModalState extends State<RoomAdminsModal> {
     List<RoomAdmin>? admins = [];
     AppUser? user ;
     ChatRoom? room ;
+    bool _isLoading = false ;
 
     @override
     void initState() {
@@ -62,7 +65,15 @@ class _RoomAdminsModalState extends State<RoomAdminsModal> {
               IconButton(onPressed: (){
                 Navigator.pop(context);
               }, icon: Icon(Icons.arrow_back_ios , color: Colors.white, size: 30.0,)),
-              Expanded(child: Text('room_settings_room_admins'.tr , style: TextStyle(color: Colors.white , fontSize: 20.0), textAlign: TextAlign.center,))
+              Expanded(child: Text('room_settings_room_admins'.tr , style: TextStyle(color: Colors.white , fontSize: 20.0), textAlign: TextAlign.center,)),
+              IconButton(onPressed: (){
+                Navigator.pop(context);
+                showModalBottomSheet(
+                    isScrollControlled: true ,
+                    context: context,
+                    builder: (ctx) => addAdminsBottomSheet());
+
+              }, icon: Icon(Icons.add_circle_outline , color: Colors.white, size: 25.0,)),
             ],
           ),
           Expanded(
@@ -133,6 +144,33 @@ class _RoomAdminsModalState extends State<RoomAdminsModal> {
               ],
 
             ),
+            Expanded(child:
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: (){
+                    // uploadCoverPhoto();
+                  removeAdmin(admins![index].user_id);
+                  },
+                  style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(horizontal: 8.0) , backgroundColor: Colors.white ,
+                  ),
+                  icon: _isLoading
+                      ? Container(
+                    width: 18,
+                    height: 18,
+                    padding: const EdgeInsets.all(2.0),
+                    child: const CircularProgressIndicator(
+                      color: Colors.black54,
+                      strokeWidth: 3,
+                    ),
+                  )
+                      :  Icon(Icons.remove_circle_outline , color: Colors.red , size: 20.0,),
+                  label:  Text('remove_btn'.tr , style: TextStyle(color: Colors.red , fontSize: 15.0), ),
+                )
+              ],
+            )
+            )
 
           ]),
       Container(
@@ -146,4 +184,30 @@ class _RoomAdminsModalState extends State<RoomAdminsModal> {
   );
 
   Widget itemSperatorBuilder() => SizedBox(height: 5.0,);
+
+    Widget addAdminsBottomSheet() => AddAdminModal();
+
+    removeAdmin(user_id) async{
+      setState(() {
+        _isLoading = true ;
+      });
+      ChatRoom? res = await ChatRoomService().removeChatRoomAdmin(user_id, room!.id);
+      setState(() {
+        _isLoading = false ;
+        room = res ;
+        admins = room!.admins ;
+      });
+      ChatRoomService().roomSetter(room!);
+
+      Fluttertoast.showToast(
+          msg: 'admin_deleted'.tr,
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER,
+          timeInSecForIosWeb: 1,
+          backgroundColor: Colors.black26,
+          textColor: Colors.orange,
+          fontSize: 16.0
+      );
+    }
+
 }

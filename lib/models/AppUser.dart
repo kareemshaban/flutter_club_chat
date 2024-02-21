@@ -1,6 +1,7 @@
 import 'package:clubchat/models/Block.dart';
 import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
+import 'package:clubchat/models/Medal.dart';
 import 'package:clubchat/models/UserHoppy.dart';
 import 'package:clubchat/models/Visitor.dart';
 
@@ -50,6 +51,7 @@ class AppUser {
    final String country_name ;
    final String country_flag ;
    List<UserHoppy>? hoppies = [] ;
+   List<Medal>? medals = [] ;
    final String token ;
 
 
@@ -58,7 +60,7 @@ class AppUser {
      required this.last_login, required this.birth_date, required this.enable, required this.ipAddress,required  this.macAddress, required this.deviceId, required this.isOnline, required this.isInRoom, required this.country,
      required this.register_with , required this.gender , required this.gold , required this.diamond , required this.share_level_order , required this.share_level_points ,required this.share_level_icon ,
      required  this.karizma_level_order , required this.karizma_level_points , required this.karizma_level_icon ,required this.charging_level_order , required this.charging_level_points , required this.charging_level_icon ,
-     this.followers , this.followings , this.visitors , this.friends , this.blocks , this.hoppies , required this.cover , required this.status , required this.country_name , required this.country_flag , required this.token});
+     this.followers , this.followings , this.visitors , this.friends , this.blocks , this.hoppies , this.medals , required this.cover , required this.status , required this.country_name , required this.country_flag , required this.token});
 
    factory AppUser.fromJson(Map<String, dynamic> json) {
       return switch (json) {

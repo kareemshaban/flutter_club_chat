@@ -20,8 +20,10 @@ class MusicsModal2 extends StatefulWidget {
 
 class _MusicsModalState2 extends State<MusicsModal2> {
   bool isCheked = false ;
+  List<bool> selected = [] ;
   final FileManagerController controller = FileManagerController();
   List<File> _mp3Files = [];
+
   @override
   void initState() {
     // TODO: implement initState
@@ -63,10 +65,6 @@ class _MusicsModalState2 extends State<MusicsModal2> {
 
   }
 
-  bool _isMusicFile(String path) {
-    final musicExtensions = ['mp3','mp4', 'Irc', 'm4a', '.ogg' ,'MP3','MP4' ]; // Add more extensions as needed
-    return musicExtensions.any((ext) => path.endsWith(ext));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,73 +96,15 @@ class _MusicsModalState2 extends State<MusicsModal2> {
                   ],
                 ),
               ),
+              IconButton(
+                  onPressed: (){
+                     initlist();
+                  },
+                  icon: Icon(Icons.sync , color:  Colors.white,size: 25.0,)
+              ),
+
             ],
           ),
-          // FileManager(
-          //   controller: controller,
-          //   builder: (context, snapshot) {
-          //     final List<FileSystemEntity> entities = snapshot;
-          //
-          //     // Filter for music files using a regular expression
-          //     final musicFiles = entities.where((entity) =>
-          //     FileManager.isFile(entity) &&
-          //         _isMusicFile(entity.path)
-          //     ).toList();
-          //     print('musicFiles') ;
-          //     print(musicFiles) ;
-          //     return Expanded(
-          //       child: ListView.builder(
-          //         itemCount: musicFiles.length,
-          //         itemBuilder: (context, index) {
-          //           return Card(
-          //             child: ListTile(
-          //               leading: Icon(Icons.music_note), // Use a music file icon
-          //               title: Text(FileManager.basename(musicFiles[index])),
-          //               onTap: () {
-          //                 if (FileManager.isDirectory(musicFiles[index])) {
-          //                   controller.openDirectory(musicFiles[index]);
-          //                 } else {
-          //                   // Handle music file tap (e.g., play the file)
-          //                 }
-          //               },
-          //             ),
-          //           );
-          //         },
-          //       ),
-          //     );
-          //   },
-          // )
-          // FileManager(
-          //   controller: controller,
-          //   builder: (context, snapshot) {
-          //     final List<FileSystemEntity> entities = snapshot;
-          //     print('entities') ;
-          //     print(entities) ;
-          //     return Expanded(
-          //       child: ListView.builder(
-          //         itemCount: entities.length,
-          //         itemBuilder: (context, index) {
-          //           return Card(
-          //             child: ListTile(
-          //               leading: FileManager.isFile(entities[index])
-          //                   ? Icon(Icons.feed_outlined)
-          //                   : Icon(Icons.folder),
-          //               title: Text(FileManager.basename(entities[index])),
-          //               onTap: () {
-          //                 if (FileManager.isDirectory(entities[index])) {
-          //                   controller.openDirectory(entities[index]);
-          //                   print(entities[index]);// open directory
-          //                 } else {
-          //                   CircularProgressIndicator(color: MyColors.primaryColor,);
-          //                 }
-          //               },
-          //             ),
-          //           );
-          //         },
-          //       ),
-          //     );
-          //   },
-          // )
           FileManager(
             loadingScreen: Center(child: CircularProgressIndicator(color: MyColors.primaryColor,)),
             controller: controller,
@@ -173,6 +113,7 @@ class _MusicsModalState2 extends State<MusicsModal2> {
               List<FileSystemEntity> dirs = [] ;
                List<FileSystemEntity> allFiles = [] ; //entities.where((element) =>FileManager.isDirectory(element) ).toList();
               List<FileSystemEntity> musicFiles = [] ;
+
                dirs = entities.where((element) => FileManager.isDirectory(element) ).toList() ;
               allFiles = entities.where((element) => FileManager.isFile(element) ).toList() ;
               dirs.forEach((element) {
@@ -185,96 +126,104 @@ class _MusicsModalState2 extends State<MusicsModal2> {
 
               });
                 musicFiles = [...allFiles.where((file) => file.path.toLowerCase().endsWith('.mp3') ||file.path.toLowerCase().endsWith('.m4a')  ) ] ;
-              print('musicFiles') ;
-              print(musicFiles) ;
-              print('dirs') ;
-              print(dirs) ;
-              return Expanded(
+                 if(selected.length == 0){
+                   musicFiles.forEach((element) { selected.add(false);});
+                 }
+
+
+              return
+                Expanded(
                 child: ListView.separated(
                   itemCount: musicFiles.length,
                   itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: (){
-                        setState(() {
-                          isCheked = true ;
-                        });
-                      },
-                      child: Container(
-                        color: Colors.black.withAlpha(180),
-                        height: 80.0,
-                        padding: EdgeInsetsDirectional.only(start: 10.0),
-                        child: Row(
-                          children: [
-                            Column(
-                              children: [
-                                Container(
-                                  padding: EdgeInsetsDirectional.only(end: 10.0),
-                                  height: 50.0,
-                                  width: 80.0,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  clipBehavior: Clip.antiAlias,
-                                    child: Image(
-                                      image: AssetImage('assets/images/mp3.png'),
-                                    ),
+                    return Container(
+                      color: Colors.black.withAlpha(180),
+                      height: 80.0,
+                      padding: EdgeInsetsDirectional.only(start: 10.0),
+                      child: Row(
+                        children: [
+                          Column(
+                            children: [
+                              Container(
+                                padding: EdgeInsetsDirectional.only(end: 10.0),
+                                height: 50.0,
+                                width: 80.0,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(15.0),
                                 ),
-                              ],
-                              mainAxisAlignment: MainAxisAlignment.center,
-                            ),
-                            Column(
-                              children: [
-                                Container(
-                                  width: 200.0,
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Text(
-                                          FileManager.basename(musicFiles[index]) ,
-                                          style: TextStyle(color: Colors.white),
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                      ),
-                                    ],
+                                clipBehavior: Clip.antiAlias,
+                                  child: Image(
+                                    image: AssetImage('assets/images/mp3.png'),
                                   ),
-                                ),
-                                Row(
+                              ),
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.center,
+                          ),
+                          Column(
+                            children: [
+                              Container(
+                                width: 200.0,
+                                child: Row(
                                   children: [
-                                    Icon(CupertinoIcons.clock , size: 15.0, color: Colors.white,),
-                                    Padding(
-                                      padding: const EdgeInsetsDirectional.only(start:5.0 , end: 5.0),
-                                      child: Text('01:20',style: TextStyle(fontSize: 12.0 , color: Colors.white),),
+                                    Expanded(
+                                      child: Text(
+                                        FileManager.basename(musicFiles[index]) ,
+                                        style: TextStyle(color: Colors.white),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
                                     ),
-                                    Container(
-                                      color: Colors.white,
-                                      width: 1,
-                                      height: 20.0,
-                                    ),
-                                    Padding(
-                                      padding: EdgeInsetsDirectional.only(start: 5.0 , end: 5.0),
-                                      child: Icon(Icons.save_outlined ,size: 15.0, color: Colors.white,),
-                                    ),
-                                    Text('2024-01-18 20',style:TextStyle(fontSize: 12.0 , color: Colors.white),)
                                   ],
+                                ),
+                              ),
+                              Row(
+                                children: [
+                                  Icon(CupertinoIcons.clock , size: 15.0, color: Colors.white,),
+                                  Padding(
+                                    padding: const EdgeInsetsDirectional.only(start:5.0 , end: 5.0),
+                                    child: Text('01:20',style: TextStyle(fontSize: 12.0 , color: Colors.white),),
+                                  ),
+                                  Container(
+                                    color: Colors.white,
+                                    width: 1,
+                                    height: 20.0,
+                                  ),
+                                  Padding(
+                                    padding: EdgeInsetsDirectional.only(start: 5.0 , end: 5.0),
+                                    child: Icon(Icons.save_outlined ,size: 15.0, color: Colors.white,),
+                                  ),
+                                  Text('2024-01-18 20',style:TextStyle(fontSize: 12.0 , color: Colors.white),)
+                                ],
+                              )
+                            ],
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                          ),
+                          Expanded(
+                            child:Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Checkbox(
+                                  activeColor: MyColors.primaryColor,
+                                    value:  selected[index],
+                                    onChanged: (d){
+                                       List<bool> new_sel = [...selected];
+                                       new_sel[index] = d! ;
+                                       setState(() {
+                                         selected = new_sel ;
+                                       });
+                                       if(d){
+                                         copyFile(musicFiles , index);
+                                       }
+
+                                       print('selected');
+                                       print(selected);
+                                  }
+
                                 )
                               ],
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                            ),
-                            Expanded(
-                              child:Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Checkbox(
-                                    activeColor: MyColors.primaryColor,
-                                      value: isCheked ,
-                                      onChanged: (d){}
-                                  )
-                                ],
-                              ) ,
-                            )
-                          ],
-                        ),
+                            ) ,
+                          )
+                        ],
                       ),
                     );
                   },
@@ -293,6 +242,17 @@ class _MusicsModalState2 extends State<MusicsModal2> {
       ),
     );
   }
+}
+
+copyFile(musicFiles , index) async {
+  Directory? appDocDir = await getApplicationDocumentsDirectory();
+  String newPath = appDocDir.path + '/'+ FileManager.basename(musicFiles[index]);
+  File _image = new File(musicFiles[index].path);
+   print('newFile');
+  print(_image);
+   File newImage = await _image!.copy(newPath);
+   print('newFilenewFile');
+   print(newImage);
 }
 
 Widget MusicBottomSheet() => MusicsModal();

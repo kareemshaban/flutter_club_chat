@@ -84,6 +84,12 @@ class _RoomCloseModalState extends State<RoomCloseModal> {
   }
 
   keepRoom(){
+    ChatRoomService().savedRoomSetter(room!);
+    ChatRoomService.engine = widget.engine ;
+    Navigator.pushAndRemoveUntil(
+        context ,
+        MaterialPageRoute(builder: (context) => const TabsScreen()) ,   (route) => false
+    );
 
   }
   exitRoom() async {

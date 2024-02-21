@@ -264,7 +264,22 @@ const Map<String, String> ar = {
   "app_rank": "كاس كلوب شات",
   "room_remove_mic": "عفوا لقد أنزلك الأدمن من علي المايك",
   "music_error_permissions": "لا يمكن تحميل ملفات الموسيقي بدون إعطاء إذن الوصول الي الملفات",
-  "unmute": "تشغيل الصوت"
+  "unmute": "تشغيل الصوت",
+  "room_settings_room_subject": "نوع الغرفة",
+  "room_settings_room_img": "صورة الغرفة",
+  "room_password_label":"كلمة مرور الغرفة",
+  "room_password_wrong": "كلمة مرور غير صحيحة",
+  "show_profile": "عرض المستخدم",
+  "admin_mic_alert": "عفوا! مايك خاص بالمديرين فقط",
+  "should_be_on_mic": "عفوا يجب ان تكون مستخدم مايك !",
+  "add_admin": "أدمن",
+  "add_admin_title": "إضافة مدير للغرفة",
+  "admin_added": "تم تعيين مدير جديد",
+  "remove_btn": "حذف",
+  "admin_deleted": "تم حذف المدير",
+  "room_save_dialog_title": "إلفاء حفظ الغرفة",
+  "room_save_dialog_msg": "هل تريد إلغاء إحتقاظ الغرفة"
+
 
 
 };

@@ -1,4 +1,6 @@
+import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Medal.dart';
+import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/DesignServices.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -18,28 +20,19 @@ class _MedalsScreenState extends State<MedalsScreen> {
   @override
 
   List<Medal> medals = [] ;
+  AppUser? user ;
   bool loading = false ;
 
  @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    getMedals();
+    setState(() {
+      user = AppUserServices().userGetter();
+      medals = user!.medals! ;
+    });
   }
-  getMedals() async {
-   setState(() {
-     loading = true ;
-   });
 
-   List<Medal> res = await DesignServices().getAllMedals();
-   setState(() {
-     medals = res ;
-   });
-   setState(() {
-     loading = false ;
-   });
-
-  }
   Widget build(BuildContext context) {
     return  Scaffold(
       appBar: AppBar(

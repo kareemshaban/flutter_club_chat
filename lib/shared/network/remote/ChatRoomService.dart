@@ -1,5 +1,4 @@
-import 'dart:convert';
-
+import 'dart:io';
 import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
 import 'package:clubchat/helpers/RoomCupHelper.dart';
 import 'package:clubchat/helpers/RoomHelper.dart';
@@ -21,16 +20,31 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:path/path.dart';
+import 'package:async/async.dart';
+import 'package:agora_rtc_engine/agora_rtc_engine.dart';
+
 
 class ChatRoomService {
 
   static ChatRoom? room  ;
+  static ChatRoom? savedRoom  ;
+  static RtcEngine? engine ;
+
   static RoomBasicDataHelper? roomBasicDataHelper  ;
   roomSetter(ChatRoom u){
     room = u ;
   }
   ChatRoom? roomGetter(){
     return room ;
+  }
+
+  savedRoomSetter(ChatRoom? u){
+    savedRoom = u ;
+  }
+  ChatRoom? savedRoomGetter(){
+    return savedRoom ;
   }
 
   roomBasicDataHelperSetter(RoomBasicDataHelper u){
@@ -217,7 +231,7 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
+        int roomCup =  jsonData['roomCup'] ;
         room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
           Mic mic = Mic.fromJson(jsonData['mics'][j]);
@@ -1147,6 +1161,238 @@ class ChatRoomService {
       throw Exception('Failed to load album');
     }
 
+  }
+
+
+  Future<ChatRoom?> updateRoomCategory(id , subject) async {
+    ChatRoom room;
+    List<Mic> mics = [] ;
+    List<RoomMember> members = [] ;
+    List<RoomAdmin> admins = [] ;
+    List<RoomFollow> followers = [] ;
+    List<RoomBlock> blockers = [] ;
+    var response = await http.post(
+      Uri.parse('${BASEURL}chatRooms/updateRoomCategory'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'id': id.toString(),
+        'subject': subject.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if (jsonData['state'] == "success") {
+        room = ChatRoom.fromJson(jsonData['room']);
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
+        for (var j = 0; j < jsonData['mics'].length; j ++) {
+          Mic mic = Mic.fromJson(jsonData['mics'][j]);
+          mics.add(mic);
+        }
+        for (var j = 0; j < jsonData['members'].length; j ++) {
+          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
+          members.add(member);
+        }
+        for (var j = 0; j < jsonData['admins'].length; j ++) {
+          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
+          admins.add(admin);
+        }
+
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
+          followers.add(follow);
+        }
+        for (var j = 0; j < jsonData['blockers'].length; j ++) {
+          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
+          blockers.add(block);
+        }
+        room.mics = mics ;
+        room.blockers = blockers ;
+        room.admins = admins ;
+        room.members = members ;
+        room.followers = followers ;
+
+
+        return room;
+      } else {
+        Fluttertoast.showToast(
+            msg: 'remote_chat_msg_failed'.tr,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0
+        );
+      }
+
+    } else {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future<AppUser?> updateRoomImg(id , File? imageFile   ) async {
+
+    var stream = new http.ByteStream(DelegatingStream.typed(imageFile!.openRead()));
+    var length = await imageFile.length();
+
+    var uri = Uri.parse(BASEURL+'chatRooms/updateRoomImage');
+
+    var request = new http.MultipartRequest("POST", uri);
+    var multipartFile = new http.MultipartFile('img', stream, length,
+        filename: basename(imageFile.path));
+    //contentType: new MediaType('image', 'png'));
+
+    request.files.add(multipartFile);
+    request.fields.addAll(<String, String>{
+      'id': id.toString() ,
+    });
+    var response = await request.send();
+    print(response.statusCode);
+    response.stream.transform(utf8.decoder).listen((value) {
+      print(value);
+    });
+
+  }
+
+  Future<ChatRoom?> addChatRoomAdmin(user_id , room_id) async {
+    ChatRoom room;
+    List<Mic> mics = [] ;
+    List<RoomMember> members = [] ;
+    List<RoomAdmin> admins = [] ;
+    List<RoomFollow> followers = [] ;
+    List<RoomBlock> blockers = [] ;
+    var response = await http.post(
+      Uri.parse('${BASEURL}chatRooms/addAdmin'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'room_id': room_id.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if (jsonData['state'] == "success") {
+        room = ChatRoom.fromJson(jsonData['room']);
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
+        for (var j = 0; j < jsonData['mics'].length; j ++) {
+          Mic mic = Mic.fromJson(jsonData['mics'][j]);
+          mics.add(mic);
+        }
+        for (var j = 0; j < jsonData['members'].length; j ++) {
+          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
+          members.add(member);
+        }
+        for (var j = 0; j < jsonData['admins'].length; j ++) {
+          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
+          admins.add(admin);
+        }
+
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
+          followers.add(follow);
+        }
+        for (var j = 0; j < jsonData['blockers'].length; j ++) {
+          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
+          blockers.add(block);
+        }
+        room.mics = mics ;
+        room.blockers = blockers ;
+        room.admins = admins ;
+        room.members = members ;
+        room.followers = followers ;
+
+
+        return room;
+      } else {
+        Fluttertoast.showToast(
+            msg: 'remote_chat_msg_failed'.tr,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0
+        );
+      }
+
+    } else {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future<ChatRoom?> removeChatRoomAdmin(user_id , room_id) async {
+    ChatRoom room;
+    List<Mic> mics = [] ;
+    List<RoomMember> members = [] ;
+    List<RoomAdmin> admins = [] ;
+    List<RoomFollow> followers = [] ;
+    List<RoomBlock> blockers = [] ;
+    var response = await http.post(
+      Uri.parse('${BASEURL}chatRooms/removeAdmin'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(<String, String>{
+        'user_id': user_id.toString(),
+        'room_id': room_id.toString(),
+      }),
+    );
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if (jsonData['state'] == "success") {
+        room = ChatRoom.fromJson(jsonData['room']);
+        int roomCup = jsonData['roomCup'] ;
+        room.roomCup = roomCup.toString() ;
+        for (var j = 0; j < jsonData['mics'].length; j ++) {
+          Mic mic = Mic.fromJson(jsonData['mics'][j]);
+          mics.add(mic);
+        }
+        for (var j = 0; j < jsonData['members'].length; j ++) {
+          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
+          members.add(member);
+        }
+        for (var j = 0; j < jsonData['admins'].length; j ++) {
+          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
+          admins.add(admin);
+        }
+
+        for (var j = 0; j < jsonData['followers'].length; j ++) {
+          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
+          followers.add(follow);
+        }
+        for (var j = 0; j < jsonData['blockers'].length; j ++) {
+          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
+          blockers.add(block);
+        }
+        room.mics = mics ;
+        room.blockers = blockers ;
+        room.admins = admins ;
+        room.members = members ;
+        room.followers = followers ;
+
+
+        return room;
+      } else {
+        Fluttertoast.showToast(
+            msg: 'remote_chat_msg_failed'.tr,
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0
+        );
+      }
+
+    } else {
+      throw Exception('Failed to load album');
+    }
   }
 
 

@@ -264,7 +264,22 @@ const Map<String,String> en ={
   "app_rank": "ClubChat Rank",
   "room_remove_mic": "Sorry the admin remove you from mic !",
   "music_error_permissions": "ٍMusic Files Can not be loaded without this permission!",
-  "unmute": "Un Mute"
+  "unmute": "Un Mute",
+  "room_settings_room_subject": "Room Category",
+  "room_settings_room_img": "Room Image",
+  "room_password_label": "Room Password",
+  "room_password_wrong": "Incorrect Room Password!",
+  "show_profile": "Show Profile",
+  "admin_mic_alert": "This Mic is for Admins Only",
+  "should_be_on_mic": "Sorry! you should be on mic",
+  "add_admin": "Admin",
+  "add_admin_title": "Add Room Admin",
+  "admin_added": "New Admin Added Successfully",
+  "remove_btn": "Remove",
+  "admin_deleted": "Admin Deleted Successfully",
+  "room_save_dialog_title": "End Room Save",
+  "room_save_dialog_msg": "Do you need to end Room Keeping ?"
+
 
 
 };

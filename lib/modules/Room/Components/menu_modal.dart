@@ -8,6 +8,7 @@ import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
 import 'package:clubchat/shared/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 import 'musics_modal.dart';
@@ -45,7 +46,7 @@ class _MenuModalState extends State<MenuModal> {
           Row(
             mainAxisSize: MainAxisSize.max,
             children: [
-              Expanded(
+              user!.id == room!.userId  ?  Expanded(
                 child: GestureDetector(
                   onTap: (){
                     showModalBottomSheet(
@@ -60,15 +61,27 @@ class _MenuModalState extends State<MenuModal> {
                     ],
                   ),
                 ),
-              ),
+              ) : Container(),
               Expanded(
                 child: GestureDetector(
                   behavior: HitTestBehavior.opaque,
                   onTap: (){
-                    Navigator.pop(context);
-                    showModalBottomSheet(
-                        context: context,
-                        builder: (ctx) => MusicBottomSheet());
+                    if(room!.mics!.where((element) => element.user_id == user!.id).toList().length > 0){
+                      Navigator.pop(context);
+                      showModalBottomSheet(
+                          context: context,
+                          builder: (ctx) => MusicBottomSheet());
+                    }else {
+                      Fluttertoast.showToast(
+                          msg: 'should_be_on_mic'.tr,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.black26,
+                          textColor: Colors.orange,
+                          fontSize: 16.0);
+                    }
+
                   },
                   child: Column(
                     children: [

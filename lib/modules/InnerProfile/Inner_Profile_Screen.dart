@@ -2,6 +2,7 @@ import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Design.dart';
+import 'package:clubchat/models/Medal.dart';
 import 'package:clubchat/modules/EditProfile/Edit_Profile_Screen.dart';
 import 'package:clubchat/modules/MyGifts/My_Gifts_Screen.dart';
 import 'package:clubchat/modules/Room/Room_Screen.dart';
@@ -37,6 +38,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
   List<Design> gifts = [] ;
   String frame = "" ;
   Widget followBtn = Container();
+  var passwordController = TextEditingController();
   @override
   void initState() {
     // TODO: implement initState
@@ -129,6 +131,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                       Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.charging_level_icon}') , width: 20,),
                     ],
                   ),
+
 
 
                 ],
@@ -233,6 +236,11 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                                   const SizedBox(width: 10.0),
                                   Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.charging_level_icon}') , width: 30,),
                                 ],
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children:  user!.medals!.map((medal) =>  getMedalItem(medal)).toList()
+
                               ),
                               Text(user!.status !="" ? user!.status  : (isVisitor ? "inner_nothing".tr : "inner_nothing_update".tr)  , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
                             ],
@@ -757,8 +765,14 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
 
     ChatRoom? res = await ChatRoomService().openRoomByAdminId(user!.id);
     if(res != null){
-      ChatRoomService().roomSetter(res!);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+      if(res.state == 0){
+        ChatRoomService().roomSetter(res!);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+      } else {
+        //show password
+        _displayTextInputDialog(context , res);
+      }
+
     } else {
       print('clicked');
       Fluttertoast.showToast(
@@ -777,8 +791,14 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
   trackUser() async {
     ChatRoom? res = await ChatRoomService().trackUser(user!.id);
     if(res != null){
-      ChatRoomService().roomSetter(res!);
-      Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+      if(res.state == 0){
+        ChatRoomService().roomSetter(res);
+        Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+      } else {
+         //showpassword
+        _displayTextInputDialog(context , res);
+      }
+
     } else {
       print('clicked');
       Fluttertoast.showToast(
@@ -792,7 +812,91 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
       );
     }
   }
+  Future<void> _displayTextInputDialog(BuildContext context , ChatRoom room) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return Container(
+          child: AlertDialog(
+            backgroundColor: MyColors.darkColor,
+            title: Text(
+              'room_password_label'.tr,
+              style: TextStyle(color: Colors.white, fontSize: 20.0),
+              textAlign: TextAlign.center,
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
 
+                Container(
+                  height: 70.0,
+                  child: TextField(
+                    controller: passwordController,
+                    style: TextStyle(color: Colors.white),
+                    cursorColor: MyColors.primaryColor,
+                    maxLength: 20,
+                    keyboardType: TextInputType.visiblePassword,
+                    decoration: InputDecoration(
+                        hintText: "XXXXXXX",
+                        hintStyle: TextStyle(color: Colors.white),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0),
+                            borderSide: BorderSide(color: MyColors.whiteColor)),
+                        border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10.0))),
+                  ),
+                ),
+              ],
+            ),
+            actions: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                    color: MyColors.solidDarkColor,
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: MaterialButton(
+                  child: Text(
+                    'edit_profile_cancel'.tr,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+              Container(
+                decoration: BoxDecoration(
+                    color: MyColors.primaryColor,
+                    borderRadius: BorderRadius.circular(15.0)),
+                child: MaterialButton(
+                  child: Text(
+                    'OK',
+                    style: TextStyle(color: MyColors.darkColor),
+                  ),
+                  onPressed: () async {
+                    if(passwordController.text == room.password){
+                      ChatRoomService().roomSetter(room);
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
+                    } else {
+                      Fluttertoast.showToast(
+                          msg: "room_password_wrong".tr,
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.CENTER,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.black26,
+                          textColor: Colors.orange,
+                          fontSize: 16.0
+                      );
+                    }
+
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
 
   Widget getFollowBtn(){
     AppUser? currentUser = AppUserServices().userGetter();
@@ -801,5 +905,18 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
     } else {
       return  GestureDetector(onTap: () {unFollowUser();},  child: Image(image: AssetImage('assets/images/remove-user.png') , width: 80.0,));
     }
+  }
+
+  Widget getMedalItem(Medal medal){
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0),
+      child: Column(
+        children:[
+          Image(image: NetworkImage('${ASSETSBASEURL}Badges/${medal!.icon}') , width: 40,),
+
+        ]
+
+      ),
+    );
   }
 }

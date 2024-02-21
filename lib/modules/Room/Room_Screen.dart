@@ -108,12 +108,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           userRole = 'USER';
         });
       }
-      if (room!.img == room!.admin_img) {
-        room_img = '${ASSETSBASEURL}AppUsers/${room?.img}';
-      } else {
-        room_img = '${ASSETSBASEURL}Rooms/${room?.img}';
-      }
+
     });
+    getRoomImage();
+
     EnterRoomHelper(user!.id , room!.id);
     enterRoomListener();
     exitRoomListener();
@@ -139,6 +137,27 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       }
     });
 
+  }
+  getRoomImage(){
+    String img = '';
+    if(room!.img == room!.admin_img){
+      if(room!.admin_img != ""){
+        img = '${ASSETSBASEURL}AppUsers/${room?.img}' ;
+      } else {
+        img = '${ASSETSBASEURL}Defaults/room_default.png' ;
+      }
+
+    } else {
+      if(room?.img != ""){
+        img = '${ASSETSBASEURL}Rooms/${room?.img}' ;
+      } else {
+        img = '${ASSETSBASEURL}Defaults/room_default.png' ;
+      }
+
+    }
+    setState(() {
+      room_img =  img ;
+    });
   }
 
   enterRoomListener(){
@@ -599,8 +618,11 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   }
 
   Future<void> _dispose() async {
-    await _engine.leaveChannel();
-    await _engine.release();
+    if(ChatRoomService.savedRoom == null){
+      await _engine.leaveChannel();
+      await _engine.release();
+    }
+
   }
 
   toggleMessageInput(){
@@ -631,7 +653,9 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
 
   }
 
-
+  Future<void> _refresh()async{
+    await refreshRoom(0) ;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -676,213 +700,218 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                           children: [
                             Expanded(
                               flex: 55,
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: [
-                                    Row(
-                                      children: [
-                                        GestureDetector(
-                                          onTap: (){
-                                            showModalBottomSheet(
-                                                context: context,
-                                                builder: (ctx) => RoomInfoBottomSheet());
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: 10.0, vertical: 5.0),
-                                            decoration: BoxDecoration(
-                                              color: Colors.black26,
-                                              borderRadius: BorderRadius.circular(10.0),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Container(
-                                                    width: 50.0,
-                                                    height: 50.0,
-                                                    child: SizedBox(),
-                                                    clipBehavior: Clip.antiAliasWithSaveLayer,
-                                                    decoration: BoxDecoration(
-                                                        color: Colors.red,
-                                                        borderRadius:
-                                                            BorderRadius.circular(10.0),
-                                                        image: room!.img == ""
-                                                            ? DecorationImage(
-                                                                image: AssetImage(
-                                                                    'assets/images/user.png'),
-                                                                fit: BoxFit.cover)
-                                                            : DecorationImage(
-                                                                image: NetworkImage(room_img),
-                                                                fit: BoxFit.cover))),
-                                                SizedBox(
-                                                  width: 10.0,
-                                                ),
-                                                Column(
-                                                  children: [
-                                                    Text(
-                                                      room!.name,
-                                                      style: TextStyle(
-                                                          color: Colors.white, fontSize: 16.0),
-                                                    ),
-                                                    SizedBox(
-                                                      height: 5.0,
-                                                    ),
-                                                    Text(
-                                                      'ID:' + room!.tag,
-                                                      style: TextStyle(
-                                                          color: MyColors.unSelectedColor,
-                                                          fontSize: 11.0),
-                                                    ),
-                                                  ],
-                                                )
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              GestureDetector(
-                                                onTap:(){
-                                                  showModalBottomSheet(
-                                                      isScrollControlled: true ,
-                                                      context: context,
-                                                      builder: (ctx) => RoomCup());
-                                                 },
-
-                                                child: Container(
-                                                  padding: EdgeInsets.all(5.0),
-                                                  decoration: BoxDecoration(
-                                                      color: Colors.black26,
-                                                      borderRadius:
-                                                          BorderRadius.circular(10.0)),
-                                                  child: Row(
+                              child: RefreshIndicator(
+                                onRefresh: _refresh,
+                                color: MyColors.primaryColor,
+                                child: SingleChildScrollView(
+                                  physics: AlwaysScrollableScrollPhysics(),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          GestureDetector(
+                                            onTap: (){
+                                              showModalBottomSheet(
+                                                  context: context,
+                                                  builder: (ctx) => RoomInfoBottomSheet());
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: 10.0, vertical: 5.0),
+                                              decoration: BoxDecoration(
+                                                color: Colors.black26,
+                                                borderRadius: BorderRadius.circular(10.0),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Container(
+                                                      width: 50.0,
+                                                      height: 50.0,
+                                                      child: SizedBox(),
+                                                      clipBehavior: Clip.antiAliasWithSaveLayer,
+                                                      decoration: BoxDecoration(
+                                                          color: Colors.red,
+                                                          borderRadius:
+                                                              BorderRadius.circular(10.0),
+                                                          image: room!.img == ""
+                                                              ? DecorationImage(
+                                                                  image: AssetImage(
+                                                                      'assets/images/user.png'),
+                                                                  fit: BoxFit.cover)
+                                                              : DecorationImage(
+                                                                  image: NetworkImage(room_img),
+                                                                  fit: BoxFit.cover))),
+                                                  SizedBox(
+                                                    width: 10.0,
+                                                  ),
+                                                  Column(
                                                     children: [
-                                                      Image(
-                                                        image: AssetImage(
-                                                            'assets/images/chatroom_rank_ic.png'),
-                                                        height: 18.0,
-                                                        width: 18.0,
+                                                      Text(
+                                                        room!.name,
+                                                        style: TextStyle(
+                                                            color: Colors.white, fontSize: 16.0),
                                                       ),
                                                       SizedBox(
-                                                        width: 5.0,
+                                                        height: 5.0,
                                                       ),
                                                       Text(
-                                                        double.parse(room!.roomCup.toString()).floor().toString()  ,
+                                                        'ID:' + room!.tag,
                                                         style: TextStyle(
-                                                            color: Colors.white,
-                                                            fontSize: 13.0),
-                                                      )
+                                                            color: MyColors.unSelectedColor,
+                                                            fontSize: 11.0),
+                                                      ),
                                                     ],
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Row(
+                                              mainAxisAlignment: MainAxisAlignment.end,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap:(){
+                                                    showModalBottomSheet(
+                                                        isScrollControlled: true ,
+                                                        context: context,
+                                                        builder: (ctx) => RoomCup());
+                                                   },
+
+                                                  child: Container(
+                                                    padding: EdgeInsets.all(5.0),
+                                                    decoration: BoxDecoration(
+                                                        color: Colors.black26,
+                                                        borderRadius:
+                                                            BorderRadius.circular(10.0)),
+                                                    child: Row(
+                                                      children: [
+                                                        Image(
+                                                          image: AssetImage(
+                                                              'assets/images/chatroom_rank_ic.png'),
+                                                          height: 18.0,
+                                                          width: 18.0,
+                                                        ),
+                                                        SizedBox(
+                                                          width: 5.0,
+                                                        ),
+                                                        Text(
+                                                          double.parse(room!.roomCup.toString()).floor().toString()  ,
+                                                          style: TextStyle(
+                                                              color: Colors.white,
+                                                              fontSize: 13.0),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ),
                                                 ),
-                                              ),
-                                              SizedBox(
-                                                width: 7.0,
-                                              ),
-                                              GestureDetector(
-                                                  child: Container(
-                                                      margin: EdgeInsets.symmetric(
-                                                          horizontal: 10.0),
-                                                      child: Icon(
-                                                        FontAwesomeIcons.shareFromSquare,
-                                                        color: Colors.white,
-                                                        size: 20.0,
-                                                      ))),
-                                              GestureDetector(
-                                                onTap: (){
-                                                  showModalBottomSheet(
-                                                      isScrollControlled: true ,
-                                                      context: context,
-                                                      builder: (ctx) => roomCloseModal());
-                                                                                },
-                                                  child: Container(
-                                                    margin:
-                                                    EdgeInsets.symmetric(horizontal: 10.0),
-                                                     child: Icon(
-                                                  FontAwesomeIcons.powerOff,
-                                                  color: Colors.white,
-                                                  size: 20.0,
-                                                ),
-                                              )),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Row(
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        GestureDetector(
-                                          onTap: () async{
-                                            AppUser? res =  await AppUserServices().getUser(room!.userId);
-                                            showModalBottomSheet(
-
-                                                context: context,
-                                                builder: (ctx) => ProfileBottomSheet(res));
-                                          },
-                                          child: Stack(
-                                            alignment: Alignment.center,
-                                            children: [
-                                              CircleAvatar(
-                                                  radius: 15.0,
-                                                  backgroundImage: getUserAvatar()),
-                                              Image(
-                                                image: AssetImage(
-                                                    'assets/images/room_user_small_border.png'),
-                                                width: 50,
-                                                height: 50,
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        GestureDetector(
-                                          onTap: (){
-                                            showModalBottomSheet(
-                                                isScrollControlled: true ,
-                                                context: context,
-                                                builder: (ctx) => roomMembersModal());
-                                          },
-                                          child: Container(
-                                            padding: EdgeInsets.all(5.0),
-                                            decoration: BoxDecoration(
-                                                color: Colors.black26,
-                                                borderRadius: BorderRadius.circular(10.0)),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.people_alt,
-                                                  color: MyColors.primaryColor,
-                                                  size: 20.0,
-                                                ),
                                                 SizedBox(
-                                                  width: 5.0,
+                                                  width: 7.0,
                                                 ),
-                                                Text(
-                                                  room!.members!.length.toString(),
-                                                  style: TextStyle(
-                                                      color: MyColors.primaryColor,
-                                                      fontSize: 13.0),
+                                                GestureDetector(
+                                                    child: Container(
+                                                        margin: EdgeInsets.symmetric(
+                                                            horizontal: 10.0),
+                                                        child: Icon(
+                                                          FontAwesomeIcons.shareFromSquare,
+                                                          color: Colors.white,
+                                                          size: 20.0,
+                                                        ))),
+                                                GestureDetector(
+                                                  onTap: (){
+                                                    showModalBottomSheet(
+                                                        isScrollControlled: true ,
+                                                        context: context,
+                                                        builder: (ctx) => roomCloseModal());
+                                                                                  },
+                                                    child: Container(
+                                                      margin:
+                                                      EdgeInsets.symmetric(horizontal: 10.0),
+                                                       child: Icon(
+                                                    FontAwesomeIcons.powerOff,
+                                                    color: Colors.white,
+                                                    size: 20.0,
+                                                  ),
+                                                )),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: () async{
+                                              AppUser? res =  await AppUserServices().getUser(room!.userId);
+                                              showModalBottomSheet(
+
+                                                  context: context,
+                                                  builder: (ctx) => ProfileBottomSheet(res));
+                                            },
+                                            child: Stack(
+                                              alignment: Alignment.center,
+                                              children: [
+                                                CircleAvatar(
+                                                    radius: 15.0,
+                                                    backgroundImage: getUserAvatar()),
+                                                Image(
+                                                  image: AssetImage(
+                                                      'assets/images/room_user_small_border.png'),
+                                                  width: 50,
+                                                  height: 50,
                                                 )
                                               ],
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    SizedBox(
-                                      height: 5.0,
-                                    ),
-                                    GridView.count(
-                                      shrinkWrap: true,
-                                      crossAxisCount: 4,
-                                      children:
-                                          room!.mics!.map((mic) => micListItem(mic)).toList(),
-                                      mainAxisSpacing: 0.0,
-                                    ),
+                                          GestureDetector(
+                                            onTap: (){
+                                              showModalBottomSheet(
+                                                  isScrollControlled: true ,
+                                                  context: context,
+                                                  builder: (ctx) => roomMembersModal());
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.all(5.0),
+                                              decoration: BoxDecoration(
+                                                  color: Colors.black26,
+                                                  borderRadius: BorderRadius.circular(10.0)),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.people_alt,
+                                                    color: MyColors.primaryColor,
+                                                    size: 20.0,
+                                                  ),
+                                                  SizedBox(
+                                                    width: 5.0,
+                                                  ),
+                                                  Text(
+                                                    room!.members!.length.toString(),
+                                                    style: TextStyle(
+                                                        color: MyColors.primaryColor,
+                                                        fontSize: 13.0),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        height: 5.0,
+                                      ),
+                                      GridView.count(
+                                        shrinkWrap: true,
+                                        crossAxisCount: 4,
+                                        children:
+                                            room!.mics!.map((mic) => micListItem(mic)).toList(),
+                                        mainAxisSpacing: 0.0,
+                                      ),
 
 
-                                  ],
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -1142,10 +1171,11 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   }
   Widget ProfileBottomSheet( user ) => SmallProfileModal(visitor: user);
   ImageProvider getUserAvatar() {
-    if (room_img == '') {
+
+    if (room!.admin_img == '') {
       return AssetImage('assets/images/user.png');
     } else {
-      return NetworkImage(room_img);
+      return NetworkImage('${ASSETSBASEURL}AppUsers/${room?.admin_img}');
     }
   }
   Widget micListItem(mic) => StreamBuilder<Object>(
@@ -1204,61 +1234,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       
                 color: MyColors.darkColor,
                 icon: Container(),
-                onSelected: (int result) async{
-                  if(result == 1){
-                     //use_mic
-                   await MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).useMic();
-                   await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
-                   setState(() {
-                     _localUserMute = false ;
-                   });
-                  }
-                  else if(result == 2){
-                    //lock_mic
-                    MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).lockMic();
-                  }
-                  else if(result == 3){
-                    //lock_all_mics
-                    MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).lockMic();
-                  }
-                  else if(result == 4){
-                     //unlock_mic
-                    MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).unlockMic();
-                  }
-                  else if(result == 5){
-                    //unlock_all_mic
-                    MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).unlockMic();
-                  }
-                  else if(result == 6){
-                    //remove_from_mic
-                    MicHelper(user_id:  mic!.user_id , room_id:  room!.id , mic: mic.order).removeFromMic(user!.id);
-
-                  }
-                  else if(result == 7){
-                    //un_use_mic
-                    MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).leaveMic();
-                    await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
-                    setState(() {
-                      _localUserMute = true ;
-                    });
-      
-                  }
-                  else if(result == 8){
-                    //mute
-                    if(_localUserMute){
-                      await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
-                      setState(() {
-                        _localUserMute = false ;
-                      });
-                    } else {
-                      await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
-                      setState(() {
-                        _localUserMute = true ;
-                      });
-                    }
-
-
-                  }
+                onSelected: (int result) {
+                  micActions(result , mic);
                 },
                 itemBuilder: (BuildContext context) =>  AdminMicListItems(mic)
               ),
@@ -1268,6 +1245,73 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       );
     }
   );
+
+
+  micActions(result , mic) async {
+    if(result == 1){
+      //use_mic
+      await MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).useMic();
+      await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+      setState(() {
+        _localUserMute = false ;
+      });
+    }
+    else if(result == 2){
+      //lock_mic
+      MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).lockMic();
+    }
+    else if(result == 3){
+      //lock_all_mics
+      MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).lockMic();
+    }
+    else if(result == 4){
+      //unlock_mic
+      MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).unlockMic();
+    }
+    else if(result == 5){
+      //unlock_all_mic
+      MicHelper( user_id:  user!.id , room_id:  room!.id , mic: 0).unlockMic();
+    }
+    else if(result == 6){
+      //remove_from_mic
+      MicHelper(user_id:  mic!.user_id , room_id:  room!.id , mic: mic.order).removeFromMic(user!.id);
+
+    }
+    else if(result == 7){
+      //un_use_mic
+      MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).leaveMic();
+      await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+      setState(() {
+        _localUserMute = true ;
+      });
+
+    }
+    else if(result == 8){
+      //mute
+      if(_localUserMute){
+        await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+        setState(() {
+          _localUserMute = false ;
+        });
+      } else {
+        await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+        setState(() {
+          _localUserMute = true ;
+        });
+      }
+
+    } else if(result == 9){
+      //showprofile
+
+      AppUser? res =  await AppUserServices().getUser(mic!.user_id);
+      showModalBottomSheet(
+
+          context: context,
+          builder: (ctx) => ProfileBottomSheet(res));
+
+    }
+  }
+
   ImageProvider getMicUserImg(mic) {
     //if (mic!.mic_user_img == null) {
       if(mic.isClosed == 0)
@@ -1331,6 +1375,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                 value: 6,
                 child: Text('remove_from_mic'.tr , style: TextStyle(color: Colors.white),),
               ),
+              PopupMenuItem<int>(
+                value: 9,
+                child: Text('show_user'.tr , style: TextStyle(color: Colors.white),),
+              ),
 
 
             ];
@@ -1363,7 +1411,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
             ];
           } else {
             Fluttertoast.showToast(
-                msg: 'room_close_mic'.tr,
+                msg: 'admin_mic_alert'.tr,
                 toastLength: Toast.LENGTH_SHORT,
                 gravity: ToastGravity.CENTER,
                 timeInSecForIosWeb: 1,
@@ -1385,16 +1433,31 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           return [];
         }
       } else {
-        // open small profile
-        return
-          [
-            PopupMenuItem<int>(
-              value: 9,
-              child: Text('show_user'.tr , style: TextStyle(color: Colors.white),),
-            ),
+        if(mic.user_id != user!.id){
+          return
+            [
+              PopupMenuItem<int>(
+                value: 9,
+                child: Text('show_user'.tr , style: TextStyle(color: Colors.white),),
+              ),
 
 
-          ];
+            ];
+        } else {
+          return
+            [
+              PopupMenuItem<int>(
+                value: 7,
+                child: Text('un_use_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
+              PopupMenuItem<int>(
+                value: 8,
+                child: _localUserMute ? Text('unmute'.tr , style: TextStyle(color: Colors.white),) :  Text('mute'.tr , style: TextStyle(color: Colors.white),),
+              ),
+
+            ];
+        }
+
       }
     }
 
