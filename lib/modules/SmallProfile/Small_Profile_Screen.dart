@@ -1,4 +1,6 @@
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
+import 'package:clubchat/helpers/ExitRoomHelper.dart';
+import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/modules/InnerProfile/Inner_Profile_Screen.dart';
@@ -271,6 +273,7 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
 
     ChatRoom? res = await ChatRoomService().openRoomByAdminId(user!.id);
     if(res != null){
+      await checkForSavedRoom(res);
       if(res.state == 0 || res.userId == currentUser!.id){
         ChatRoomService().roomSetter(res);
         Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
@@ -291,6 +294,24 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
       );
     }
 
+
+  }
+
+  checkForSavedRoom(ChatRoom room) async {
+    ChatRoom? savedRoom = ChatRoomService().savedRoomGetter();
+    if(savedRoom != null){
+      if(savedRoom.id == room.id){
+
+      } else {
+        // close the savedroom
+        ChatRoomService().savedRoomSetter(null);
+        await ChatRoomService.engine!.leaveChannel();
+        await ChatRoomService.engine!.release();
+        MicHelper( user_id:  user!.id , room_id:  savedRoom!.id , mic: 0).leaveMic();
+        ExitRoomHelper(user!.id , savedRoom.id);
+
+      }
+    }
 
   }
 
@@ -431,6 +452,7 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
   trackUser() async {
     ChatRoom? res = await ChatRoomService().trackUser(user!.id);
     if(res != null){
+      await checkForSavedRoom(res);
       if(res.state == 0 || res.userId == currentUser!.id){
         ChatRoomService().roomSetter(res);
         Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));

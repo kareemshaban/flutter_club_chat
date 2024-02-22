@@ -1,4 +1,6 @@
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
+import 'package:clubchat/helpers/ExitRoomHelper.dart';
+import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Design.dart';
@@ -255,7 +257,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                               CircleAvatar(
                                 backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
                                 backgroundImage: user?.img != "" ?  NetworkImage(getUserImage()!) : null,
-                                radius: 40,
+                                radius: 35,
                                 child: user?.img== "" ?
                                 Text(user!.name.toUpperCase().substring(0 , 1) +
                                     (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
@@ -765,6 +767,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
 
     ChatRoom? res = await ChatRoomService().openRoomByAdminId(user!.id);
     if(res != null){
+      await checkForSavedRoom(res);
       if(res.state == 0){
         ChatRoomService().roomSetter(res!);
         Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
@@ -791,6 +794,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
   trackUser() async {
     ChatRoom? res = await ChatRoomService().trackUser(user!.id);
     if(res != null){
+      await checkForSavedRoom(res);
       if(res.state == 0){
         ChatRoomService().roomSetter(res);
         Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
@@ -812,6 +816,27 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
       );
     }
   }
+
+
+  checkForSavedRoom(ChatRoom room) async {
+    ChatRoom? savedRoom = ChatRoomService().savedRoomGetter();
+    if(savedRoom != null){
+      if(savedRoom.id == room.id){
+
+      } else {
+        // close the savedroom
+        ChatRoomService().savedRoomSetter(null);
+        await ChatRoomService.engine!.leaveChannel();
+        await ChatRoomService.engine!.release();
+        MicHelper( user_id:  user!.id , room_id:  savedRoom!.id , mic: 0).leaveMic();
+        ExitRoomHelper(user!.id , savedRoom.id);
+
+      }
+    }
+
+  }
+
+
   Future<void> _displayTextInputDialog(BuildContext context , ChatRoom room) async {
     return showDialog(
       context: context,

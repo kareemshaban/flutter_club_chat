@@ -298,7 +298,7 @@ class _MallScreenState extends State<MallScreen>  with TickerProviderStateMixin 
                         CircleAvatar(
                           backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
                           backgroundImage: user?.img != "" ? (user!.img.startsWith('https') ? NetworkImage(user!.img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${user?.img}'))  :    null,
-                          radius: 80.0,
+                          radius: 65.0,
                           child: user?.img== "" ?
                           Text(user!.name.toUpperCase().substring(0 , 1) +
                               (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),

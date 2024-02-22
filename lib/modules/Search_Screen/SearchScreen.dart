@@ -1,3 +1,5 @@
+import 'package:clubchat/helpers/ExitRoomHelper.dart';
+import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/modules/InnerProfile/Inner_Profile_Screen.dart';
@@ -277,6 +279,7 @@ class SearchScreenState extends State<SearchScreen> {
 
     ChatRoom? res = await ChatRoomService().openRoomById(id);
     if(res != null){
+      await checkForSavedRoom(res);
       if(res.state == 0 || res.userId == user!.id){
         ChatRoomService().roomSetter(res);
         Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
@@ -286,6 +289,24 @@ class SearchScreenState extends State<SearchScreen> {
 
 
     }
+  }
+
+  checkForSavedRoom(ChatRoom room) async {
+    ChatRoom? savedRoom = ChatRoomService().savedRoomGetter();
+    if(savedRoom != null){
+      if(savedRoom.id == room.id){
+
+      } else {
+        // close the savedroom
+        ChatRoomService().savedRoomSetter(null);
+        await ChatRoomService.engine!.leaveChannel();
+        await ChatRoomService.engine!.release();
+        MicHelper( user_id:  user!.id , room_id:  savedRoom!.id , mic: 0).leaveMic();
+        ExitRoomHelper(user!.id , savedRoom.id);
+
+      }
+    }
+
   }
 
   Future<void> _displayTextInputDialog(BuildContext context , ChatRoom room) async {

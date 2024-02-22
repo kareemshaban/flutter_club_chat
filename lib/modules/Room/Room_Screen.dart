@@ -8,6 +8,7 @@ import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Category.dart' as Cat;
+import 'package:clubchat/models/Chat.dart';
 import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/ChatRoomMessage.dart';
 import 'package:clubchat/models/Design.dart';
@@ -122,7 +123,17 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     micEmossionListener();
     giftListener();
     micRemoveListener();
-    initAgora();
+    if(ChatRoomService.savedRoom == null){
+      initAgora();
+
+    } else {
+      ChatRoomService().savedRoomSetter(null);
+      setState(() {
+        _localUserJoined = true;
+        _engine = ChatRoomService.engine! ;
+      });
+    }
+
     messagesListener();
     getRoomBasicData();
     focusNode.addListener(() {
@@ -481,6 +492,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       ChatRoomService().roomSetter(room!);
 
     });
+    getRoomImage();
   }
    userJoinRoomWelcome(joiner_id) async{
      RoomMember joiner = room!.members!.where((element) =>  element.mic_user_tag == joiner_id.toString()).toList()[0] ;
@@ -593,6 +605,18 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
             print('onAudioVolumeIndication' );
             print(speakers);
           },
+        onAudioMixingFinished: (){
+          print('onAudioMixingFinished' );
+        },
+        onAudioMixingStateChanged: ( AudioMixingStateType state,
+            AudioMixingReasonType reason){
+           print( 'audioMixingStateChanged state:${state.toString()}, reason: ${reason.toString()}}');
+        },
+        onAudioMixingPositionChanged: (pos){
+          print('onAudioMixingPositionChanged' );
+
+        }
+
       ),
     );
 
@@ -608,7 +632,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       options: const ChannelMediaOptions( clientRoleType: ClientRoleType.clientRoleAudience),
     );
 
-
+   ChatRoomService.engine = _engine ;
   }
   @override
   void dispose() {
@@ -1204,7 +1228,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                               ) :     CircleAvatar(
                                       backgroundColor:  mic.mic_user_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
                                       backgroundImage:  mic!.mic_user_img != "" ? ( mic!.mic_user_img.startsWith('https') ? NetworkImage( mic!.mic_user_img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${ mic!.mic_user_img}'))  :    null,
-                                      radius: 25,
+                                      radius: 22,
                                       child:  mic!.mic_user_img== "" ?
                                       Text(mic!.mic_user_name.toUpperCase().substring(0 , 1) +
                                       (mic!.mic_user_name.contains(" ") ? mic!.mic_user_name.substring(mic!.mic_user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),

@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:clubchat/helpers/ExitRoomHelper.dart';
+import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/Banner.dart';
@@ -374,7 +376,8 @@ class HomeScreenState extends State<HomeScreen> {
  }
  void openMyRoom() async{
    ChatRoom? room =  await ChatRoomService().openMyRoom(user!.id);
-    ChatRoomService().roomSetter(room!);
+   await checkForSavedRoom(room!);
+    ChatRoomService().roomSetter(room);
    Navigator.push(context, MaterialPageRoute(builder: (ctx) => const RoomScreen()));
  }
   void openSearch(){
@@ -385,6 +388,7 @@ class HomeScreenState extends State<HomeScreen> {
 
    ChatRoom? res = await ChatRoomService().openRoomById(id);
    if(res != null){
+     await checkForSavedRoom(res);
      if(res.state == 0 || res.userId == user!.id){
        ChatRoomService().roomSetter(res);
        Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
@@ -504,6 +508,23 @@ class HomeScreenState extends State<HomeScreen> {
   return  NetworkImage(room_img);
  }
 
+ checkForSavedRoom(ChatRoom room) async {
+   ChatRoom? savedRoom = ChatRoomService().savedRoomGetter();
+   if(savedRoom != null){
+     if(savedRoom.id == room.id){
+
+     } else {
+       // close the savedroom
+       ChatRoomService().savedRoomSetter(null);
+       await ChatRoomService.engine!.leaveChannel();
+       await ChatRoomService.engine!.release();
+       MicHelper( user_id:  user!.id , room_id:  savedRoom!.id , mic: 0).leaveMic();
+       ExitRoomHelper(user!.id , savedRoom.id);
+
+     }
+   }
+
+ }
 
 
 

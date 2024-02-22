@@ -69,7 +69,7 @@ class _MusicsModalState2 extends State<MusicsModal2> {
   @override
   Widget build(BuildContext context) {
     return  Container(
-      height: MediaQuery.of(context).size.height / 2 ,
+      height: MediaQuery.of(context).size.height * .7 ,
       decoration: BoxDecoration(color: Colors.black.withAlpha(180),
           borderRadius: BorderRadius.only(topRight: Radius.circular(20.0) , topLeft: Radius.circular(15.0)) ,
           border: Border(top: BorderSide(width: 3.0, color: MyColors.primaryColor),

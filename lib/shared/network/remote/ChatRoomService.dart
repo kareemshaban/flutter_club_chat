@@ -167,6 +167,8 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
+        print('roomCup');
+        print(jsonData['roomCup']);
         int roomCup = jsonData['roomCup'] ;
         room.roomCup = roomCup.toString() ;
         for (var j = 0; j < jsonData['mics'].length; j ++) {
@@ -1095,10 +1097,12 @@ class ChatRoomService {
         'count': count.toString(),
       }),
     );
+    print('sengift');
+
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
-
-       if(jsonData['message'] == 'success'){
+      print(jsonData['message'] );
+         if(jsonData['message'] == 'success'){
          return true ;
        } else {
          Fluttertoast.showToast(

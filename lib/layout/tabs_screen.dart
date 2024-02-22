@@ -6,6 +6,7 @@ import 'package:clubchat/modules/Chats/Chats_Screen.dart';
 import 'package:clubchat/modules/Home/Home_Screen.dart';
 import 'package:clubchat/modules/Moments/Moments_Screen.dart';
 import 'package:clubchat/modules/Profile/Profile_Screen.dart';
+import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/ChatRoomService.dart';
@@ -117,15 +118,29 @@ class TabsScreenState extends State<TabsScreen> {
               }
 
             },
-            child: Container(
-              width: 90.0,
-              height: 90.0,
-              decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(15.0) ,
-                  image: DecorationImage(image: getRoomImage(savedRoom), fit: BoxFit.cover,
-                      colorFilter:  ColorFilter.mode(Colors.grey.withOpacity(.9), BlendMode.dstATop)
-                  ),
+            child: GestureDetector(
+              onTap: (){
+                ChatRoomService().roomSetter(savedRoom!);
+
+                setState(() {
+                  showDelete = false ;
+                  savedRoom = null ;
+
+                });
+                Navigator.push(context, MaterialPageRoute(builder: (context) => RoomScreen(),));
 
 
+              },
+              child: Container(
+                width: 90.0,
+                height: 90.0,
+                decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(15.0) ,
+                    image: DecorationImage(image: getRoomImage(savedRoom), fit: BoxFit.cover,
+                        colorFilter:  ColorFilter.mode(Colors.grey.withOpacity(.9), BlendMode.dstATop)
+                    ),
+
+
+                ),
               ),
             ),
           ),

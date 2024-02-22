@@ -1,4 +1,6 @@
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
+import 'package:clubchat/helpers/ExitRoomHelper.dart';
+import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChargingOperation.dart';
 import 'package:clubchat/models/ChatRoom.dart';
@@ -109,9 +111,28 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   void openMyRoom() async{
     ChatRoom? room =  await ChatRoomService().openMyRoom(user!.id);
+    await checkForSavedRoom(room!);
     ChatRoomService().roomSetter(room!);
     print(room);
     Navigator.push(context, MaterialPageRoute(builder: (ctx) => const RoomScreen()));
+  }
+
+  checkForSavedRoom(ChatRoom room) async {
+    ChatRoom? savedRoom = ChatRoomService().savedRoomGetter();
+    if(savedRoom != null){
+      if(savedRoom.id == room.id){
+
+      } else {
+        // close the savedroom
+        ChatRoomService().savedRoomSetter(null);
+        await ChatRoomService.engine!.leaveChannel();
+        await ChatRoomService.engine!.release();
+        MicHelper( user_id:  user!.id , room_id:  savedRoom!.id , mic: 0).leaveMic();
+        ExitRoomHelper(user!.id , savedRoom.id);
+
+      }
+    }
+
   }
 
   @override
