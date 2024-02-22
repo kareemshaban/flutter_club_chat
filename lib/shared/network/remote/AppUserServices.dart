@@ -10,9 +10,11 @@ import 'package:clubchat/models/Follower.dart';
 import 'package:clubchat/models/Friends.dart';
 import 'package:clubchat/models/HostAgency.dart';
 import 'package:clubchat/models/LevelStats.dart';
+import 'package:clubchat/models/Mall.dart';
 import 'package:clubchat/models/Medal.dart';
 import 'package:clubchat/models/Tag.dart';
 import 'package:clubchat/models/UserHoppy.dart';
+import 'package:clubchat/models/Vip.dart';
 import 'package:clubchat/models/Visitor.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -63,57 +65,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<Block> blocks = [];
-        List<UserHoppy> hoppies = [];
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -172,63 +124,82 @@ class AppUserServices {
     }
 
   }
+
+  AppUser mapUserData(jsonData){
+    AppUser user = AppUser.fromJson(jsonData['user']) ;
+    List<Follower> followers = [];
+    List<Follower> followings = [];
+    List<Friends> friends = [];
+    List<Visitor> visitors = [];
+    List<Block> blocks = [];
+    List<UserHoppy> hoppies = [] ;
+    List<Vip> vips = [] ;
+    List<Mall> designs = [] ;
+
+    List<Medal> medals = [];
+    for (var j = 0; j < jsonData['medals'].length; j ++) {
+      Medal medal = Medal.fromJson(jsonData['medals'][j]);
+      medals.add(medal);
+
+    }
+
+    for (var j = 0; j < jsonData['followers'].length; j ++) {
+      Follower like = Follower.fromJson(jsonData['followers'][j]);
+      followers.add(like);
+
+    }
+    for (var j = 0; j < jsonData['followings'].length; j ++) {
+      Follower like = Follower.fromJson(jsonData['followings'][j]);
+      followings.add(like);
+
+    }
+    for (var j = 0; j < jsonData['friends'].length; j ++) {
+      Friends like = Friends.fromJson(jsonData['friends'][j]);
+      friends.add(like);
+
+    }
+    for (var j = 0; j < jsonData['visitors'].length; j ++) {
+      Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
+      visitors.add(like);
+    }
+    for (var j = 0; j < jsonData['blocks'].length; j ++) {
+      Block like = Block.fromJson(jsonData['blocks'][j]);
+      blocks.add(like);
+
+    }
+    for (var j = 0; j < jsonData['tags'].length; j ++) {
+      UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
+      hoppies.add(hoppy);
+    }
+
+    for( var i = 0 ; i < jsonData['vips'].length ; i ++ ){
+      Vip vip = Vip.fromJson(jsonData['vips'][i]);
+      designs = [] ;
+      for( var j = 0 ; j < jsonData['vips'][i]['designs'].length ; j ++ ){
+        Mall design =  Mall.fromJson(jsonData['vips'][i]['designs'][i])  ;
+        designs.add(design);
+      }
+      vip.designs = designs ;
+      vips.add(vip);
+    }
+
+    user.friends = friends ;
+    user.visitors = visitors ;
+    user.followings = followings ;
+    user.followers = followers ;
+    user.hoppies = hoppies ;
+    user.blocks = blocks ;
+    user.medals = medals ;
+    user.vips = vips ;
+    return  user;
+  }
   Future<AppUser?> getUser(id) async {
     final response = await http.get(Uri.parse('${BASEURL}Account/GetUser/${id}'));
     print(response.body);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<Block> blocks = [];
-        List<UserHoppy> hoppies = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-        }
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+       return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -274,58 +245,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -352,59 +272,7 @@ class AppUserServices {
         if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -431,59 +299,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -510,59 +326,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -589,58 +353,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -667,58 +380,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -896,59 +558,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -974,59 +584,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -1052,59 +610,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }
@@ -1130,58 +636,7 @@ class AppUserServices {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if(jsonData['state'] == "success"){
-        AppUser user = AppUser.fromJson(jsonData['user']) ;
-        List<Follower> followers = [];
-        List<Follower> followings = [];
-        List<Friends> friends = [];
-        List<Visitor> visitors = [];
-        List<UserHoppy> hoppies = [];
-        List<Block> blocks = [] ;
-        List<Medal> medals = [];
-        for (var j = 0; j < jsonData['medals'].length; j ++) {
-          Medal medal = Medal.fromJson(jsonData['medals'][j]);
-          medals.add(medal);
-
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followers'][j]);
-          followers.add(like);
-
-        }
-        for (var j = 0; j < jsonData['followings'].length; j ++) {
-          Follower like = Follower.fromJson(jsonData['followings'][j]);
-          followings.add(like);
-
-        }
-        for (var j = 0; j < jsonData['friends'].length; j ++) {
-          Friends like = Friends.fromJson(jsonData['friends'][j]);
-          friends.add(like);
-
-        }
-        for (var j = 0; j < jsonData['visitors'].length; j ++) {
-          Visitor like = Visitor.fromJson(jsonData['visitors'][j]);
-          visitors.add(like);
-
-        }
-
-        for (var j = 0; j < jsonData['blocks'].length; j ++) {
-          Block like = Block.fromJson(jsonData['blocks'][j]);
-          blocks.add(like);
-
-        }
-        for (var j = 0; j < jsonData['tags'].length; j ++) {
-          UserHoppy hoppy = UserHoppy.fromJson(jsonData['tags'][j]);
-          hoppies.add(hoppy);
-        }
-        user.friends = friends ;
-        user.visitors = visitors ;
-        user.followings = followings ;
-        user.followers = followers ;
-        user.hoppies = hoppies ;
-        user.blocks = blocks ;
-        user.medals = medals ;
-        return  user;
+        return mapUserData(jsonData);
       } else {
         return null ;
       }

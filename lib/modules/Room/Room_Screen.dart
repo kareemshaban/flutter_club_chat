@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:clubchat/helpers/ChatRoomMessagesHelper.dart';
 import 'package:clubchat/helpers/DesigGiftHelper.dart';
 import 'package:clubchat/helpers/EnterRoomHelper.dart';
+import 'package:clubchat/helpers/ExitRoomHelper.dart';
 import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/helpers/RoomBasicDataHelper.dart';
 import 'package:clubchat/layout/tabs_screen.dart';
@@ -261,7 +262,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       }
     });
   }
-
   themesListener(){
     CollectionReference reference = FirebaseFirestore.instance.collection('themes');
     reference.snapshots().listen((querySnapshot) {
@@ -275,7 +275,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       }
     });
   }
-
   micEmossionListener() async {
     CollectionReference reference = FirebaseFirestore.instance.collection('emossions');
     reference.snapshots().listen((querySnapshot) async{
@@ -305,7 +304,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
        // });
     });
   }
-
   messagesListener() async{
 
     CollectionReference reference = FirebaseFirestore.instance.collection('RoomMessages');
@@ -353,7 +351,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
 
     });
   }
-
   giftListener() async{
      //gifts
     CollectionReference reference = FirebaseFirestore.instance.collection('gifts');
@@ -379,11 +376,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
            if(gift_img.toLowerCase().endsWith('.svga')){
              svgaImagesListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id);
            }
-           else if(gift_img.toLowerCase().endsWith('.png')){
-             smallGiftsListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id);
-           } else if(gift_img.toLowerCase().endsWith('.mp4')){
-             mp4GiftsListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id);
-           }
+
 
 
       }
@@ -426,7 +419,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       })
     } );
   }
-
   mp4GiftsListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id) async{
     if(room_id == room!.id){
       //show gift
@@ -458,7 +450,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       })
     } );
   }
-
   smallGiftsListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id) async{
     if(room_id == room!.id){
       //show gift
@@ -482,8 +473,6 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     //show banner in all rooms
 
   }
-
-
   refreshRoom(joiner_id) async{
     ChatRoom? res = await ChatRoomService().openRoomById(room!.id);
 
@@ -590,10 +579,19 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
-            UserOfflineReasonType reason) {
+            UserOfflineReasonType reason) async {
           debugPrint("remote user $remoteUid left channel");
+          try{
+            await ExitRoomHelper(remoteUid , room!.id);
+            refreshRoom(0);
+
+          }catch(err){
+
+          }
+
           setState(() {
            // _remoteUid = null;
+
           });
         },
         onTokenPrivilegeWillExpire: (RtcConnection connection, String token) {
@@ -613,7 +611,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
            print( 'audioMixingStateChanged state:${state.toString()}, reason: ${reason.toString()}}');
         },
         onAudioMixingPositionChanged: (pos){
-          print('onAudioMixingPositionChanged' );
+         // print('onAudioMixingPositionChanged' );
 
         }
 

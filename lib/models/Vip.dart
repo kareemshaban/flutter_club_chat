@@ -1,3 +1,5 @@
+import 'package:clubchat/models/Mall.dart';
+
 class Vip {
   final int id ;
   final String name;
@@ -5,8 +7,11 @@ class Vip {
   final String price;
   final String icon ;
   final String motion_icon ;
+  final String? available_untill ;
+  final int? isDefault ;
+  List<Mall>? designs ;
 
-  Vip({required this.id , required this.name , required this.tag , required this.price , required this.icon , required this.motion_icon});
+  Vip({required this.id , required this.name , required this.tag , required this.price , required this.icon , required this.motion_icon , this.available_untill , this.isDefault});
 
   factory Vip.fromJson(Map<String, dynamic> json) {
     return switch (json) {
@@ -17,6 +22,8 @@ class Vip {
       'price': String price,
       'icon': String icon,
       'motion_icon': String motion_icon,
+      'available_untill': String? available_untill,
+      'isDefault': int? isDefault,
 
       } =>
           Vip(
@@ -26,6 +33,8 @@ class Vip {
             price: price,
             icon: icon,
             motion_icon: motion_icon,
+            available_untill: available_untill!,
+            isDefault: isDefault!,
           ),
       _ => throw const FormatException('Failed to load album.'),
     };

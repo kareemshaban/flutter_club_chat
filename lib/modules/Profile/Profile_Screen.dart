@@ -174,7 +174,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                         )
                       ],
                     ),
-                    Container(height: 80.0, width: 80.0, child: frame != "" ? SVGASimpleImage(   resUrl: frame) : null),
+                    Container(height: 90.0, width: 90.0, child: frame != "" ? SVGASimpleImage(   resUrl: frame) : null),
                   ],
                 ),
               ),

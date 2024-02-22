@@ -68,6 +68,8 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
       });
       getDesigns();
     }
+    print('ddddd');
+    print(user!.vips![0].icon);
   }
   getDesigns () async {
     DesignGiftHelper helper = await AppUserServices().getMyDesigns(user!.id);
@@ -126,6 +128,7 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                   SizedBox(height: 3.0,),
                   Row(
                     children: [
+
                       Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.share_level_icon}') , width: 30,),
                       const SizedBox(width: 10.0,),
                       Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.karizma_level_icon}') , width: 30,),
@@ -232,6 +235,8 @@ class _InnerProfileScreenState extends State<InnerProfileScreen> {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
+                                  user!.vips!.length > 0 ?  Image(image: NetworkImage('${ASSETSBASEURL}VIP/${user!.vips![0].icon}') , width: 60,) : Container(),
+                                  user!.vips!.length > 0 ?  const SizedBox(width: 10.0,):  Container(),
                                   Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.share_level_icon}') , width: 50,),
                                   const SizedBox(width: 10.0,),
                                   Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.karizma_level_icon}') , width: 50,),

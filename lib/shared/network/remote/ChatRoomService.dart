@@ -31,6 +31,7 @@ class ChatRoomService {
   static ChatRoom? room  ;
   static ChatRoom? savedRoom  ;
   static RtcEngine? engine ;
+  static int musicPlayedIndex = - 1 ;
 
   static RoomBasicDataHelper? roomBasicDataHelper  ;
   roomSetter(ChatRoom u){

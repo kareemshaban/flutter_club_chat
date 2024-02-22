@@ -3,6 +3,7 @@ import 'package:clubchat/models/Design.dart';
 import 'package:clubchat/models/Mall.dart';
 import 'package:clubchat/models/Vip.dart';
 import 'package:clubchat/modules/Loading/loadig_screen.dart';
+import 'package:clubchat/modules/MyVip/my_vip_screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppUserServices.dart';
 import 'package:clubchat/shared/network/remote/DesignServices.dart';
@@ -65,6 +66,17 @@ class _VipScreenState extends State<VipScreen> {
           backgroundColor: MyColors.darkColor,
           centerTitle: true,
           title: Text('vip'.tr , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 18.0),),
+          actions: [
+            IconButton(
+                onPressed: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (ctx) => const MyVipScreen()));
+                },
+                icon: const Icon(
+                  Icons.store,
+                  color: Colors.white,
+                  size: 30.0,
+                ))
+          ],
 
         ),
         body: Container(
@@ -1062,7 +1074,7 @@ class _VipScreenState extends State<VipScreen> {
                         getVipFooter(4),
                       ],
                     ),
-                
+
                   ],
                 ),
               )
