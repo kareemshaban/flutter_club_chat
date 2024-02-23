@@ -3,6 +3,8 @@ import 'package:clubchat/helpers/ExitRoomHelper.dart';
 import 'package:clubchat/helpers/MicHelper.dart';
 import 'package:clubchat/models/AppUser.dart';
 import 'package:clubchat/models/ChatRoom.dart';
+import 'package:clubchat/models/Mall.dart';
+import 'package:clubchat/models/Medal.dart';
 import 'package:clubchat/modules/InnerProfile/Inner_Profile_Screen.dart';
 import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/modules/chat/chat.dart';
@@ -18,7 +20,8 @@ import 'package:svgaplayer_flutter/player.dart';
 
 class SmallProfileModal extends StatefulWidget {
   final AppUser? visitor ;
-  const SmallProfileModal({super.key , required this.visitor});
+  final int? type ;
+  const SmallProfileModal({super.key , required this.visitor , this.type });
 
   @override
   State<SmallProfileModal> createState() => _SmallProfileModalState();
@@ -28,6 +31,8 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
   AppUser? user ;
   AppUser? currentUser ;
   String frame = "" ;
+  String bg = "" ;
+  int type = 0 ; // 0 from any where 1 from room
   var passwordController = TextEditingController();
   @override
   void initState() {
@@ -36,7 +41,23 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
     setState(() {
       user = widget.visitor ;
       currentUser = AppUserServices().userGetter();
+      if(widget.type != null){
+        type = widget.type! ;
+      } else {
+        type = 0 ;
+      }
     });
+    print(type);
+    if(user!.vips!.length > 0){
+      List<Mall>? vipDesigns = user!.vips![0].designs;
+
+      final b = vipDesigns!.where((element) => int.parse(element.category_id.toString())  == 9).toList()[0].icon;
+      setState(() {
+        bg = b ;
+      });
+    }
+
+
   }
   getDesigns () async {
     DesignGiftHelper helper = await AppUserServices().getMyDesigns(user!.id);
@@ -54,199 +75,227 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
       });
     }
   }
+  Widget getVipProfileFrame(){
+    if(user!.vips!.length > 0){
+      List<Mall>? vipDesigns = user!.vips![0].designs;
+      final profile_frame = vipDesigns!.where((element) => element.category_id == 8).toList()[0].motion_icon;
+      return   Transform.translate(
+          offset: Offset(0 , -150),
+          child: SVGASimpleImage(resUrl:(ASSETSBASEURL + 'Designs/Motion/' + profile_frame)));
+    } else {
+      return SizedBox();
+    }
+
+  }
   @override
   Widget build(BuildContext context) {
-    return Container(
-
-      height: MediaQuery.sizeOf(context).height * .35,
-      decoration: BoxDecoration(color: Colors.black.withAlpha(210),
-          borderRadius: BorderRadius.only(topRight: Radius.circular(20.0) , topLeft: Radius.circular(20.0)) ,
-          border: Border(top: BorderSide(width: 1.0, color: MyColors.primaryColor),) ),
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Row(
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Container(
+          height: MediaQuery.sizeOf(context).height * .35,
+          decoration: BoxDecoration(color: Colors.black.withAlpha(210),
+              borderRadius: BorderRadius.only(topRight: Radius.circular(20.0) , topLeft: Radius.circular(20.0)) ,
+              border: Border(top: BorderSide(width: 1.0, color: MyColors.primaryColor),),
+              image: bg != "" ? DecorationImage(image: NetworkImage(ASSETSBASEURL + 'Designs/' + bg) , fit: BoxFit.cover ,
+              colorFilter:  ColorFilter.mode(Colors.black54, BlendMode.dstATop)) : null
+          ),
+          child: SingleChildScrollView(
+            child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    PopupMenuButton<int>(
-                      color: MyColors.darkColor,
-                      onSelected: (item) => {
-                        if(item == 0){
-                          reportUser()
-                        } else {
-                          blockUser()
-                        }
-                      },
-                      iconColor: Colors.white,
-                      iconSize: 25.0,
-                      itemBuilder: (context) => [
-                        PopupMenuItem<int>(value: 0, child: Row(
-                          children: [
-                            Icon(Icons.block , color: MyColors.whiteColor , size: 18.0,),
-                            SizedBox(width: 5.0,),
-                            Text("inner_report".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
-                          ],
-                        )),
-                        PopupMenuItem<int>(value: 1, child: Row(
-                          children: [
-                            Icon(Icons.report , color: MyColors.whiteColor , size: 18.0,),
-                            SizedBox(width: 5.0,),
-                            Text("inner_block".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
-                          ],
-                        )),
-                      ],
-                    ),
-        
-                  ],
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Transform.translate(
-                        offset: Offset(0, -40.0),
-                        child: Stack(
-                          alignment: Alignment.center,
-        
-                          children: [
-                            CircleAvatar(
-                              backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                              backgroundImage: user?.img != "" ?  NetworkImage(getUserImage()!) : null,
-                              radius: 40,
-                              child: user?.img== "" ?
-                              Text(user!.name.toUpperCase().substring(0 , 1) +
-                                  (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                                style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
-                            ),
-                            Container(height: 100.0, width: 100.0, child: frame != "" ? SVGASimpleImage(   resUrl: frame) : null),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        PopupMenuButton<int>(
+                          color: MyColors.darkColor,
+                          onSelected: (item) => {
+                            if(item == 0){
+                              reportUser()
+                            } else {
+                              blockUser()
+                            }
+                          },
+                          iconColor: Colors.white,
+                          iconSize: 25.0,
+                          itemBuilder: (context) => [
+                            PopupMenuItem<int>(value: 0, child: Row(
+                              children: [
+                                Icon(Icons.block , color: MyColors.whiteColor , size: 18.0,),
+                                SizedBox(width: 5.0,),
+                                Text("inner_report".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
+                              ],
+                            )),
+                            PopupMenuItem<int>(value: 1, child: Row(
+                              children: [
+                                Icon(Icons.report , color: MyColors.whiteColor , size: 18.0,),
+                                SizedBox(width: 5.0,),
+                                Text("inner_block".tr , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),)
+                              ],
+                            )),
                           ],
                         ),
+
+                      ],
+                    ),
+                    Expanded(
+                      child: Column(
+                        children: [
+                          Transform.translate(
+                            offset: user!.vips!.length > 0  ? Offset(0,  -60.0) : Offset(0,  -40.0) ,
+                            child: Stack(
+                              alignment: Alignment.center,
+
+                              children: [
+                                CircleAvatar(
+                                  backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                                  backgroundImage: user?.img != "" ?  NetworkImage(getUserImage()!) : null,
+                                  radius: 40,
+                                  child: user?.img== "" ?
+                                  Text(user!.name.toUpperCase().substring(0 , 1) +
+                                      (user!.name.contains(" ") ? user!.name.substring(user!.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                                    style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                                ),
+                                Container(height: 100.0, width: 100.0, child: frame != "" ? SVGASimpleImage(   resUrl: frame) : null),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(onPressed: (){ openUserProfile();}, icon: Icon(Icons.person  , color: Colors.white,)),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                       type == 0 ?
+                       IconButton(onPressed: (){ openUserProfile();}, icon: Icon(Icons.person  , color: Colors.white,)): SizedBox(width: 45.0,),
+                      ],
+                    )
                   ],
-                )
-              ],
-            ),
-            Transform.translate(
-              offset: Offset(0, -30.0),
-              child: Column(
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(user!.name , style: TextStyle(color: Colors.white , fontSize: 15.0 , fontWeight: FontWeight.bold),),
-                      const SizedBox(width: 10.0,),
-                      CircleAvatar(
-                        backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                        radius: 12.0,
-                        child: user!.gender == 0 ?  const Icon(Icons.male , color: Colors.white, size: 15.0,) :  const Icon(Icons.female , color: Colors.white, size: 15.0,),
-                      )
-                    ],
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.share_level_icon}') , width: 50,),
-                      const SizedBox(width: 10.0,),
-                      Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.karizma_level_icon}') , width: 50,),
-                      const SizedBox(width: 10.0, height: 10,),
-                      Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.charging_level_icon}') , width: 30,),
-                    ],
-                  ),
-                  SizedBox(height: 10.0,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
+                ),
+                Transform.translate(
+                  offset: Offset(0, -30.0),
+                  child: Column(
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("ID:" + user!.tag , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
-                          const SizedBox(width: 5.0,),
-                          Icon(Icons.copy_outlined , color: MyColors.whiteColor , size: 20.0,)
+                          Text(user!.name , style: TextStyle(color: Colors.white , fontSize: 15.0 , fontWeight: FontWeight.bold),),
+                          const SizedBox(width: 10.0,),
+                          CircleAvatar(
+                            backgroundColor: user!.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                            radius: 12.0,
+                            child: user!.gender == 0 ?  const Icon(Icons.male , color: Colors.white, size: 15.0,) :  const Icon(Icons.female , color: Colors.white, size: 15.0,),
+                          )
                         ],
                       ),
-                      const SizedBox(width: 15.0,),
                       Row(
-        
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Text("followers_title".tr, style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
-
-
-                          Icon(Icons.people_outlined , color: MyColors.whiteColor , size: 20.0,),
-
-                          Text(user!.followers!.length.toString(), style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
-        
+                          user!.vips!.length > 0 ?  Image(image: NetworkImage('${ASSETSBASEURL}VIP/${user!.vips![0].icon}') , width: 65,) : Container(),
+                          user!.vips!.length > 0 ?  const SizedBox(width: 5.0,):  Container(),
+                          Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.share_level_icon}') , width: 50,),
+                          const SizedBox(width: 10.0,),
+                          Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.karizma_level_icon}') , width: 50,),
+                          const SizedBox(width: 10.0, height: 10,),
+                          Image(image: NetworkImage('${ASSETSBASEURL}Levels/${user!.charging_level_icon}') , width: 30,),
                         ],
                       ),
-                      const SizedBox(width: 15.0,),
-        
-                    ],
-                  ),
-                  const SizedBox(height: 5.0,),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children:  user!.medals!.map((medal) =>  getMedalItem(medal)).toList()
 
-                  Text(user!.status !="" ? user!.status  : "Nothing here" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
-
-        
-                  const SizedBox(height: 10.0,),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          children: [
-                            getFollowBtn()
-                          ],
-                        ),
                       ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: (){openChat();},
-                                child: Image(image: AssetImage('assets/images/message.png') , width: 70.0)),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: Column(
-                          children: [
-                            GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: (){openUserRoom();}, child: Image(image: AssetImage('assets/images/home.png') , width: 70.0)),
-                          ],
-                        ),
-                      ),
-                      Expanded(
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.opaque,
-                          onTap: (){trackUser();},
-                          child: Column(
+                      SizedBox(height: 10.0,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image(image: AssetImage('assets/images/tracking.png') , width: 70.0),
+                              Text("ID:" + user!.tag , style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
+                              const SizedBox(width: 5.0,),
+                              Icon(Icons.copy_outlined , color: MyColors.whiteColor , size: 20.0,)
                             ],
                           ),
-                        ),
+                          const SizedBox(width: 15.0,),
+                          Row(
+
+                            children: [
+                              Text("followers_title".tr, style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
+
+
+                              Icon(Icons.people_outlined , color: MyColors.whiteColor , size: 20.0,),
+
+                              Text(user!.followers!.length.toString(), style: TextStyle(color: MyColors.whiteColor , fontSize: 15.0),),
+
+                            ],
+                          ),
+                          const SizedBox(width: 15.0,),
+
+                        ],
                       ),
-        
+                      const SizedBox(height: 5.0,),
+
+                      Text(user!.status !="" ? user!.status  : "Nothing here" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 16.0),),
+
+
+                      const SizedBox(height: 10.0,),
+                      type == 0 ? Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                getFollowBtn()
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: (){openChat();},
+                                    child: Image(image: AssetImage('assets/images/message.png') , width: 70.0)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: (){openUserRoom();}, child: Image(image: AssetImage('assets/images/home.png') , width: 70.0)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: (){trackUser();},
+                              child: Column(
+                                children: [
+                                  Image(image: AssetImage('assets/images/tracking.png') , width: 70.0),
+                                ],
+                              ),
+                            ),
+                          ),
+
+                        ],
+                      ) : Container(),
+
                     ],
                   ),
-        
-                ],
-              ),
-            )
-        
-            
-          ],
-        ),
-      )
+                )
 
+
+              ],
+            ),
+          )
+
+        ),
+        getVipProfileFrame()
+      ],
     );
   }
 
@@ -475,5 +524,18 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
   }
   openUserProfile(){
     Navigator.push(context, MaterialPageRoute(builder: (ctx) =>  InnerProfileScreen(visitor_id: user!.id)));
+  }
+
+  Widget getMedalItem(Medal medal){
+    return Container(
+      margin: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0),
+      child: Column(
+          children:[
+            Image(image: NetworkImage('${ASSETSBASEURL}Badges/${medal.icon}') , width: 30,),
+
+          ]
+
+      ),
+    );
   }
 }

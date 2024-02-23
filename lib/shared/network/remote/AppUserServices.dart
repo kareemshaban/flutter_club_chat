@@ -176,7 +176,8 @@ class AppUserServices {
       Vip vip = Vip.fromJson(jsonData['vips'][i]);
       designs = [] ;
       for( var j = 0 ; j < jsonData['vips'][i]['designs'].length ; j ++ ){
-        Mall design =  Mall.fromJson(jsonData['vips'][i]['designs'][i])  ;
+        Mall design =  Mall.fromJson(jsonData['vips'][i]['designs'][j])  ;
+        print(design.category_id);
         designs.add(design);
       }
       vip.designs = designs ;

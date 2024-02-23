@@ -40,6 +40,7 @@ import 'package:get/get.dart';
 import 'package:popover/popover.dart';
 import 'package:svgaplayer_flutter/player.dart';
 import 'package:flutter/foundation.dart' as foundation;
+import 'package:simple_ripple_animation/simple_ripple_animation.dart';
 
 const appId = "d3a7fdb87c8d4bbd8b0e33a95a1d4e2a";
 
@@ -84,6 +85,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   String bannerMsg = "" ;
   String giftImgSmall = "" ;
   ScrollController _scrollController = new ScrollController();
+  List<int> speakers = [] ;
   @override
   void initState() {
     // TODO: implement initState
@@ -553,14 +555,17 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   }
 
   Future<void> initAgora() async {
-
+     print('initAgora');
     //create the engine
     _engine = createAgoraRtcEngine();
     await _engine.initialize(const RtcEngineContext(
       appId: appId,
       channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
     ));
-    await _engine.enableAudioVolumeIndication(interval: 200, smooth: 3, reportVad: true);
+
+    await _engine.enableAudioVolumeIndication(interval: 200, smooth: 3, reportVad: false);
+
+
 
     _engine.registerEventHandler(
       RtcEngineEventHandler(
@@ -599,8 +604,13 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
               '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
         },
 
-          onAudioVolumeIndication:(connection, speakers, speakerNumber, totalVolume) =>  (){
+          onAudioVolumeIndication:(connection, _speakers, speakerNumber, totalVolume){
             print('onAudioVolumeIndication' );
+            List<int> sp = [] ;
+            _speakers.forEach((element) { sp.add(element.uid!);});
+            setState(() {
+              speakers = sp ;
+            });
             print(speakers);
           },
         onAudioMixingFinished: (){
@@ -613,7 +623,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
         onAudioMixingPositionChanged: (pos){
          // print('onAudioMixingPositionChanged' );
 
-        }
+        },
+
 
       ),
     );
@@ -1191,7 +1202,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       ),
     );
   }
-  Widget ProfileBottomSheet( user ) => SmallProfileModal(visitor: user);
+  Widget ProfileBottomSheet( user ) => SmallProfileModal(visitor: user , type: 1,);
   ImageProvider getUserAvatar() {
 
     if (room!.admin_img == '') {
@@ -1219,20 +1230,42 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                           Stack(
                             alignment: Alignment.center,
                             children: [
-                              mic!.mic_user_img == null ? CircleAvatar(
-                                backgroundColor: Colors.transparent,
-                                radius: 25,
-                                backgroundImage: getMicUserImg(mic),
-                              ) :     CircleAvatar(
-                                      backgroundColor:  mic.mic_user_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                                      backgroundImage:  mic!.mic_user_img != "" ? ( mic!.mic_user_img.startsWith('https') ? NetworkImage( mic!.mic_user_img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${ mic!.mic_user_img}'))  :    null,
-                                      radius: 22,
-                                      child:  mic!.mic_user_img== "" ?
-                                      Text(mic!.mic_user_name.toUpperCase().substring(0 , 1) +
-                                      (mic!.mic_user_name.contains(" ") ? mic!.mic_user_name.substring(mic!.mic_user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                                      style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
-                                      ),
+                              mic!.mic_user_img == null ? RippleAnimation(
+                                color: Colors.deepOrange,
+                                delay: const Duration(milliseconds: 300),
+                                repeat: true,
+                                minRadius: 30,
+                                ripplesCount: 6,
+                                duration: const Duration(milliseconds: 6 * 300),
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.transparent,
+                                  radius: 25,
+                                  backgroundImage: getMicUserImg(mic),
+                                ),
+                              ) :     RippleAnimation(
+                                color: Colors.deepOrange,
+                                delay: const Duration(milliseconds: 300),
+                                repeat: true,
+                                minRadius: 30,
+                                ripplesCount: 6,
+                                duration: const Duration(milliseconds: 6 * 300),
+                                child: CircleAvatar(
+                                        backgroundColor:  mic.mic_user_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                                        backgroundImage:  mic!.mic_user_img != "" ? ( mic!.mic_user_img.startsWith('https') ? NetworkImage( mic!.mic_user_img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${ mic!.mic_user_img}'))  :    null,
+                                        radius: 22,
+                                        child:  mic!.mic_user_img== "" ?
+                                        Text(mic!.mic_user_name.toUpperCase().substring(0 , 1) +
+                                        (mic!.mic_user_name.contains(" ") ? mic!.mic_user_name.substring(mic!.mic_user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                                        style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                                        ),
+                              ),
                               Container(height: 70.0, width: 70.0, child: mic!.frame != "" ? SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Designs/Motion/' + mic!.frame +'?raw=true') : null),
+                              // Container(height: 70.0, width: 70.0,
+                              // child: speakers.where((element) => element.toString() == mic!.mic_user_tag ).toList().length > 0  ?
+                              // SizedBox( height: 50.0, width: 50.0,
+                              //     child: SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Defaults/wave.svga')) : null),
+
+
                               //frame
                             ],
                           ),
@@ -1502,14 +1535,23 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
         maxWidth: (MediaQuery.of(context).size.width * 0.7) - 20.0,
       ),
         child:
-        Row(
-           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Image(image: NetworkImage('${ASSETSBASEURL}Levels/${messages[index].user_share_level_img}') , width: 30,),
-            SizedBox(width: 5.0,),
-            getMessageContent(messages[index])
+        GestureDetector(
+          onTap: () async{
+            AppUser? res =  await AppUserServices().getUser(messages[index].user_id);
+            showModalBottomSheet(
 
-          ],
+                context: context,
+                builder: (ctx) => ProfileBottomSheet(res));
+          },
+          child: Row(
+             crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Image(image: NetworkImage('${ASSETSBASEURL}Levels/${messages[index].user_share_level_img}') , width: 30,),
+              SizedBox(width: 5.0,),
+              getMessageContent(messages[index])
+
+            ],
+          ),
         ),
       ),
     ],

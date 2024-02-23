@@ -74,6 +74,7 @@ dependencies:
   on_audio_query: ^2.9.0
   just_audio: ^0.9.36
   video_player: ^2.8.2
+  simple_ripple_animation: ^0.0.9
 
 
 
