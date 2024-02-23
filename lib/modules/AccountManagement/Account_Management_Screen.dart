@@ -32,9 +32,13 @@ class _Account_Management_ScreenState extends State<Account_Management_Screen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-      user = AppUserServices().userGetter();
-    });
+    if(mounted){
+      setState(() {
+        user = AppUserServices().userGetter();
+
+      });
+    }
+
   }
 
   @override

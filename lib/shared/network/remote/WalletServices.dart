@@ -69,6 +69,7 @@ class WalletServices {
         'diamond': diamond.toString()
       }),
     );
+    print('exchangeDiamond');
     print(response.body);
     if (response.statusCode == 200) {
       Fluttertoast.showToast(

@@ -22,7 +22,12 @@ class _AddStatusScreenState extends State<AddStatusScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-     user = AppUserServices().userGetter();
+    if(mounted) {
+      setState(() {
+        user = AppUserServices().userGetter();
+      });
+    }
+
   }
 
   @override

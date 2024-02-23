@@ -30,25 +30,34 @@ class _AgencyChargeState extends State<AgencyCharge> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    setState(() {
-      agent = AppUserServices().userGetter();
-    });
+    if(mounted){
+      setState(() {
+        agent = AppUserServices().userGetter();
+      });
+    }
+
 
     getAgency();
 
   }
   getAgency() async{
     ChargingAgency? res = await ChargingAgencyServices().getAgency(agent!.id);
-    setState(() {
-      agency = res ;
-    });
+    if(mounted){
+      setState(() {
+        agency = res ;
+      });
+    }
+
   }
   getTargetUser() async{
       AppUser? res = await AppUserServices().getUserByTag(userTagController.text);
-      setState(() {
-        user = res ;
-        ShowUser = true ;
-      });
+      if(mounted){
+        setState(() {
+          user = res ;
+          ShowUser = true ;
+        });
+      }
+
   }
   @override
   Widget build(BuildContext context) {

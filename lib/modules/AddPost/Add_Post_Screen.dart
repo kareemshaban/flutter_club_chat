@@ -41,22 +41,23 @@ class AddPostScreenState extends State<AddPostScreen> {
     getTags();
   }
   void getUser() async{
+    if(mounted){
     setState(() {
-      loading = true ;
+
+        loading = true ;
+        user =  AppUserServices().userGetter();
     });
-    setState(() async{
-      user =  AppUserServices().userGetter();
-    });
+    }
   }
   getTags() async {
     List<Tag> res = await PostServices().getAllTags();
-    setState(() {
-      tags = res ;
-      selectedTag = tags[0].id ;
+    if(mounted) {
       setState(() {
-        loading = false ;
+        tags = res;
+        selectedTag = tags[0].id;
+        loading = false;
       });
-    });
+    }
   }
   @override
   Widget build(BuildContext context) {

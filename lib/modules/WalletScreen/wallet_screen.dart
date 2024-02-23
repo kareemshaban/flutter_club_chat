@@ -458,9 +458,9 @@ class _WalletScreenState extends State<WalletScreen> {
     }
   }
   convertDiamondToGold() async{
-
+    print(double.parse(diamondTxt.text) >= 100);
     if(double.parse(diamondTxt.text) >= 100){
-      if(double.parse(diamondTxt.text) >= double.parse(user!.diamond) ){
+      if(double.parse(diamondTxt.text) <= double.parse(user!.diamond) ){
         setState(() {
           isLoading = true ;
         });

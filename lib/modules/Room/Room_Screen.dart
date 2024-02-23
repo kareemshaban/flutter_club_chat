@@ -563,7 +563,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       channelProfile: ChannelProfileType.channelProfileLiveBroadcasting,
     ));
 
-    await _engine.enableAudioVolumeIndication(interval: 200, smooth: 3, reportVad: false);
+    await _engine.enableAudioVolumeIndication(interval: 1000, smooth: 5, reportVad: false);
 
 
 
@@ -607,6 +607,9 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           onAudioVolumeIndication:(connection, _speakers, speakerNumber, totalVolume){
             print('onAudioVolumeIndication' );
             List<int> sp = [] ;
+            setState(() {
+              speakers = sp ;
+            });
             _speakers.forEach((element) { sp.add(element.uid!);});
             setState(() {
               speakers = sp ;
@@ -1231,10 +1234,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                             alignment: Alignment.center,
                             children: [
                               mic!.mic_user_img == null ? RippleAnimation(
-                                color: Colors.deepOrange,
+                                color:  MyColors.primaryColor ,
                                 delay: const Duration(milliseconds: 300),
                                 repeat: true,
-                                minRadius: 30,
+                                minRadius: speakers.where((element) => element.toString() == mic!.mic_user_tag ).toList().length > 0 ? 25 : 0,
                                 ripplesCount: 6,
                                 duration: const Duration(milliseconds: 6 * 300),
                                 child: CircleAvatar(
@@ -1243,10 +1246,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                   backgroundImage: getMicUserImg(mic),
                                 ),
                               ) :     RippleAnimation(
-                                color: Colors.deepOrange,
+                                color:  MyColors.primaryColor ,
                                 delay: const Duration(milliseconds: 300),
                                 repeat: true,
-                                minRadius: 30,
+                                minRadius: 25,
                                 ripplesCount: 6,
                                 duration: const Duration(milliseconds: 6 * 300),
                                 child: CircleAvatar(
