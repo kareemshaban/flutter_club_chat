@@ -237,7 +237,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         width: 65.0,
                         child: MaterialButton(
                           onPressed: () {
-                            send_notification.send_notification(widget.receiver.token , _messageController.text , user!.name);;
+                            send_notification.send_notification(widget.receiver.token , _messageController.text , user!.name);
                             sendMessage();
                             send_Message.send_Message(user!.id, widget.receiver.id, _messageController.text)
                             ;
