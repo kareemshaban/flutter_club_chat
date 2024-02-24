@@ -32,15 +32,15 @@ class ChatService extends ChangeNotifier {
     // add new message to database
     var sender_fb ;
     var reciever_fb ;
-    await _firestore.collection('users').where('id' , isEqualTo: currentUserId).get().
-    then((value) => sender_fb = value.docs[0]);
-    await _firestore.collection('users').where('id' , isEqualTo: receiverId).get().then((value) =>
-    reciever_fb = value.docs[0]
-    );
-    await _firestore.collection('chat_rooms').doc(chatRoomId).set({
-       'sender' : sender_fb.id ,
-       'reciver': reciever_fb.id,
-    });
+    // await _firestore.collection('users').where('id' , isEqualTo: currentUserId).get().
+    // then((value) => sender_fb = value.docs[0]);
+    // await _firestore.collection('users').where('id' , isEqualTo: receiverId).get().then((value) =>
+    // reciever_fb = value.docs[0]
+    // );
+    // await _firestore.collection('chat_rooms').doc(chatRoomId).set({
+    //    'sender' : sender_fb.id ,
+    //    'reciver': reciever_fb.id,
+    // });
     await _firestore
         .collection('chat_rooms')
         .doc(chatRoomId)
