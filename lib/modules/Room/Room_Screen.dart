@@ -37,6 +37,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:get/get.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:popover/popover.dart';
 import 'package:svgaplayer_flutter/player.dart';
 import 'package:flutter/foundation.dart' as foundation;
@@ -371,12 +372,13 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
         String gift_name = data['gift_name'] ;
         String gift_img = data['gift_img'] ;
         int count = data['count'] ;
+        String gift_audio = data['gift_audio'];
         String sender_share_level = data['sender_share_level'] ;
            if(room_id == room!.id){
              refreshRoom(0);
            }
            if(gift_img.toLowerCase().endsWith('.svga')){
-             svgaImagesListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id);
+             svgaImagesListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id ,gift_audio);
            }
 
 
@@ -385,17 +387,25 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
 
     });
   }
-  svgaImagesListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id) async{
+  svgaImagesListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id , gift_audio) async{
     if(room_id == room!.id){
       //show gift
       setState(() {
         giftImg = gift_img ;
       });
+      final player = AudioPlayer();
+      if(gift_audio != ""){
+        final player = AudioPlayer();
+        final duration = await player.setUrl(gift_audio);
+        player.play();
+      }
+
       await Future.delayed(Duration(seconds: 10)).then((value) => {
         setState(() {
           giftImg = ''  ;
         })
       });
+      await player.stop();
       // show on tetx
       ChatRoomMessage message = ChatRoomMessage(message:  'sent a ${gift_name} to ${receiver_name}' , user_name: sender_name.toString(),
           user_share_level_img: sender_share_level.toString(), user_img: sender_img.toString(), user_id: sender_id , type:'GIFT' );
@@ -1339,6 +1349,12 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       //un_use_mic
       MicHelper( user_id:  user!.id , room_id:  room!.id , mic: mic.order).leaveMic();
       await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+      try{
+        _engine = ChatRoomService.engine! ;
+        await _engine.stopAudioMixing();
+      }catch(err){
+
+      }
       setState(() {
         _localUserMute = true ;
       });

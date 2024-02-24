@@ -1,4 +1,5 @@
 import 'package:clubchat/models/AppTrend.dart';
+import 'package:clubchat/models/TrendUser.dart';
 import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
 import 'package:clubchat/shared/network/remote/AppTrendServices.dart';
@@ -373,7 +374,16 @@ class _AppCupScreenState extends State<AppCupScreen> with TickerProviderStateMix
                 ),
                 Expanded(
                     flex: 5,
-                    child: Container()
+                    child: TabBarView(
+                      controller: _tabController1,
+                      children: [
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder(trend!.dailyShareFans[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.dailyShareFans.length),
+                         Text('2'),
+                         Text('3'),
+                      ],
+                      
+                    )
 
                 )
               ],
@@ -967,5 +977,81 @@ class _AppCupScreenState extends State<AppCupScreen> with TickerProviderStateMix
 
     }
     return  NetworkImage(room_img);
+  }
+
+  Widget itemListBuilder( TrendUser user) => Column(
+    children: [
+      Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Column(
+              children: [
+                CircleAvatar(
+                  backgroundColor: user.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+
+                  backgroundImage: user.img != "" ?
+                  NetworkImage(getUserImage(user)!) : null,
+                  radius: 30,
+                  child: user.img == "" ?
+                  Text(user.name.toUpperCase().substring(0 , 1) +
+                      (user.name.contains(" ") ? user.name.substring(user.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                    style: const TextStyle(color: Colors.white , fontSize: 24.0 , fontWeight: FontWeight.bold),) : null,
+                )
+              ],
+            ),
+            const SizedBox(width: 10.0,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(user.name , style: TextStyle(color: MyColors.whiteColor , fontSize: 18.0),),
+                    const SizedBox(width: 5.0,),
+                    CircleAvatar(
+                      backgroundColor: user.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                      radius: 10.0,
+                      child: user.gender == 0 ?  const Icon(Icons.male , color: Colors.white, size: 15.0,) :  const Icon(Icons.female , color: Colors.white, size: 15.0,),
+                    )
+                  ],
+                ),
+                Row(
+
+                  children: [
+                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.share_level_icon) , width: 40,),
+                    const SizedBox(width: 10.0,),
+                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.karizma_level_icon) , width: 40,),
+                    const SizedBox(width: 10.0,),
+                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.charging_level_icon) , width: 30,),
+
+                  ],
+                ),
+
+                Text("ID:${user.tag}" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 13.0),),
+
+
+              ],
+
+            ),
+
+          ]),
+      Container(
+        width: double.infinity,
+        height: 1.0,
+        color: MyColors.lightUnSelectedColor,
+        margin: EdgeInsetsDirectional.only(start: 50.0),
+        child: const Text(""),
+      )
+    ],
+  );
+
+  Widget itemSperatorBuilder() => SizedBox(height: 5.0,);
+
+  String? getUserImage(TrendUser user){
+    if(user!.img.startsWith('https')){
+      return user.img.toString() ;
+    } else {
+      return '${ASSETSBASEURL}AppUsers/${user.img}' ;
+    }
   }
 }

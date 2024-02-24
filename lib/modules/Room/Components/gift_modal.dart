@@ -355,7 +355,8 @@ class _GiftModalState extends State<GiftModal> with TickerProviderStateMixin{
           'receiver_name': reciver_obj.name ,
           'receiver_img': '${ASSETSBASEURL}AppUsers/${reciver_obj.img}',
           'gift_name':  gift.name ,
-          'gift_img': gift.motion_icon != "" ? '${ASSETSBASEURL}Designs/Motion/${gift.motion_icon}' : '${ASSETSBASEURL}Designs/Video/${gift.video_url}' ,
+          'gift_audio': gift.audio_url != "" ? '${ASSETSBASEURL}Designs/Audio/${gift.audio_url}' : "" ,
+          'gift_img': '${ASSETSBASEURL}Designs/Motion/${gift.motion_icon}',
           'count' : sendGiftCount,
           'sender_share_level': user!.share_level_icon
 
