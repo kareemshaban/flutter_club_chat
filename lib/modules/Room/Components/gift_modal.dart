@@ -15,7 +15,8 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:get/get.dart';
 
 class GiftModal extends StatefulWidget {
-  const GiftModal({super.key});
+  final int reciverId ;
+  const GiftModal({super.key , required this.reciverId});
 
   @override
   State<GiftModal> createState() => _GiftModalState();
@@ -39,6 +40,7 @@ class _GiftModalState extends State<GiftModal> with TickerProviderStateMixin{
     super.initState();
     setState(() {
       sendGiftCount = 1 ;
+      receiver = widget.reciverId ;
       sendGiftReceiverType = "select_one_ore_more";
       user = AppUserServices().userGetter();
       room = ChatRoomService().roomGetter();

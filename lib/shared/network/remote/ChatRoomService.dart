@@ -26,13 +26,14 @@ import 'package:async/async.dart';
 import 'package:agora_rtc_engine/agora_rtc_engine.dart';
 
 
+
 class ChatRoomService {
 
   static ChatRoom? room  ;
   static ChatRoom? savedRoom  ;
   static RtcEngine? engine ;
   static int musicPlayedIndex = - 1 ;
-
+  static bool showMsgInput = false ;
   static RoomBasicDataHelper? roomBasicDataHelper  ;
   roomSetter(ChatRoom u){
     room = u ;
@@ -90,52 +91,57 @@ class ChatRoomService {
     }
   }
 
-  Future<ChatRoom?> openMyRoom(admin_id) async {
-    final response = await http.get(
-        Uri.parse('${BASEURL}chatRooms/getRoom/${admin_id}'));
+  ChatRoom mapRoom(jsonData){
     ChatRoom room;
     List<Mic> mics = [] ;
     List<RoomMember> members = [] ;
     List<RoomAdmin> admins = [] ;
     List<RoomFollow> followers = [] ;
     List<RoomBlock> blockers = [] ;
+    room = ChatRoom.fromJson(jsonData['room']);
+    int roomCup = jsonData['roomCup'] ;
+    room.roomCup = roomCup.toString() ;
+
+    for (var j = 0; j < jsonData['mics'].length; j ++) {
+      Mic mic = Mic.fromJson(jsonData['mics'][j]);
+      mics.add(mic);
+    }
+    for (var j = 0; j < jsonData['members'].length; j ++) {
+      RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
+      members.add(member);
+    }
+    for (var j = 0; j < jsonData['admins'].length; j ++) {
+      RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
+      admins.add(admin);
+    }
+
+    for (var j = 0; j < jsonData['followers'].length; j ++) {
+      RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
+      followers.add(follow);
+    }
+    for (var j = 0; j < jsonData['blockers'].length; j ++) {
+      RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
+      blockers.add(block);
+    }
+    room.mics = mics ;
+    room.blockers = blockers ;
+    room.admins = admins ;
+    room.members = members ;
+    room.followers = followers ;
+
+
+    return room;
+  }
+
+  Future<ChatRoom?> openMyRoom(admin_id) async {
+    final response = await http.get(
+        Uri.parse('${BASEURL}chatRooms/getRoom/${admin_id}'));
+
 
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         Fluttertoast.showToast(
             msg: 'remote_chat_msg_failed'.tr,
@@ -157,50 +163,10 @@ class ChatRoomService {
   Future<ChatRoom?> openRoomById(room_id) async {
     final response = await http.get(
         Uri.parse('${BASEURL}chatRooms/getRoomById/${room_id}'));
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
-   // print(response.body);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        print('roomCup');
-        print(jsonData['roomCup']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         Fluttertoast.showToast(
             msg: 'remote_chat_msg_failed'.tr,
@@ -223,48 +189,12 @@ class ChatRoomService {
   Future<ChatRoom?> openRoomByAdminId(admin_id) async {
     final response = await http.get(
         Uri.parse('${BASEURL}chatRooms/getRoomByAdmin/${admin_id}'));
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
-   print(response.body);
+    print(response.body);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup =  jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
+        return mapRoom(jsonData);
 
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
       } else {
         print(jsonData['message']);
 
@@ -280,48 +210,10 @@ class ChatRoomService {
   Future<ChatRoom?> trackUser(user_id) async {
     final response = await http.get(
         Uri.parse('${BASEURL}chatRooms/trackUser/${user_id}'));
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
-    print(response.body);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         print(jsonData['message']);
 
@@ -338,10 +230,10 @@ class ChatRoomService {
     final response = await http.get(
         Uri.parse('${BASEURL}chatRooms/getBasicData'));
 
-     List<Emossion> emossions = [];
-     List<RoomTheme> themes = [];
-     List<Gift> gifts = [];
-     List<Category> categories = [];
+    List<Emossion> emossions = [];
+    List<RoomTheme> themes = [];
+    List<Gift> gifts = [];
+    List<Category> categories = [];
     RoomBasicDataHelper helper = RoomBasicDataHelper(emossions: emossions, themes: themes, gifts: gifts, categories: categories);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
@@ -382,12 +274,6 @@ class ChatRoomService {
   }
 
   Future<ChatRoom?> updateRoomName(id , name) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/updateName'),
       headers: <String, String>{
@@ -401,62 +287,14 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
-        Fluttertoast.showToast(
-            msg: 'remote_chat_msg_failed'.tr,
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 1,
-            backgroundColor: Colors.black26,
-            textColor: Colors.orange,
-            fontSize: 16.0
-        );
+        throw Exception('Failed to load album');
       }
-
-    } else {
-      throw Exception('Failed to load album');
     }
   }
 
   Future<ChatRoom?> updateRoomHello(id , hello_message) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/updateHello'),
       headers: <String, String>{
@@ -471,38 +309,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         Fluttertoast.showToast(
             msg: 'remote_chat_msg_failed'.tr,
@@ -521,12 +328,6 @@ class ChatRoomService {
   }
 
   Future<ChatRoom?> updateRoomPassword(id , password) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/updatePassword'),
       headers: <String, String>{
@@ -540,38 +341,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         Fluttertoast.showToast(
             msg: 'remote_chat_msg_failed'.tr,
@@ -590,12 +360,6 @@ class ChatRoomService {
   }
 
   Future<ChatRoom?> enterRoom(user_id , room_id) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/enterRoom'),
       headers: <String, String>{
@@ -610,37 +374,7 @@ class ChatRoomService {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
         room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         // Fluttertoast.showToast(
         //     msg: 'remote_chat_msg_failed'.tr,
@@ -658,12 +392,7 @@ class ChatRoomService {
     }
   }
   Future<ChatRoom?> exitRoom(user_id , room_id) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
+
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/exitRoom'),
       headers: <String, String>{
@@ -678,38 +407,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         // Fluttertoast.showToast(
         //     msg: 'remote_chat_msg_failed'.tr,
@@ -728,12 +426,6 @@ class ChatRoomService {
   }
 
   Future<ChatRoom?> lockMic(user_id , room_id , mic) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/lockMic'),
       headers: <String, String>{
@@ -749,38 +441,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         // Fluttertoast.showToast(
         //     msg: 'remote_chat_msg_failed'.tr,
@@ -798,12 +459,7 @@ class ChatRoomService {
     }
   }
   Future<ChatRoom?> unlockMic(user_id , room_id , mic) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
+
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/unlockMic'),
       headers: <String, String>{
@@ -819,38 +475,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         // Fluttertoast.showToast(
         //     msg: 'remote_chat_msg_failed'.tr,
@@ -869,12 +494,6 @@ class ChatRoomService {
   }
 
   Future<ChatRoom?> useMic(user_id , room_id , mic) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/useMic'),
       headers: <String, String>{
@@ -890,38 +509,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         // Fluttertoast.showToast(
         //     msg: 'remote_chat_msg_failed'.tr,
@@ -941,12 +529,6 @@ class ChatRoomService {
 
 
   Future<ChatRoom?> leaveMic(user_id , room_id , mic) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/leaveMic'),
       headers: <String, String>{
@@ -962,38 +544,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         // Fluttertoast.showToast(
         //     msg: 'remote_chat_msg_failed'.tr,
@@ -1012,12 +563,6 @@ class ChatRoomService {
   }
 
   Future<ChatRoom?> changeTheme(bg , room_id) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/chnageRoomBg'),
       headers: <String, String>{
@@ -1028,42 +573,10 @@ class ChatRoomService {
         'bg': bg.toString()
       }),
     );
-    print(response.body);
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         // Fluttertoast.showToast(
         //     msg: 'remote_chat_msg_failed'.tr,
@@ -1103,20 +616,20 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       print(jsonData['message'] );
-         if(jsonData['message'] == 'success'){
-         return true ;
-       } else {
-         Fluttertoast.showToast(
-             msg: jsonData['message'],
-             toastLength: Toast.LENGTH_SHORT,
-             gravity: ToastGravity.CENTER,
-             timeInSecForIosWeb: 1,
-             backgroundColor: Colors.black26,
-             textColor: Colors.orange,
-             fontSize: 16.0
-         );
-         return false ;
-       }
+      if(jsonData['message'] == 'success'){
+        return true ;
+      } else {
+        Fluttertoast.showToast(
+            msg: jsonData['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 1,
+            backgroundColor: Colors.black26,
+            textColor: Colors.orange,
+            fontSize: 16.0
+        );
+        return false ;
+      }
 
 
     } else {
@@ -1170,12 +683,6 @@ class ChatRoomService {
 
 
   Future<ChatRoom?> updateRoomCategory(id , subject) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/updateRoomCategory'),
       headers: <String, String>{
@@ -1189,38 +696,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         Fluttertoast.showToast(
             msg: 'remote_chat_msg_failed'.tr,
@@ -1255,6 +731,7 @@ class ChatRoomService {
       'id': id.toString() ,
     });
     var response = await request.send();
+    print('upload image');
     print(response.statusCode);
     response.stream.transform(utf8.decoder).listen((value) {
       print(value);
@@ -1282,38 +759,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         Fluttertoast.showToast(
             msg: 'remote_chat_msg_failed'.tr,
@@ -1332,12 +778,6 @@ class ChatRoomService {
   }
 
   Future<ChatRoom?> removeChatRoomAdmin(user_id , room_id) async {
-    ChatRoom room;
-    List<Mic> mics = [] ;
-    List<RoomMember> members = [] ;
-    List<RoomAdmin> admins = [] ;
-    List<RoomFollow> followers = [] ;
-    List<RoomBlock> blockers = [] ;
     var response = await http.post(
       Uri.parse('${BASEURL}chatRooms/removeAdmin'),
       headers: <String, String>{
@@ -1351,38 +791,7 @@ class ChatRoomService {
     if (response.statusCode == 200) {
       final Map jsonData = json.decode(response.body);
       if (jsonData['state'] == "success") {
-        room = ChatRoom.fromJson(jsonData['room']);
-        int roomCup = jsonData['roomCup'] ;
-        room.roomCup = roomCup.toString() ;
-        for (var j = 0; j < jsonData['mics'].length; j ++) {
-          Mic mic = Mic.fromJson(jsonData['mics'][j]);
-          mics.add(mic);
-        }
-        for (var j = 0; j < jsonData['members'].length; j ++) {
-          RoomMember member = RoomMember.fromJson(jsonData['members'][j]);
-          members.add(member);
-        }
-        for (var j = 0; j < jsonData['admins'].length; j ++) {
-          RoomAdmin admin = RoomAdmin.fromJson(jsonData['admins'][j]);
-          admins.add(admin);
-        }
-
-        for (var j = 0; j < jsonData['followers'].length; j ++) {
-          RoomFollow follow = RoomFollow.fromJson(jsonData['followers'][j]);
-          followers.add(follow);
-        }
-        for (var j = 0; j < jsonData['blockers'].length; j ++) {
-          RoomBlock block = RoomBlock.fromJson(jsonData['blockers'][j]);
-          blockers.add(block);
-        }
-        room.mics = mics ;
-        room.blockers = blockers ;
-        room.admins = admins ;
-        room.members = members ;
-        room.followers = followers ;
-
-
-        return room;
+        return mapRoom(jsonData);
       } else {
         Fluttertoast.showToast(
             msg: 'remote_chat_msg_failed'.tr,
@@ -1400,7 +809,25 @@ class ChatRoomService {
     }
   }
 
-  
+  Future<ChatRoom?> toggleRoomCounter(room_id) async {
+    final response = await http.get(
+        Uri.parse('${BASEURL}chatRooms/toggleCounter/${room_id}'));
+    print(response.body);
+    if (response.statusCode == 200) {
+      final Map jsonData = json.decode(response.body);
+      if (jsonData['state'] == "success") {
+        return mapRoom(jsonData);
+      } else {
+        print(jsonData['message']);
+
+        return null ;
+      }
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
 
 
 

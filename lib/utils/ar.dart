@@ -279,7 +279,10 @@ const Map<String, String> ar = {
   "admin_deleted": "تم حذف المدير",
   "room_save_dialog_title": "إلفاء حفظ الغرفة",
   "room_save_dialog_msg": "هل تريد إلغاء إحتقاظ الغرفة",
-  "show_user": "عرض المستخدم"
+  "show_user": "عرض المستخدم",
+  "counter_off":"العداد معطل",
+  "counter_on":"العداد مفعل",
+  "kick_out": "طرد",
 
 
 

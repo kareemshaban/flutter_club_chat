@@ -126,6 +126,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     geAdminDesigns();
     micEmossionListener();
     giftListener();
+    micCounterListener();
     micRemoveListener();
     if(ChatRoomService.savedRoom == null){
       initAgora();
@@ -173,6 +174,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     setState(() {
       room_img =  img ;
     });
+    print('room_img');
+    print(room_img);
   }
 
   enterRoomListener(){
@@ -214,6 +217,21 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       }
     });
   }
+  micCounterListener(){
+    CollectionReference reference = FirebaseFirestore.instance.collection('mic-counter');
+    reference.snapshots().listen((querySnapshot) {
+      DocumentChange change =   querySnapshot.docChanges[0] ;
+      if(change.newIndex > 0){
+        Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
+        int room_id = data['room_id'] ;
+        if(room_id == room!.id){
+          refreshRoom(0);
+        }
+      }
+    });
+  }
+
+
   micUsageListener(){
     CollectionReference reference = FirebaseFirestore.instance.collection('mic-usage');
     reference.snapshots().listen((querySnapshot) {
@@ -282,29 +300,29 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     CollectionReference reference = FirebaseFirestore.instance.collection('emossions');
     reference.snapshots().listen((querySnapshot) async{
 
-          DocumentChange change =   querySnapshot.docChanges[0] ;
-          if(change.newIndex > 0){
-            Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
-            int room_id = data['room_id'] ;
-            int mic = data['mic'] ;
-            int user = data['user'] ;
-            String emoj = data['emoj'] ;
-            if(room_id == room!.id){
-              setState(() {
-                micEmojs[mic -1] = emoj ;
-              });
+      DocumentChange change =   querySnapshot.docChanges[0] ;
+      if(change.newIndex > 0){
+        Map<String , dynamic>? data = change.doc.data() as Map<String,dynamic>;
+        int room_id = data['room_id'] ;
+        int mic = data['mic'] ;
+        int user = data['user'] ;
+        String emoj = data['emoj'] ;
+        if(room_id == room!.id){
+          setState(() {
+            micEmojs[mic -1] = emoj ;
+          });
 
-              await Future.delayed(Duration(seconds: 5));
-              setState(() {
-                micEmojs[mic -1] = "" ;
-              });
+          await Future.delayed(Duration(seconds: 5));
+          setState(() {
+            micEmojs[mic -1] = "" ;
+          });
 
-            }
+        }
 
-          }
+      }
 
 
-       // });
+      // });
     });
   }
   messagesListener() async{
@@ -355,7 +373,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     });
   }
   giftListener() async{
-     //gifts
+    //gifts
     CollectionReference reference = FirebaseFirestore.instance.collection('gifts');
     reference.snapshots().listen((querySnapshot) async{
       DocumentChange change =   querySnapshot.docChanges[0] ;
@@ -374,12 +392,12 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
         int count = data['count'] ;
         String gift_audio = data['gift_audio'];
         String sender_share_level = data['sender_share_level'] ;
-           if(room_id == room!.id){
-             refreshRoom(0);
-           }
-           if(gift_img.toLowerCase().endsWith('.svga')){
-             svgaImagesListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id ,gift_audio);
-           }
+        if(room_id == room!.id){
+          refreshRoom(0);
+        }
+        if(gift_img.toLowerCase().endsWith('.svga')){
+          svgaImagesListener(room_id , gift_img , gift_name , receiver_name , sender_name , sender_share_level , sender_img , sender_id ,gift_audio);
+        }
 
 
 
@@ -495,27 +513,27 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     });
     getRoomImage();
   }
-   userJoinRoomWelcome(joiner_id) async{
-     RoomMember joiner = room!.members!.where((element) =>  element.mic_user_tag == joiner_id.toString()).toList()[0] ;
-      if(joiner.entery !=""){
-        setState(() {
-           entery = ASSETSBASEURL + 'Designs/Motion/' + joiner.entery! + '?raw=true'  ;
-        });
+  userJoinRoomWelcome(joiner_id) async{
+    RoomMember joiner = room!.members!.where((element) =>  element.mic_user_tag == joiner_id.toString()).toList()[0] ;
+    if(joiner.entery !=""){
+      setState(() {
+        entery = ASSETSBASEURL + 'Designs/Motion/' + joiner.entery! + '?raw=true'  ;
+      });
 
-          await Future.delayed(Duration(seconds: 9)).then((value) => {
-          setState(() {
+      await Future.delayed(Duration(seconds: 9)).then((value) => {
+        setState(() {
           entery = ''  ;
-          })
-          });
-      }
-     debugPrint("joiner ${joiner} ");
-     ChatRoomMessage message = ChatRoomMessage(message: 'room_msg'.tr, user_name: 'APP', user_share_level_img: '', user_img: '', user_id: 0 , type: "TEXT");
-     List<ChatRoomMessage>  old = [...messages];
-     old.add(message);
-     if(room!.hello_message != ""){
-       message = ChatRoomMessage(message: room!.hello_message , user_name: 'ROOM', user_share_level_img: '', user_img: '', user_id: 0 ,type: "TEXT");
-       old.add(message);
-     }
+        })
+      });
+    }
+    debugPrint("joiner ${joiner} ");
+    ChatRoomMessage message = ChatRoomMessage(message: 'room_msg'.tr, user_name: 'APP', user_share_level_img: '', user_img: '', user_id: 0 , type: "TEXT");
+    List<ChatRoomMessage>  old = [...messages];
+    old.add(message);
+    if(room!.hello_message != ""){
+      message = ChatRoomMessage(message: room!.hello_message , user_name: 'ROOM', user_share_level_img: '', user_img: '', user_id: 0 ,type: "TEXT");
+      old.add(message);
+    }
     setState(() {
       messages = old ;
     });
@@ -525,19 +543,19 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
 
 
 
-   }
+  }
 
   geAdminDesigns() async {
     DesignGiftHelper _helper =
-        await AppUserServices().getMyDesigns(room!.userId);
+    await AppUserServices().getMyDesigns(room!.userId);
     setState(() {
       designs = _helper.designs!;
     });
     if (designs
-            .where((element) =>
-                (element.category_id == 4 && element.isDefault == 1))
-            .toList()
-            .length >
+        .where((element) =>
+    (element.category_id == 4 && element.isDefault == 1))
+        .toList()
+        .length >
         0) {
       String icon = designs
           .where(
@@ -565,7 +583,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   }
 
   Future<void> initAgora() async {
-     print('initAgora');
+    print('initAgora');
     //create the engine
     _engine = createAgoraRtcEngine();
     await _engine.initialize(const RtcEngineContext(
@@ -590,7 +608,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
         onUserJoined: (RtcConnection connection, int remoteUid, int elapsed) {
           debugPrint("remote user $remoteUid joined");
           setState(() {
-         //   _remoteUid = remoteUid;
+            //   _remoteUid = remoteUid;
           });
         },
         onUserOffline: (RtcConnection connection, int remoteUid,
@@ -605,7 +623,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
           }
 
           setState(() {
-           // _remoteUid = null;
+            // _remoteUid = null;
 
           });
         },
@@ -614,27 +632,27 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
               '[onTokenPrivilegeWillExpire] connection: ${connection.toJson()}, token: $token');
         },
 
-          onAudioVolumeIndication:(connection, _speakers, speakerNumber, totalVolume){
-            print('onAudioVolumeIndication' );
-            List<int> sp = [] ;
-            setState(() {
-              speakers = sp ;
-            });
-            _speakers.forEach((element) { sp.add(element.uid!);});
-            setState(() {
-              speakers = sp ;
-            });
-            print(speakers);
-          },
+        onAudioVolumeIndication:(connection, _speakers, speakerNumber, totalVolume){
+          print('onAudioVolumeIndication' );
+          List<int> sp = [] ;
+          setState(() {
+            speakers = sp ;
+          });
+          _speakers.forEach((element) { sp.add(element.uid!);});
+          setState(() {
+            speakers = sp ;
+          });
+          print(speakers);
+        },
         onAudioMixingFinished: (){
           print('onAudioMixingFinished' );
         },
         onAudioMixingStateChanged: ( AudioMixingStateType state,
             AudioMixingReasonType reason){
-           print( 'audioMixingStateChanged state:${state.toString()}, reason: ${reason.toString()}}');
+          print( 'audioMixingStateChanged state:${state.toString()}, reason: ${reason.toString()}}');
         },
         onAudioMixingPositionChanged: (pos){
-         // print('onAudioMixingPositionChanged' );
+          // print('onAudioMixingPositionChanged' );
 
         },
 
@@ -654,7 +672,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       options: const ChannelMediaOptions( clientRoleType: ClientRoleType.clientRoleAudience),
     );
 
-   ChatRoomService.engine = _engine ;
+    ChatRoomService.engine = _engine ;
   }
   @override
   void dispose() {
@@ -683,14 +701,14 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
     if(_messageController.text.isNotEmpty){
       await ChatRoomMessagesHelper(room_id: room!.id , user_id: user!.id , message: _messageController.text , type: 'TEXT').handleSendRoomMessage();
       _messageController.clear();
-       toggleMessageInput();
-       if(!showMsgInput){
-         setState(() {
-           emojiShowing = false ;
-         });
+      toggleMessageInput();
+      if(!showMsgInput){
+        setState(() {
+          emojiShowing = false ;
+        });
 
-       }
-       await Future.delayed(Duration(seconds: 2));
+      }
+      await Future.delayed(Duration(seconds: 2));
       _scrollController.animateTo(
           _scrollController.position.maxScrollExtent,
           duration: const Duration(milliseconds: 1),
@@ -721,7 +739,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
               alignment: Alignment.topCenter,
 
               children: [
-               showBanner ? Stack(
+                showBanner ? Stack(
                   alignment: Alignment.center,
                   children: [
                     SVGASimpleImage(   resUrl: ASSETSBASEURL + 'AppBanners/gift_red_banner.svga?raw=true'),
@@ -778,15 +796,15 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                                       decoration: BoxDecoration(
                                                           color: Colors.red,
                                                           borderRadius:
-                                                              BorderRadius.circular(10.0),
-                                                          image: room!.img == ""
+                                                          BorderRadius.circular(10.0),
+                                                          image: room_img == ""
                                                               ? DecorationImage(
-                                                                  image: AssetImage(
-                                                                      'assets/images/user.png'),
-                                                                  fit: BoxFit.cover)
+                                                              image: AssetImage(
+                                                                  'assets/images/user.png'),
+                                                              fit: BoxFit.cover)
                                                               : DecorationImage(
-                                                                  image: NetworkImage(room_img),
-                                                                  fit: BoxFit.cover))),
+                                                              image: NetworkImage(room_img),
+                                                              fit: BoxFit.cover))),
                                                   SizedBox(
                                                     width: 10.0,
                                                   ),
@@ -822,14 +840,14 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                                         isScrollControlled: true ,
                                                         context: context,
                                                         builder: (ctx) => RoomCup());
-                                                   },
+                                                  },
 
                                                   child: Container(
                                                     padding: EdgeInsets.all(5.0),
                                                     decoration: BoxDecoration(
                                                         color: Colors.black26,
                                                         borderRadius:
-                                                            BorderRadius.circular(10.0)),
+                                                        BorderRadius.circular(10.0)),
                                                     child: Row(
                                                       children: [
                                                         Image(
@@ -864,21 +882,21 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                                           size: 20.0,
                                                         ))),
                                                 GestureDetector(
-                                                  onTap: (){
-                                                    showModalBottomSheet(
-                                                        isScrollControlled: true ,
-                                                        context: context,
-                                                        builder: (ctx) => roomCloseModal());
-                                                                                  },
+                                                    onTap: (){
+                                                      showModalBottomSheet(
+                                                          isScrollControlled: true ,
+                                                          context: context,
+                                                          builder: (ctx) => roomCloseModal());
+                                                    },
                                                     child: Container(
                                                       margin:
                                                       EdgeInsets.symmetric(horizontal: 10.0),
-                                                       child: Icon(
-                                                    FontAwesomeIcons.powerOff,
-                                                    color: Colors.white,
-                                                    size: 20.0,
-                                                  ),
-                                                )),
+                                                      child: Icon(
+                                                        FontAwesomeIcons.powerOff,
+                                                        color: Colors.white,
+                                                        size: 20.0,
+                                                      ),
+                                                    )),
                                               ],
                                             ),
                                           ),
@@ -887,29 +905,11 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          GestureDetector(
-                                            onTap: () async{
-                                              AppUser? res =  await AppUserServices().getUser(room!.userId);
-                                              showModalBottomSheet(
-
-                                                  context: context,
-                                                  builder: (ctx) => ProfileBottomSheet(res));
-                                            },
-                                            child: Stack(
-                                              alignment: Alignment.center,
-                                              children: [
-                                                CircleAvatar(
-                                                    radius: 15.0,
-                                                    backgroundImage: getUserAvatar()),
-                                                Image(
-                                                  image: AssetImage(
-                                                      'assets/images/room_user_small_border.png'),
-                                                  width: 50,
-                                                  height: 50,
-                                                )
-                                              ],
-                                            ),
+                                          Row(
+                                            children: room!.members!.map((e) => roomMemberItmeBuilder(e)).toList(),
                                           ),
+
+
                                           GestureDetector(
                                             onTap: (){
                                               showModalBottomSheet(
@@ -918,6 +918,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                                   builder: (ctx) => roomMembersModal());
                                             },
                                             child: Container(
+                                              width: 60.0,
                                               padding: EdgeInsets.all(5.0),
                                               decoration: BoxDecoration(
                                                   color: Colors.black26,
@@ -951,7 +952,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                         shrinkWrap: true,
                                         crossAxisCount: 4,
                                         children:
-                                            room!.mics!.map((mic) => micListItem(mic)).toList(),
+                                        room!.mics!.map((mic) => micListItem(mic)).toList(),
                                         mainAxisSpacing: 0.0,
                                       ),
 
@@ -962,8 +963,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                               ),
                             ),
 
-                              Expanded(
-                                flex: 45,
+                            Expanded(
+                              flex: 45,
                               child: Row(
                                 children: [
                                   Container(
@@ -975,7 +976,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                 ],
                               ),
                             ),
-                             Container(
+                            Container(
                               padding: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 10.0),
                               child: !showMsgInput ? Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
@@ -1021,17 +1022,17 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                           GestureDetector(
                                             onTap: () async{
                                               if(room!.mics!.where((element) => element.user_id == user!.id).toList().length > 0){
-                                                  if(_localUserMute){
-                                                    await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
-                                                    setState(() {
-                                                      _localUserMute = false ;
-                                                    });
-                                                  } else {
-                                                    await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
-                                                    setState(() {
-                                                      _localUserMute = true ;
-                                                    });
-                                                  }
+                                                if(_localUserMute){
+                                                  await _engine.setClientRole(role: ClientRoleType.clientRoleBroadcaster);
+                                                  setState(() {
+                                                    _localUserMute = false ;
+                                                  });
+                                                } else {
+                                                  await _engine.setClientRole(role: ClientRoleType.clientRoleAudience);
+                                                  setState(() {
+                                                    _localUserMute = true ;
+                                                  });
+                                                }
                                               } else {
                                                 Fluttertoast.showToast(
                                                     msg: 'You are not using any mic !',
@@ -1052,38 +1053,38 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                             width: 5.0,
                                           ),
                                           GestureDetector(
-                                            onTap: (){
-                                              showModalBottomSheet(
+                                              onTap: (){
+                                                showModalBottomSheet(
 
-                                                  context: context,
-                                                  builder: (ctx) => EmojBottomSheet());
-                                            },
+                                                    context: context,
+                                                    builder: (ctx) => EmojBottomSheet());
+                                              },
                                               child: Image(
-                                            image: AssetImage('assets/images/emoj.png'),
-                                            width: 40.0,
-                                          )),
+                                                image: AssetImage('assets/images/emoj.png'),
+                                                width: 40.0,
+                                              )),
                                         ],
                                       )
                                     ],
                                   ),
                                   Expanded(
                                       child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      GestureDetector(
-                                        onTap: (){
-                                          showModalBottomSheet(
+                                        crossAxisAlignment: CrossAxisAlignment.end,
+                                        children: [
+                                          GestureDetector(
+                                            onTap: (){
+                                              showModalBottomSheet(
 
-                                              context: context,
-                                              builder: (ctx) => giftBottomSheet());
-                                        },
-                                        child: Image(
-                                          image: AssetImage('assets/images/gift_box.webp'),
-                                          width: 40.0,
-                                        ),
-                                      )
-                                    ],
-                                  ))
+                                                  context: context,
+                                                  builder: (ctx) => giftBottomSheet());
+                                            },
+                                            child: Image(
+                                              image: AssetImage('assets/images/gift_box.webp'),
+                                              width: 40.0,
+                                            ),
+                                          )
+                                        ],
+                                      ))
                                 ],
                               ) :     Row(
                                 children: [
@@ -1096,7 +1097,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                         height: 45.0,
                                         child: TextFormField(
                                             controller: _messageController,
-                                             autofocus: true,
+                                            autofocus: true,
                                             focusNode: focusNode,
                                             cursorColor: Colors.grey,
                                             style: TextStyle(color: Colors.white),
@@ -1150,7 +1151,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
                                 ],
                               ),
                             ),
-                             Offstage(
+                            Offstage(
                                 offstage: !emojiShowing,
                                 child: SizedBox(
                                     height: 250,
@@ -1215,103 +1216,105 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       ),
     );
   }
-  Widget ProfileBottomSheet( user ) => SmallProfileModal(visitor: user , type: 1,);
-  ImageProvider getUserAvatar() {
-
-    if (room!.admin_img == '') {
-      return AssetImage('assets/images/user.png');
-    } else {
-      return NetworkImage('${ASSETSBASEURL}AppUsers/${room?.admin_img}');
-    }
+  Widget ProfileBottomSheet( user )  {
+   ChatRoomService.showMsgInput = showMsgInput ;
+   return SmallProfileModal(visitor: user , type: 1);
   }
-  Widget micListItem(mic) => StreamBuilder<Object>(
-    stream: null,
-    builder: (context, snapshot) {
-      return Stack(
-        alignment: Alignment.topCenter,
-        children: [
-      
-          
-          Stack(
-            alignment: Alignment.center,
-            children: [
-              Column(
-                    children: [
-                      Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              mic!.mic_user_img == null ? RippleAnimation(
-                                color:  MyColors.primaryColor ,
-                                delay: const Duration(milliseconds: 300),
-                                repeat: true,
-                                minRadius: speakers.where((element) => element.toString() == mic!.mic_user_tag ).toList().length > 0 ? 25 : 0,
-                                ripplesCount: 6,
-                                duration: const Duration(milliseconds: 6 * 300),
-                                child: CircleAvatar(
-                                  backgroundColor: Colors.transparent,
-                                  radius: 25,
-                                  backgroundImage: getMicUserImg(mic),
-                                ),
-                              ) :     RippleAnimation(
-                                color:  MyColors.primaryColor ,
-                                delay: const Duration(milliseconds: 300),
-                                repeat: true,
-                                minRadius: 25,
-                                ripplesCount: 6,
-                                duration: const Duration(milliseconds: 6 * 300),
-                                child: CircleAvatar(
-                                        backgroundColor:  mic.mic_user_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                                        backgroundImage:  mic!.mic_user_img != "" ? ( mic!.mic_user_img.startsWith('https') ? NetworkImage( mic!.mic_user_img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${ mic!.mic_user_img}'))  :    null,
-                                        radius: 22,
-                                        child:  mic!.mic_user_img== "" ?
-                                        Text(mic!.mic_user_name.toUpperCase().substring(0 , 1) +
-                                        (mic!.mic_user_name.contains(" ") ? mic!.mic_user_name.substring(mic!.mic_user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                                        style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
-                                        ),
+
+  Widget micListItem( mic) => StreamBuilder<Object>(
+      stream: null,
+      builder: (context, snapshot) {
+        return Stack(
+          alignment: Alignment.bottomCenter,
+          children: [
+            Stack(
+              alignment: Alignment.center,
+              children: [
+                Column(
+                  children: [
+                    Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Stack(
+                          alignment: Alignment.center,
+                          children: [
+                            mic!.mic_user_img == null ? RippleAnimation(
+                              color:  MyColors.primaryColor ,
+                              delay: const Duration(milliseconds: 300),
+                              repeat: true,
+                              minRadius: speakers.where((element) => element.toString() == mic!.mic_user_tag ).toList().length > 0 ? 25 : 0,
+                              ripplesCount: 6,
+                              duration: const Duration(milliseconds: 6 * 300),
+                              child: CircleAvatar(
+                                backgroundColor: Colors.transparent,
+                                radius: 25,
+                                backgroundImage: getMicUserImg(mic),
                               ),
-                              Container(height: 70.0, width: 70.0, child: mic!.frame != "" ? SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Designs/Motion/' + mic!.frame +'?raw=true') : null),
-                              // Container(height: 70.0, width: 70.0,
-                              // child: speakers.where((element) => element.toString() == mic!.mic_user_tag ).toList().length > 0  ?
-                              // SizedBox( height: 50.0, width: 50.0,
-                              //     child: SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Defaults/wave.svga')) : null),
+                            ) :     RippleAnimation(
+                              color:  MyColors.primaryColor ,
+                              delay: const Duration(milliseconds: 300),
+                              repeat: true,
+                              minRadius: 25,
+                              ripplesCount: 6,
+                              duration: const Duration(milliseconds: 6 * 300),
+                              child: CircleAvatar(
+                                backgroundColor:  mic.mic_user_gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                                backgroundImage:  mic!.mic_user_img != "" ? ( mic!.mic_user_img.startsWith('https') ? NetworkImage( mic!.mic_user_img)  :  NetworkImage('${ASSETSBASEURL}AppUsers/${ mic!.mic_user_img}'))  :    null,
+                                radius: 22,
+                                child:  mic!.mic_user_img== "" ?
+                                Text(mic!.mic_user_name.toUpperCase().substring(0 , 1) +
+                                    (mic!.mic_user_name.contains(" ") ? mic!.mic_user_name.substring(mic!.mic_user_name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                                  style: const TextStyle(color: Colors.white , fontSize: 22.0 , fontWeight: FontWeight.bold),) : null,
+                              ),
+                            ),
+                            Container(height: 70.0, width: 70.0, child: mic!.frame != "" ? SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Designs/Motion/' + mic!.frame +'?raw=true') : null),
+                            // Container(height: 70.0, width: 70.0,
+                            // child: speakers.where((element) => element.toString() == mic!.mic_user_tag ).toList().length > 0  ?
+                            // SizedBox( height: 50.0, width: 50.0,
+                            //     child: SVGASimpleImage(   resUrl: ASSETSBASEURL + 'Defaults/wave.svga')) : null),
 
 
-                              //frame
-                            ],
-                          ),
-                          micEmojs[mic.order -1] != "" ?    Container(height: 70.0, width: 70.0, child: SVGASimpleImage(   resUrl: micEmojs[mic.order -1] +'?raw=true') ) : Container()
-      
-                        ],
-                      ),
-                      Text(
-                        mic!.mic_user_name == null
-                            ? mic!.order.toString()
-                            : mic!.mic_user_name,
-                        style: TextStyle(color: Colors.white, fontSize: 13.0),
-                        overflow: TextOverflow.ellipsis,
-                      )
-                    ],
-                  ),
-              PopupMenuButton(
-                position: PopupMenuPosition.under,
-                shadowColor: MyColors.unSelectedColor,
-                elevation: 4.0,
-      
-                color: MyColors.darkColor,
-                icon: Container(),
-                onSelected: (int result) {
-                  micActions(result , mic);
-                },
-                itemBuilder: (BuildContext context) =>  AdminMicListItems(mic)
+                            //frame
+                          ],
+                        ),
+                        micEmojs[mic.order -1] != "" ?    Container(height: 70.0, width: 70.0, child: SVGASimpleImage(   resUrl: micEmojs[mic.order -1] +'?raw=true') ) : Container()
+
+                      ],
+                    ),
+                    Text(
+                      mic!.mic_user_name == null
+                          ? mic!.order.toString()
+                          : mic!.mic_user_name,
+                      style: TextStyle(color: Colors.white, fontSize: 13.0),
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ],
+                ),
+                PopupMenuButton(
+                    position: PopupMenuPosition.under,
+                    shadowColor: MyColors.unSelectedColor,
+                    elevation: 4.0,
+
+                    color: MyColors.darkColor,
+                    icon: Container(),
+                    onSelected: (int result) {
+                      micActions(result , mic);
+                    },
+                    itemBuilder: (BuildContext context) =>  AdminMicListItems(mic)
+                ),
+              ],
+            ),
+            (mic.user_id > 0 && room!.isCounter == 1) ? Transform.translate(
+              offset: Offset(0, 8.0),
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                decoration: BoxDecoration(color: MyColors.primaryColor , borderRadius: BorderRadius.circular(20.0)),
+                child: Text(mic.counter.toString() , style: TextStyle(color: MyColors.darkColor , fontSize: 14.0),),
               ),
-            ],
-          ),
-        ],
-      );
-    }
+            ): SizedBox()
+          ],
+        );
+      }
   );
 
 
@@ -1381,16 +1384,23 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       showModalBottomSheet(
 
           context: context,
-          builder: (ctx) => ProfileBottomSheet(res));
+          builder: (ctx) => ProfileBottomSheet(res)).whenComplete(() {
+            setState(() {
+              showMsgInput = ChatRoomService.showMsgInput ;
+            });
+            if(showMsgInput){
+              _messageController.text = "@" + res!.name + '.';
+            }
+      });
 
     }
   }
 
   ImageProvider getMicUserImg(mic) {
     //if (mic!.mic_user_img == null) {
-      if(mic.isClosed == 0)
+    if(mic.isClosed == 0)
       return AssetImage('assets/images/mic_open.png');
-      else
+    else
       return AssetImage('assets/images/mic_close.png');
     // } else {
     //
@@ -1402,7 +1412,7 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   Widget RoomCup( ) => RoomCupModal();
 
   Widget EmojBottomSheet( ) => EmojModal();
-  Widget giftBottomSheet() => GiftModal();
+  Widget giftBottomSheet() => GiftModal(reciverId: 0,);
   Widget MenuBottomSheet() => MenuModal(scrollController: _scrollController,);
   Widget RoomInfoBottomSheet() => RoomInfoModal();
   Widget roomCloseModal() => RoomCloseModal(pcontext: context, engine: _engine);
@@ -1448,6 +1458,10 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
               PopupMenuItem<int>(
                 value: 6,
                 child: Text('remove_from_mic'.tr , style: TextStyle(color: Colors.white),),
+              ),
+              PopupMenuItem<int>(
+                value: 6,
+                child: Text('kick_out'.tr , style: TextStyle(color: Colors.white),),
               ),
               PopupMenuItem<int>(
                 value: 9,
@@ -1543,8 +1557,8 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
       Container( padding: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 5.0 ),   decoration: BoxDecoration(borderRadius: BorderRadius.circular(15.0) , color: Colors.black54),   constraints: BoxConstraints(
         maxWidth: (MediaQuery.of(context).size.width * 0.7) - 20.0,
       ),
-       child: messages[index].user_name == 'APP' ? Text( messages[index].message , style: TextStyle(color: Colors.red , fontSize: 13.0),) :
-       Text( 'notice'.tr +  messages[index].message , style: TextStyle(color: MyColors.primaryColor , fontSize: 13.0),),
+        child: messages[index].user_name == 'APP' ? Text( messages[index].message , style: TextStyle(color: Colors.red , fontSize: 13.0),) :
+        Text( 'notice'.tr +  messages[index].message , style: TextStyle(color: MyColors.primaryColor , fontSize: 13.0),),
       ),
     ],
   ) : Flex(
@@ -1560,10 +1574,17 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
             showModalBottomSheet(
 
                 context: context,
-                builder: (ctx) => ProfileBottomSheet(res));
+                builder: (ctx) => ProfileBottomSheet(res)).whenComplete(() {
+              setState(() {
+                showMsgInput = ChatRoomService.showMsgInput ;
+              });
+              if(showMsgInput){
+                _messageController.text = "@" + res!.name + '.' ;
+              }
+            });
           },
           child: Row(
-             crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image(image: NetworkImage('${ASSETSBASEURL}Levels/${messages[index].user_share_level_img}') , width: 30,),
               SizedBox(width: 5.0,),
@@ -1578,38 +1599,76 @@ class _RoomScreenState extends State<RoomScreen> with TickerProviderStateMixin{
   Widget roomMessageSeperator() => SizedBox(height: 5.0,);
 
   Widget getMessageContent(ChatRoomMessage message) {
-     if(message.type == "TEXT"  || message.type == "GIFT"){
-       return   Expanded(child: Text(message.user_name + ': '  + message.message , style: TextStyle(color: MyColors.whiteColor , fontSize: 13.0),  overflow: TextOverflow.ellipsis,
-           maxLines: 4,
-           textAlign: TextAlign.start));
-     } else if(message.type == "NURD"){
-       return Column(
-         children: [
+    if(message.type == "TEXT"  || message.type == "GIFT"){
+      return   Expanded(child: Text(message.user_name + ': '  + message.message , style: TextStyle(color: MyColors.whiteColor , fontSize: 13.0),  overflow: TextOverflow.ellipsis,
+          maxLines: 4,
+          textAlign: TextAlign.start));
+    } else if(message.type == "NURD"){
+      return Column(
+        children: [
           Text(message.user_name , style: TextStyle(color: MyColors.whiteColor , fontSize: 13.0 ) , overflow: TextOverflow.ellipsis, ),
-           SizedBox(height: 10.0,),
-           Image(image: NetworkImage(ASSETSBASEURL + 'Nurd/' + message.message + '.webp' ) , width: 40.0,)
-         ],
-       );
-     }
-     else if(message.type == "LUCKY"){
-       return Column(
-         children: [
-           Text(message.user_name , style: TextStyle(color: MyColors.whiteColor , fontSize: 13.0 ) , overflow: TextOverflow.ellipsis, ),
-           SizedBox(height: 10.0,),
-           Text(message.message , style: TextStyle(color: MyColors.primaryColor , fontSize: 30.0 , fontWeight: FontWeight.bold  ) , overflow: TextOverflow.ellipsis, ),
-         ],
-       );
+          SizedBox(height: 10.0,),
+          Image(image: NetworkImage(ASSETSBASEURL + 'Nurd/' + message.message + '.webp' ) , width: 40.0,)
+        ],
+      );
+    }
+    else if(message.type == "LUCKY"){
+      return Column(
+        children: [
+          Text(message.user_name , style: TextStyle(color: MyColors.whiteColor , fontSize: 13.0 ) , overflow: TextOverflow.ellipsis, ),
+          SizedBox(height: 10.0,),
+          Text(message.message , style: TextStyle(color: MyColors.primaryColor , fontSize: 30.0 , fontWeight: FontWeight.bold  ) , overflow: TextOverflow.ellipsis, ),
+        ],
+      );
 
-     }
-     else {
-       return Container();
-     }
+    }
+    else {
+      return Container();
+    }
   }
 
 
 
+Widget roomMemberItmeBuilder(RoomMember user) =>    GestureDetector(
+  onTap: () async{
+    AppUser? res =  await AppUserServices().getUser(user.user_id);
+    showModalBottomSheet(
+
+        context: context,
+        builder: (ctx) => ProfileBottomSheet(res)).whenComplete(() {
+      setState(() {
+        showMsgInput = ChatRoomService.showMsgInput ;
+      });
+      if(showMsgInput){
+        _messageController.text = "@" + res!.name + '.';
+      }
+    });
+  },
+  child: Stack(
+    alignment: Alignment.center,
+    children: [
+      CircleAvatar(
+          radius: 15.0,
+          backgroundImage: getUserAvatar(user)),
+      user.user_id == room!.userId  ? Image(
+        image: AssetImage(
+            'assets/images/room_user_small_border.png'),
+        width: 50,
+        height: 50,
+      ): SizedBox()
+    ],
+  ),
+);
+
+  ImageProvider getUserAvatar(RoomMember user) {
+
+    if (user.mic_user_img == '') {
+      return AssetImage('assets/images/user.png');
+    } else {
+      return NetworkImage('${ASSETSBASEURL}AppUsers/${user.mic_user_img}');
+    }
+  }
 
 
-  
 
 }

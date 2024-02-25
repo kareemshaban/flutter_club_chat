@@ -16,11 +16,12 @@ class Mic {
   final String? mic_user_karizma_level ;
   final String? mic_user_charging_level ;
   String? frame ;
+  final int counter ;
 
   Mic({required this.id , required this.room_id , required this.order, required this.user_id , required this.isClosed ,
     required this.isMute ,
-  this.mic_user_tag , this.mic_user_name , this.mic_user_img , this.mic_user_gender , this.mic_user_birth_date ,
-  this.mic_user_share_level , this.mic_user_karizma_level , this.mic_user_charging_level , this.frame});
+    this.mic_user_tag , this.mic_user_name , this.mic_user_img , this.mic_user_gender , this.mic_user_birth_date ,
+    this.mic_user_share_level , this.mic_user_karizma_level , this.mic_user_charging_level , this.frame , required this.counter});
 
 
   factory Mic.fromJson(Map<String, dynamic> json) {
@@ -41,23 +42,25 @@ class Mic {
       'mic_user_karizma_level': String? mic_user_karizma_level,
       'mic_user_charging_level': String? mic_user_charging_level,
       'frame': String? frame ,
+      'counter': int counter
       } =>
           Mic(
-            id: id,
-            room_id: room_id,
-            order: order,
-            user_id: user_id,
-            isClosed: isClosed,
-            isMute: isMute,
-            mic_user_tag: mic_user_tag,
-            mic_user_name: mic_user_name,
-            mic_user_img: mic_user_img,
-            mic_user_gender: mic_user_gender,
-            mic_user_birth_date: mic_user_birth_date,
-            mic_user_share_level: mic_user_share_level,
-            mic_user_karizma_level: mic_user_karizma_level,
-            mic_user_charging_level: mic_user_charging_level,
-            frame:  frame ,
+              id: id,
+              room_id: room_id,
+              order: order,
+              user_id: user_id,
+              isClosed: isClosed,
+              isMute: isMute,
+              mic_user_tag: mic_user_tag,
+              mic_user_name: mic_user_name,
+              mic_user_img: mic_user_img,
+              mic_user_gender: mic_user_gender,
+              mic_user_birth_date: mic_user_birth_date,
+              mic_user_share_level: mic_user_share_level,
+              mic_user_karizma_level: mic_user_karizma_level,
+              mic_user_charging_level: mic_user_charging_level,
+              frame:  frame ,
+              counter:counter
           ),
       _ => throw const FormatException('Failed to load album.'),
     };

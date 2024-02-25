@@ -6,6 +6,7 @@ import 'package:clubchat/models/ChatRoom.dart';
 import 'package:clubchat/models/Mall.dart';
 import 'package:clubchat/models/Medal.dart';
 import 'package:clubchat/modules/InnerProfile/Inner_Profile_Screen.dart';
+import 'package:clubchat/modules/Room/Components/gift_modal.dart';
 import 'package:clubchat/modules/Room/Room_Screen.dart';
 import 'package:clubchat/modules/chat/chat.dart';
 import 'package:clubchat/shared/components/Constants.dart';
@@ -282,7 +283,37 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
                           ),
 
                         ],
-                      ) : Container(),
+                      ) : Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              children: [
+                                getFollowBtn()
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: (){mention();},
+                                    child: Image(image: AssetImage('assets/images/mention.png') , width: 70.0)),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Column(
+                              children: [
+                                GestureDetector(
+                                    behavior: HitTestBehavior.opaque,
+                                    onTap: (){sendGift();}, child: Image(image: AssetImage('assets/images/profile_gift.png') , width: 70.0)),
+                              ],
+                            ),
+                          ),
+
+                        ],
+                      ) ,
 
                     ],
                   ),
@@ -452,7 +483,7 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
 
   Widget getFollowBtn(){
     AppUser? currentUser = AppUserServices().userGetter();
-    if(currentUser!.followings!.where((element) => element.follower_id == user!.id).length == 0){
+    if(currentUser!.followings!.where((element) => element.follower_id == user!.id).length == 0 ){
       return  GestureDetector(onTap: () {followUser();},  child: Image(image: AssetImage('assets/images/add-user.png') , width: 70.0,));
     } else {
       return  GestureDetector(onTap: () {unFollowUser();},  child: Image(image: AssetImage('assets/images/remove-user.png') , width: 70.0,));
@@ -537,5 +568,16 @@ class _SmallProfileModalState extends State<SmallProfileModal> {
 
       ),
     );
+  }
+  mention(){
+     ChatRoomService.showMsgInput = true ;
+     Navigator.pop(context);
+  }
+  sendGift(){
+    Navigator.pop(context);
+    showModalBottomSheet(
+
+        context: context,
+        builder: (ctx) => GiftModal(reciverId: user!.id,));
   }
 }

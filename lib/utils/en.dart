@@ -279,7 +279,10 @@ const Map<String,String> en ={
   "admin_deleted": "Admin Deleted Successfully",
   "room_save_dialog_title": "End Room Save",
   "room_save_dialog_msg": "Do you need to end Room Keeping ?",
-  "show_user":"Show Profile"
+  "show_user":"Show Profile",
+  "counter_off":"counter OFF",
+  "counter_on":"Counter ON",
+   "kick_out": "Kick Out"
 
 
 
