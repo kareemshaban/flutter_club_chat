@@ -44,38 +44,38 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyBb4oP4iFsqmSF-m28EJb_tlh6S_7syBlg',
-    appId: '1:1050685348514:web:bfd95a53d59c16a55bd5fb',
-    messagingSenderId: '1050685348514',
-    projectId: 'clubchatapp-5d5ac',
-    authDomain: 'clubchatapp-5d5ac.firebaseapp.com',
-    storageBucket: 'clubchatapp-5d5ac.appspot.com',
-    measurementId: 'G-PQZRQWVYNJ',
+    apiKey: 'AIzaSyDfSbOeX5HwdNTVnD7bT67KrBBs5ydDA1s',
+    appId: '1:458692017479:web:470aa40f8b0fdc2158a062',
+    messagingSenderId: '458692017479',
+    projectId: 'seefochat-25003',
+    authDomain: 'seefochat-25003.firebaseapp.com',
+    storageBucket: 'seefochat-25003.appspot.com',
+    measurementId: 'G-JN89JPMBZQ',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyCANFniAp9ch8AqV7kdHrLjUB9xG6Mml3g',
-    appId: '1:1050685348514:android:4d7bf5158a7b07f45bd5fb',
-    messagingSenderId: '1050685348514',
-    projectId: 'clubchatapp-5d5ac',
-    storageBucket: 'clubchatapp-5d5ac.appspot.com',
+    apiKey: 'AIzaSyD3kafPxNoNYoTCNEvFDG8ys9I2pKWlIJw',
+    appId: '1:458692017479:android:694570c29c8c91ad58a062',
+    messagingSenderId: '458692017479',
+    projectId: 'seefochat-25003',
+    storageBucket: 'seefochat-25003.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyDlpRpjpameZsv5k-skRyVmIwIP_GmyA0k',
-    appId: '1:1050685348514:ios:8c041ded2706bdf95bd5fb',
-    messagingSenderId: '1050685348514',
-    projectId: 'clubchatapp-5d5ac',
-    storageBucket: 'clubchatapp-5d5ac.appspot.com',
+    apiKey: 'AIzaSyDvCpeAnYlTCrgO8D-Ie5eNSdGCAhuUUh8',
+    appId: '1:458692017479:ios:963dfeef2e10d5b458a062',
+    messagingSenderId: '458692017479',
+    projectId: 'seefochat-25003',
+    storageBucket: 'seefochat-25003.appspot.com',
     iosBundleId: 'com.clubchat.live.chat.clubchat',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyDlpRpjpameZsv5k-skRyVmIwIP_GmyA0k',
-    appId: '1:1050685348514:ios:84d1b2e4cda57b5e5bd5fb',
-    messagingSenderId: '1050685348514',
-    projectId: 'clubchatapp-5d5ac',
-    storageBucket: 'clubchatapp-5d5ac.appspot.com',
+    apiKey: 'AIzaSyDvCpeAnYlTCrgO8D-Ie5eNSdGCAhuUUh8',
+    appId: '1:458692017479:ios:ada5c1d09201723e58a062',
+    messagingSenderId: '458692017479',
+    projectId: 'seefochat-25003',
+    storageBucket: 'seefochat-25003.appspot.com',
     iosBundleId: 'com.clubchat.live.chat.clubchat.RunnerTests',
   );
 }

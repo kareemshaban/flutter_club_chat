@@ -26,6 +26,7 @@ import 'package:get/get.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:wakelock/wakelock.dart';
 
 
 
@@ -91,7 +92,7 @@ class HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    //PusherChannelsFlutter pusher =
+    Wakelock.enable();
     setState(() {
       user =  AppUserServices().userGetter();
     });
