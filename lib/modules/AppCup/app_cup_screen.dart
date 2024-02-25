@@ -1,4 +1,5 @@
 import 'package:clubchat/models/AppTrend.dart';
+import 'package:clubchat/models/TrendRoom.dart';
 import 'package:clubchat/models/TrendUser.dart';
 import 'package:clubchat/modules/Loading/loadig_screen.dart';
 import 'package:clubchat/shared/components/Constants.dart';
@@ -379,8 +380,10 @@ class _AppCupScreenState extends State<AppCupScreen> with TickerProviderStateMix
                       children: [
                         ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder(trend!.dailyShareFans[index]) ,
                             separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.dailyShareFans.length),
-                         Text('2'),
-                         Text('3'),
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder(trend!.weekShareFanss[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.weekShareFanss.length),
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder(trend!.monthShareFans[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.monthShareFans.length),
                       ],
                       
                     )
@@ -675,7 +678,20 @@ class _AppCupScreenState extends State<AppCupScreen> with TickerProviderStateMix
                 ),
                 Expanded(
                     flex: 5,
-                    child: Container())
+                    child: TabBarView(
+                      controller: _tabController2,
+                      children: [
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder(trend!.dailyKarizmaFans[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.dailyKarizmaFans.length),
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder(trend!.weekKarizmaFans[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.weekKarizmaFans.length),
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder(trend!.monthKarizmaFans[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.monthKarizmaFans.length),
+                      ],
+
+                    )
+
+                )
               ],
             ),
             Column(
@@ -950,7 +966,20 @@ class _AppCupScreenState extends State<AppCupScreen> with TickerProviderStateMix
                 ),
                 Expanded(
                     flex: 5,
-                    child: Container())
+                    child: TabBarView(
+                      controller: _tabController3,
+                      children: [
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder2(trend!.dailyRoomFans[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.dailyRoomFans.length),
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder2(trend!.weekRoomFans[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.weekRoomFans.length),
+                        ListView.separated(itemBuilder: (ctx , index) =>itemListBuilder2(trend!.monthRoomFans[index]) ,
+                            separatorBuilder: (ctx , index) =>itemSperatorBuilder(), itemCount: trend!.monthRoomFans.length),
+                      ],
+
+                    )
+
+                )
               ],
             ),
           ],
@@ -979,79 +1008,151 @@ class _AppCupScreenState extends State<AppCupScreen> with TickerProviderStateMix
     return  NetworkImage(room_img);
   }
 
-  Widget itemListBuilder( TrendUser user) => Column(
-    children: [
-      Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Column(
-              children: [
-                CircleAvatar(
-                  backgroundColor: user.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+  Widget itemListBuilder( TrendUser user) => Container(
+    margin: EdgeInsets.symmetric(horizontal: 10.0 ),
+    child: Column(
+      children: [
+        Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  CircleAvatar(
+                    backgroundColor: user.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
 
-                  backgroundImage: user.img != "" ?
-                  NetworkImage(getUserImage(user)!) : null,
-                  radius: 30,
-                  child: user.img == "" ?
-                  Text(user.name.toUpperCase().substring(0 , 1) +
-                      (user.name.contains(" ") ? user.name.substring(user.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
-                    style: const TextStyle(color: Colors.white , fontSize: 24.0 , fontWeight: FontWeight.bold),) : null,
-                )
-              ],
-            ),
-            const SizedBox(width: 10.0,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  children: [
-                    Text(user.name , style: TextStyle(color: MyColors.whiteColor , fontSize: 18.0),),
-                    const SizedBox(width: 5.0,),
-                    CircleAvatar(
-                      backgroundColor: user.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
-                      radius: 10.0,
-                      child: user.gender == 0 ?  const Icon(Icons.male , color: Colors.white, size: 15.0,) :  const Icon(Icons.female , color: Colors.white, size: 15.0,),
-                    )
-                  ],
-                ),
-                Row(
+                    backgroundImage: user.img != "" ?
+                    NetworkImage(getUserImage(user)!) : null,
+                    radius: 22,
+                    child: user.img == "" ?
+                    Text(user.name.toUpperCase().substring(0 , 1) +
+                        (user.name.contains(" ") ? user.name.substring(user.name.indexOf(" ")).toUpperCase().substring(1 , 2) : ""),
+                      style: const TextStyle(color: Colors.white , fontSize: 18.0 , fontWeight: FontWeight.bold),) : null,
+                  )
+                ],
+              ),
+              const SizedBox(width: 10.0,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(user.name , style: TextStyle(color: MyColors.whiteColor , fontSize: 18.0),),
+                      const SizedBox(width: 5.0,),
+                      CircleAvatar(
+                        backgroundColor: user.gender == 0 ? MyColors.blueColor : MyColors.pinkColor ,
+                        radius: 10.0,
+                        child: user.gender == 0 ?  const Icon(Icons.male , color: Colors.white, size: 15.0,) :  const Icon(Icons.female , color: Colors.white, size: 15.0,),
+                      )
+                    ],
+                  ),
+                  Row(
 
-                  children: [
-                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.share_level_icon) , width: 40,),
-                    const SizedBox(width: 10.0,),
-                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.karizma_level_icon) , width: 40,),
-                    const SizedBox(width: 10.0,),
-                    Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.charging_level_icon) , width: 30,),
+                    children: [
+                      Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.share_level_icon) , width: 40,),
+                      const SizedBox(width: 10.0,),
+                      Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.karizma_level_icon) , width: 40,),
+                      const SizedBox(width: 10.0,),
+                      Image(image: NetworkImage(ASSETSBASEURL + 'Levels/' + user.charging_level_icon) , width: 30,),
 
-                  ],
-                ),
+                    ],
+                  ),
 
-                Text("ID:${user.tag}" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 13.0),),
+                  Text("ID:${user.tag}" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 13.0),),
 
 
-              ],
+                ],
 
-            ),
+              ),
 
-          ]),
-      Container(
-        width: double.infinity,
-        height: 1.0,
-        color: MyColors.lightUnSelectedColor,
-        margin: EdgeInsetsDirectional.only(start: 50.0),
-        child: const Text(""),
-      )
-    ],
+            ]),
+        Container(
+          width: double.infinity,
+          height: 1.0,
+          color: MyColors.lightUnSelectedColor,
+          margin: EdgeInsetsDirectional.only(start: 50.0),
+          child: const Text(""),
+        )
+      ],
+    ),
+  );
+
+  Widget itemListBuilder2( TrendRoom room) => Container(
+    margin: EdgeInsets.symmetric(horizontal: 10.0 , vertical: 10.0),
+    child: Column(
+      children: [
+        Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Column(
+                children: [
+                  CircleAvatar(
+                      backgroundColor: MyColors.primaryColor ,
+                      backgroundImage: getRoomImage(room)  ,
+                      radius: 20
+                  )
+                ],
+              ),
+              const SizedBox(width: 10.0,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    children: [
+                      Text(room.name , style: TextStyle(color: MyColors.whiteColor , fontSize: 18.0),),
+                      const SizedBox(width: 5.0,),
+                      Container(
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(10.0) ,
+                            color: getTagColor(room)),
+                        padding: EdgeInsets.all(3.0),
+                        child: Text('#' + room!.subject , style: TextStyle(fontSize: 9.0 , color: Colors.white),),
+                      )
+                    ],
+                  ),
+
+
+                  Text("ID:${room.tag}" , style: TextStyle(color: MyColors.unSelectedColor , fontSize: 13.0),),
+
+
+                ],
+
+              ),
+
+            ]),
+        Container(
+          width: double.infinity,
+          height: 1.0,
+          color: MyColors.lightUnSelectedColor,
+          margin: EdgeInsetsDirectional.only(start: 50.0),
+          child: const Text(""),
+        )
+      ],
+    ),
   );
 
   Widget itemSperatorBuilder() => SizedBox(height: 5.0,);
 
   String? getUserImage(TrendUser user){
-    if(user!.img.startsWith('https')){
+    if(user.img.startsWith('https')){
       return user.img.toString() ;
     } else {
       return '${ASSETSBASEURL}AppUsers/${user.img}' ;
     }
   }
+
+  Color getTagColor(room){
+    if(room!.subject == "CHAT"){
+      return MyColors.primaryColor.withOpacity(.8) ;
+    } else if(room!.subject == "FRIENDS"){
+      return MyColors.successColor.withOpacity(.8) ;
+    }else if(room!.subject == "GAMES"){
+      return MyColors.blueColor.withOpacity(.8) ;
+    }
+    else {
+      return MyColors.primaryColor.withOpacity(.8) ;
+    }
+
+  }
+
 }

@@ -25,22 +25,10 @@ class ChatService extends ChangeNotifier {
         timestamp: timestamp
     );
 
-    //construct chat rood id from current user id and receiver id (sorted to ensure uniqueness)
     List<int> ids = [currentUserId , receiverId];
-    ids.sort() ; //sort the id (this ensures the chat room id is always the same for any pair of people)
-    String chatRoomId = ids.join("_"); // combine the ids into a sigle string to use as a chatroomID
-    // add new message to database
-    var sender_fb ;
-    var reciever_fb ;
-    await _firestore.collection('users').where('id' , isEqualTo: currentUserId).get().
-    then((value) => sender_fb = value.docs[0]);
-    await _firestore.collection('users').where('id' , isEqualTo: receiverId).get().then((value) =>
-    reciever_fb = value.docs[0]
-    );
-    await _firestore.collection('chat_rooms').doc(chatRoomId).set({
-       'sender' : sender_fb.id ,
-       'reciver': reciever_fb.id,
-    });
+    ids.sort() ;
+    String chatRoomId = ids.join("_");
+
     await _firestore
         .collection('chat_rooms')
         .doc(chatRoomId)

@@ -1,51 +1,45 @@
 {
   "project_info": {
-    "project_number": "1050685348514",
-    "project_id": "clubchatapp-5d5ac",
-    "storage_bucket": "clubchatapp-5d5ac.appspot.com"
+    "project_number": "458692017479",
+    "project_id": "seefochat-25003",
+    "storage_bucket": "seefochat-25003.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:1050685348514:android:4d7bf5158a7b07f45bd5fb",
+        "mobilesdk_app_id": "1:458692017479:android:84769b3ff1fb60eb58a062",
         "android_client_info": {
-          "package_name": "com.clubchat.live.chat.clubchat"
+          "package_name": "com.enterchat.live.chat.enterchat"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "1050685348514-h747uah6rpa9r8ct7656dhbscqgskku3.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.clubchat.live.chat.clubchat",
-            "certificate_hash": "8ad311a974ced0c4dd96e0ba1adc972569f1eba2"
-          }
-        },
-        {
-          "client_id": "1050685348514-9krjpctkprst9k8l3tpqd56rqumri1k7.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCANFniAp9ch8AqV7kdHrLjUB9xG6Mml3g"
+          "current_key": "AIzaSyD3kafPxNoNYoTCNEvFDG8ys9I2pKWlIJw"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "1050685348514-9krjpctkprst9k8l3tpqd56rqumri1k7.apps.googleusercontent.com",
-              "client_type": 3
-            },
-            {
-              "client_id": "1050685348514-7ojpfpcuhii2o95omrsmu48tnb7guq3k.apps.googleusercontent.com",
-              "client_type": 2,
-              "ios_info": {
-                "bundle_id": "com.clubchat.live.chat.clubchat.RunnerTests"
-              }
-            }
-          ]
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:458692017479:android:694570c29c8c91ad58a062",
+        "android_client_info": {
+          "package_name": "com.seefochat.live.chat.seefochat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD3kafPxNoNYoTCNEvFDG8ys9I2pKWlIJw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
         }
       }
     }
